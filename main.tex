@@ -475,4 +475,45 @@ Estos datasets se usan para entrenamiento solamente. Para el test, se usan los s
 - TUM (https://vision.in.tum.de/data/datasets/rgbd-dataset), 
 Tanto en el paper de DPT como en el paper de MiDas (versión anterior y convolucional de DPT (https://github.com/isl-org/MiDaS)).
 
+\section{WIP: Resumen del paper de DPT}
+
+\textbf{Introducción}
+
+\todo[inline]{Añadir citas aquí}
+Las arquitecturas de estimación de profundidades se basan en redes convolucionales, normalmente de tipo \textit{encoder-decoder}. Las líneas de investigación actuales se centran en el \textit{decoder} y sus estrategias de agregación de información, sin embargo, DPT centra su estudio en la modificación del \textit{encoder}, debido a la gran influencia que tiene este en la información que llega a la segunda parte de la red.
+
+\todo[inline]{Esto puede que haya que moverlo a otra zona del documento para argumentar por qué se usan transformers y no redes convolucionales}
+En el artículo, argumentan que los \textit{backbones} convolucionales reducen dimensionalmente la imagen de forma progresiva para extraer sus mapas de características con distintos niveles de abstracción mientras se mantienen razonables los requisitos computacionales y de memoria. Este tipo de operaciones, que han ofrecido muy buenos resultados en todo tipo de tareas de visión artificial, presentan ciertos inconvenientes críticos en la estimación de profundidades, principalmente la resolución y granularidad de los mapas de características extraídos. Esto, es un problema debido a que para estimar la profundidad de una imagen con la mayor exactitud posible, sería conveniente que los mapas de características extraídos de la imagen mantuvieran su resolución original (o cercana a esta).
+
+Pese a que se han planteado distintos métodos para reducir la perdida de resolución en los mapas de características (emplear imagenes más grandes, convoluciones dilatadas, skip connections, conexión de representaciones internamente, etc.) \todo[inline]{citar todo esto si se queda}, esta perdida de granularidad es inherente a la operación de convolución tál y como se aplica en este tipo de redes. Para solucionar esto, DPT emplea transformers (en concreto, vision transformers) como \textit{backbone} para evitar una reducción explicita de la resolución de las características extraidas de la imagen y ampliar el campo receptivo con el que opera la red (es posible usar información de toda la imagen en cualquier etapa de la arquitectura - campo receptivo global -, mientras que las capas convolucionales tienen campos receptivos locales mucho menores).
+
+\todo[inline]{El trabajo previo repartirlo por el fundamento teórico}
+
+\textbf{Arquitectura}
+
+Como ya se ha comentado, DPT tiene por \textit{backbone} un vision transformer (ViT), es decir, fragmenta la imagen original en parches, extrae un \textit{embedding} de cada parche, y pasa este conjunto de vectores como entrada al transformer, de forma similar a como se pasarían los \textit{embeddings} de palabras cuando se aplican estas arquitecturas a texto. El artículo proporciona dos versiones de DPT en función del vision transformer que emplean. La primera tiene por \textit{backbone} una arquitectura ViT large (proyección lineal, x capas,,,) \todo[inline]{hablar del número de capas de vit large}; y la segunda emplea un ViT Hybrid (que emplea una ResNet50 para extraer el \textit{embedding} de los parches iniciales).
+
+En la parte del \textit{decoder}, se forman representaciones de distintas resoluciones en forma de imagen a partir de los tokens que se encuentran en ciertas capas del transformer. Estas representaciones, se combinan de forma progresiva para obtener la predicción final de la red (la estimación de profundidad para cada píxel).
+
+La operación que convierte los \textit{tokens} de capas intermedias del \textit{transformer} en imágenes se define de la siguiente manera:
+
+\todo[inline]{Ecuación y probablemente imagen en algún sitio del decoder}
+
+\begin{enumerate}
+\item{Read: Integración del readout token: ...}
+\item{Concatenate: ...}
+\item{Resample: ...}
+\end{enumerate}
+
+Una vez se han extraido estas representaciones intermedias a diferentes resoluciones, se fusionan empleando una arquitectura de tipo RefineNet \todo[inline]{citar y explicar la arquitectura}. El resultado de este último bloque, es una imagen con la mitad de resolución que la imagen de entrada que pasa por una cabeza entrenada para proporcionar la predicción final. 
+
+Los modelos publicados, han sido entrenados en MIX 6, un dataset elaborado por Intel ampliando MIX 5, también empleado por la empresa en MiDas, el modelo precursor de DPT. Este dataset está compuesto por los siguientes datasets:
+\todo[inline]{Hablar de los dataset de entrenamiento y test, citandoles y haciendo una tabla de número de imágenes, espacio, etc. También se puede mencionar que hay algunos que son dificiles de conseguir debido a las leyes actuales que no se han publicado.}
+
+Además de los modelos entrenados en MIX 6, se proporcionan los parámetros de la variante DPT-Hybrid tras realizar un \textit{fine tuning} en los conjuntos de entrenamiento de los datasets NYU Depth v2 y KITTI (cuyos conjuntos de test se emplean posteriormente en este trabajo para comparar los resultados de los distintos modelos resultantes). 
+
+\todo[inline]{Hablar del proceso de entrenamiento que llevan a cabo en el paper de DPT?}
+
+\todo[inline]{Copiar los resultados del paper en ambos datasets y aclarar que esos resultados son los que se presentan en el paper, después en la sección de resultados pondremos los que consigamos nosotros con un proceso de prueba más cercano a lo que sería un entorno de producción, sin dobles predicciones ni cosas similares.}
+
 \end{document}
