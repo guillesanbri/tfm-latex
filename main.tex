@@ -450,30 +450,38 @@ La actividad realizada durante esta estancia, ha servido para producir una base 
 \end{figure}
 
 % \clearpage
-\section{WIP: Texto a incorporar}\label{unk}
+\section{WIP: Texto de dataset mix5 y mix6}\label{unk}
 DPT parece que no está preparado para pasarse a onnx (o sí https://github.com/isl-org/DPT/issues/42), una de las opciones sería reescribir el modelo (probablemente simplificado) y reentrenar. Se describe a continuación los dataset empleados, reentrenar no parece muy viable. Otra opción que se podría explorar es destilar el modelo de alguna forma. También se puede leer los data efficient transformers de facebook a ver si reducen la necesidad de emplear tantisimas imágenes. Otra opción (si la implementación de Adabins está hecha orientada a onnx, sería usar solamente adabins y hacer todo el tfm con esa arquitectura).
 
-El dataset de profundidad que se usa para entrenar DPT (MIX6) es una ampliación de MIX5, presentado en https://arxiv.org/abs/1907.01341, el cual incluía los datasets 
-- ReDWeb (https://sites.google.com/site/redwebcvpr18/), 
-- DIML (https://dimlrgbd.github.io/), 
-- 3D Movies (https://github.com/isl-org/MiDaS/issues/13) (https://github.com/isl-org/MiDaS/issues/24) el material complementario no está en el paperv3, ver v2 https://arxiv.org/pdf/1907.01341v2.pdf, 
-- MegaDepth (https://www.cs.cornell.edu/projects/megadepth/), 
-- WSVD (este también es un jaleo hacerlo https://sites.google.com/view/wsvd/home ; https://github.com/aycatakmaz/wsvd_dataset_loader) se descargan vídeos de youtube y se calcula, parecido a 3d movies, parece más automatizado.
+El dataset de profundidad que se usa para entrenar DPT (MIX6) es una ampliación de MIX5, presentado en \url{https://arxiv.org/abs/1907.01341}, el cual incluía los datasets:
+\begin{itemize}
+\item ReDWeb (\url{https://sites.google.com/site/redwebcvpr18/})
+\item DIML (\url{https://dimlrgbd.github.io/})
+\item 3D Movies (\url{https://github.com/isl-org/MiDaS/issues/13}) (\url{https://github.com/isl-org/MiDaS/issues/24}) el material complementario no está en el paperv3, ver v2 \url{https://arxiv.org/pdf/1907.01341v2.pdf}
+\item MegaDepth (\url{https://www.cs.cornell.edu/projects/megadepth/})
+\item WSVD (este también es un jaleo hacerlo \url{https://sites.google.com/view/wsvd/home} ; \url{https://github.com/aycatakmaz/wsvd_dataset_loader}) se descargan vídeos de youtube y se calcula, parecido a 3d movies, parece más automatizado.
+\end{itemize}
 
-Para el artículo de DPT, se incluyen cinco dataset más para conseguir MIX6: 
-- TartanAir (https://theairlab.org/tartanair-dataset/), 
-- HRWSI (https://github.com/KexianHust/Structure-Guided-Ranking-Loss), 
-- ApolloScape (http://apolloscape.auto/stereo.html), 
-- BlendedMVS (https://github.com/YoYo000/BlendedMVS), 
-- IRS (https://github.com/HKBU-HPML/IRS). 
+Para el artículo de DPT, se incluyen cinco dataset más para conseguir MIX6:
+\begin{itemize}
+\item TartanAir (\url{https://theairlab.org/tartanair-dataset/})
+\item HRWSI (\url{https://github.com/KexianHust/Structure-Guided-Ranking-Loss})
+\item ApolloScape (\url{http://apolloscape.auto/stereo.html})
+\item BlendedMVS (\url{https://github.com/YoYo000/BlendedMVS})
+\item IRS (\url{https://github.com/HKBU-HPML/IRS})
+\end{itemize}
+
 Estos datasets se usan para entrenamiento solamente. Para el test, se usan los siguientes datasets: 
-- DIW (http://www-personal.umich.edu/~wfchen/depth-in-the-wild/)
-- ETH3D (https://www.eth3d.net/datasets)
-- Sintel (http://sintel.is.tue.mpg.de/about)
-- KITTI (https://stackoverflow.com/questions/63512296/kitti-eigen-split - http://www.cvlibs.net/datasets/kitti/eval_depth.php?benchmark=depth_prediction)
-- NYU (https://cs.nyu.edu/~silberman/datasets/nyu_depth_v2.html)
-- TUM (https://vision.in.tum.de/data/datasets/rgbd-dataset), 
-Tanto en el paper de DPT como en el paper de MiDas (versión anterior y convolucional de DPT (https://github.com/isl-org/MiDaS)).
+
+\begin{itemize}
+\item DIW (\url{http://www-personal.umich.edu/~wfchen/depth-in-the-wild/})
+\item ETH3D (\url{https://www.eth3d.net/datasets})
+\item Sintel (\url{http://sintel.is.tue.mpg.de/about})
+\item KITTI (\url{https://stackoverflow.com/questions/63512296/kitti-eigen-split} - \url{http://www.cvlibs.net/datasets/kitti/eval_depth.php?benchmark=depth_prediction})
+\item NYU (\url{https://cs.nyu.edu/~silberman/datasets/nyu_depth_v2.html})
+\item TUM (\url{https://vision.in.tum.de/data/datasets/rgbd-dataset}). 
+Tanto en el paper de DPT como en el paper de MiDas (versión anterior y convolucional de DPT (\url{https://github.com/isl-org/MiDaS})).
+\end{itemize}
 
 \section{WIP: Resumen del paper de DPT}
 
