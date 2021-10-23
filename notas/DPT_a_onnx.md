@@ -71,3 +71,15 @@ layer_4 = self.act_postprocess4(layer_4.view(x4, y4, *out_size))
 ```
 
 Este cambio se ha dejado comentado en el [issue correspondiente](https://github.com/isl-org/DPT/issues/42) y se está añadiendo a la rama dpt_scriptable en [mi fork](https://github.com/guillesanbri/DPT/tree/dpt_scriptable).
+
+
+Hay problemas con la inferencia del tamaño de la lista de forma dinámica al llamar al modelo con torch.jit.script (creo que es por esto, es la única diferencia que hay entre mi script monodepth_to_onnx.py, donde no hay error, y run_monodepth.py, donde si que hay error). Se soluciona cambiando a:
+
+```
+
+x3, y3, z3 = layer_3.shape
+layer_3 = self.act_postprocess3(layer_3.view(x3, y3, out_size[0], out_size[1]))
+x4, y4, z4 = layer_4.shape
+layer_4 = self.act_postprocess4(layer_4.view(x4, y4, out_size[0], out_size[1]))
+
+```
