@@ -7,12 +7,13 @@
 4. Se resizea la imagen para que el lado más corto sean 384 píxeles y se hacen recortes aleatorios de 384x384.
 5. Se entrena 60 epochs de 72.000 steps con bs=16.
 6. Data augmentation son horizontal flips
-7. Primero se entrenan 60 epochs en un curated subset antes de entrenar en el dataset completo. 
+7. Primero se entrenan 60 epochs en un curated subset (ReDWeb, HRWSI, BlendedMVS) antes de entrenar en el dataset completo. 
 
 #### Finetuning
 
-2. Se usa la loss propuesta por [Eigen](https://arxiv.org/abs/1406.2283) para el finetuning.
+1. Se usa la loss propuesta por [Eigen](https://arxiv.org/abs/1406.2283) para el finetuning.
 2. El gradient-matching loss se inhabilita para finetunear en KITTI ya que las anotaciones de este dataset no son densas.
+3. La red se ha entrenado con una función de pérdida affine-invariant. Por lo tanto sus predicciones están escaladas y desplazadas arbitrariamente y pueden tener magnitudes altas. La falta de correspondencia en la magnitud de la predicción y el ground truth dominaría la función de pérdida, por lo que primero se alinean usando el robust alignment procedure descrito en 30. Las escalas y shifts del conjunto de entrenamiento se promedian y se obtiene la escala y shift que se aplica a las predicciones antes de pasarle los resultados a la función de pérdida. Como nosotros vamos a entrenar con KITTI, se emplean los valores de scale y shift que emplean ellos en su modelo preentrenado.
 
 ---
 
