@@ -483,6 +483,77 @@ Estos datasets se usan para entrenamiento solamente. Para el test, se usan los s
 Tanto en el paper de DPT como en el paper de MiDas (versión anterior y convolucional de DPT (\url{https://github.com/isl-org/MiDaS})).
 \end{itemize}
 
+\section{WIP: Métricas}
+
+De cara a llevar a cabo la evaluación de los modelos desarrollados y entrenados en este trabajo de fin de máster, se han elegido una serie de métricas, enumeradas y definidas a continuación. Estas métricas, son comúnmente empleadas \todo{citar aquí papers que usen estas métricas} para obtener una medida del rendimiento y de las distintas características de los modelos de aprendizaje profundo enfocados en la estimación de profundidad en imágenes monoculares. En las ecuaciones que acompañan los siguientes subapartados, $d_p$ representa el valor del mapa de profundidad original (la anotación) para cada pixel $p$, mientras que $\hat{d}_p$ representa el valor de la profundidad estimada por el modelo para cada pixel $p$. Por otro lado, $T$ denota el número de píxeles con información de profundidad disponibles en la anotación, ya que como se ha comentado previamente, \todo{En el apartado de dataset diferenciar entre anotaciones densas y dispersas} no todas las anotaciones tienen información disponible para todos los píxeles de la imagen (anotaciones dispersas).
+
+\todo[inline]{Los números de referencias son del paper de IROS2016, hay que comprobarlas}
+\subsection{\textit{Accuracy under a threshold} [7?]}
+\todo[inline]{Esto se puede redactar mejor}
+La primera de estas métricas, el \textit{accuracy under a threshold}, viene dada por la Ecuación \ref{eqn:accuracy_under_thr} y su valor aporta información sobre el porcentaje de píxeles a los que el modelo ha asignado una profundidad cuya relación de escala respecto del valor real es menor que cierto umbral. Los valores que se emplean para este umbral son $1.25$, $1.25^2$ y $1.25^3$.
+
+\begin{equation}
+\label{eqn:accuracy_under_thr}
+\% \ de \ p \in T : max(\frac{\hat{d}_p}{d_p},\frac{d_p}{\hat{d_p}}) = \delta < umbral 
+\end{equation}
+
+\subsection{\textit{Absolute Relative Error (Abs Rel)} [13?]}
+
+% np.mean(np.abs(gt - pred) / gt)
+\begin{equation}
+\label{eqn:abs_rel}
+\frac{1}{T}\sum_{p\ \in\ T} \frac{|d_p - \hat{d}_p|}{d_p}
+\end{equation}
+
+\subsection{\textit{Squared Relative Error (Sq Rel)}}
+
+% np.mean(((gt - pred)**2) / gt)
+\begin{equation}
+\label{eqn:sq_rel}
+\frac{1}{T}\sum_{p\ \in\ T} \frac{(d_p - \hat{d}_p)^2}{d_p}
+\end{equation}
+
+\subsection{\textit{Linear Root Mean Squared Error (RMSE)} [8?]}
+El valor del error cuadrático medio proporciona una medida del promedio de la magnitud absoluta de la diferencia entre la profundidad predicha para cada uno de los píxeles y su profundidad real. Dos características interesantes de esta métrica son que su valor se puede interpretar \todo{revisar esto} como la desviación estándar de la varianza residual y que sus unidades coinciden con las de la variable predicha, lo que facilita su interpretación. Como los errores se elevan al cuadrado antes de promediarse, los errores tienen una importancia relativa directamente relacionada con su magnitud, es decir, cuanto mayor sea el error, más peso tendrá en el promedio. Es por esto por lo que es especialmente útil si se busca penalizar los errores más grandes en las predicciones.
+
+\begin{equation}
+\label{eqn:rmse}
+\sqrt{\frac{1}{T}\sum_{p\ \in\ T} (d_p - \hat{d}_p)^2}
+\end{equation}
+
+\subsection{\textit{Logarithmic Root Mean Squared Error (RMSElog)}}
+Similar al caso anterior, en este caso el error cuadrático medio se calcula sobre los logaritmos naturales de las medidas a comparar (Ecuación \ref{eqn:rmselog}). Al realizar la resta de los logaritmos, la operación es equivalente a calcular el logaritmo de la división del valor de profundidad estimado y el valor de profundidad anotado, restando de esta forma importancia a la escala del error y obteniendo una aproximación al error relativo de las medidas (frente al RMSE, que sería una medida del error absoluto). Además, debido al escalado que realizan el logaritmo, los \textit{outliers} pierden importancia, obteniendo así una métrica más robusta frente a este tipo de errores puntuales.
+
+Otra característica a destacar de esta métrica es que está sesgada para penalizar está aquellos casos en los que el valor predicho es menor que el valor real (subestimación). De esta forma, el error en dicha situación será mayor que si el valor predicho es mayor que el valor real (sobreestimación), aún cuando la diferencia entre ambos valores sea la misma.
+
+%RMSElog es una medida del error relativo, RMSE es una medida del error absoluto
+\begin{equation}
+\label{eqn:rmselog}
+\sqrt{\frac{1}{T}\sum_{p\ \in\ T} (\ln{d_p} - \ln{\hat{d}_p})^2}
+\end{equation}
+
+\subsection{\textit{Scale Invariant Logarithmic Error (SIlog)}}
+\todo[inline]{Revisar las frases del final y o justificar por qué es invariante a la escala o referenciar la explicación de la función de pérdidas donde se explque por qué es invariante a la escala.}
+Esta métrica, es una versión modificada de la función de pérdida propuesta por Eigen et al. obtenida fijando el valor de $\lambda = 1$, calculando su raíz cuadrada, y multiplicando finalmente por 100. Al fija el valor de $\lambda$ en la unidad, se obtiene una medida totalmente independiente de la escala de la salida\todo{citar a eigen y hacer una referencia al apartado de funciones de pérdida cuando esté hecho}. De esta forma, se obtiene una medida de la calidad de los resultados de los modelos ignorando completamente la escala en la que se han producido las predicciones, que como se ha comentado anteriormente, es uno de los problemas fundamentales de la estimación de profundidad monocular.
+
+% np.sqrt(np.mean((np.log(pred) - np.log(gt)) ** 2) - np.mean(np.log(pred) - np.log(gt)) ** 2) * 100
+\begin{equation}
+\label{eqn:silog}
+\sqrt{
+	\frac{1}{T} \sum_{p\ \in\ T} (\ln{d_p} - \ln{\hat{d_p}})^2
+	-
+	{\left(\frac{1}{T} \sum_{p\ \in\ T} \ln{d_p} - \ln{\hat{d_p}}\right)}^2
+} * 100
+\end{equation}
+
+\subsection{\textit{Mean Logarithmic Error (Log10)}}
+
+% np.mean(np.abs(np.log10(pred) - np.log10(gt)))
+\begin{equation}
+\label{eqn:log10}
+\frac{1}{T} \sum_{p\ \in\ T} |\log_{10}{d_p} - \log_{10}{\hat{d}_p}|
+\end{equation}
+
 \section{WIP: Resumen del paper de DPT}
 
 \textbf{Introducción}
