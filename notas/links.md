@@ -34,6 +34,9 @@
 - [Paper DPT](https://arxiv.org/pdf/2103.13413.pdf)
 - [Paper BtS (sección 4.4)](https://arxiv.org/pdf/1907.10326.pdf)
 - [Paper Evaluation of CNN-based Single-Image Depth Estimation Methods](https://arxiv.org/pdf/1805.01328.pdf)
+- [MACs](https://en.wikipedia.org/wiki/Multiply%E2%80%93accumulate_operation)
+- [Medir tiempos correctamente](https://towardsdatascience.com/the-correct-way-to-measure-inference-time-of-deep-neural-networks-304a54e5187f)
+- [FLOPS vs FLOPs](https://stackoverflow.com/questions/58498651/what-is-flops-in-field-of-deep-learning)
 
 # Información sobre funciones de pérdida
 - [Paper Eigen Scale Invariant Error](https://arxiv.org/pdf/1406.2283.pdf)
