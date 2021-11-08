@@ -483,21 +483,24 @@ Estos datasets se usan para entrenamiento solamente. Para el test, se usan los s
 Tanto en el paper de DPT como en el paper de MiDas (versión anterior y convolucional de DPT (\url{https://github.com/isl-org/MiDaS})).
 \end{itemize}
 
+\clearpage
 \section{WIP: Métricas}
 
-De cara a llevar a cabo la evaluación de los modelos desarrollados y entrenados en este trabajo de fin de máster, se han elegido una serie de métricas, enumeradas y definidas a continuación. Estas métricas, son comúnmente empleadas \todo{citar aquí papers que usen estas métricas} para obtener una medida del rendimiento y de las distintas características de los modelos de aprendizaje profundo enfocados en la estimación de profundidad en imágenes monoculares. En las ecuaciones que acompañan los siguientes subapartados, $d_p$ representa el valor del mapa de profundidad original (la anotación) para cada pixel $p$, mientras que $\hat{d}_p$ representa el valor de la profundidad estimada por el modelo para cada pixel $p$. Por otro lado, $T$ denota el número de píxeles con información de profundidad disponibles en la anotación, ya que como se ha comentado previamente, \todo{En el apartado de dataset diferenciar entre anotaciones densas y dispersas} no todas las anotaciones tienen información disponible para todos los píxeles de la imagen (anotaciones dispersas).
+De cara a llevar a cabo la evaluación de los modelos desarrollados y entrenados en este trabajo de fin de máster, se han elegido una serie de métricas, enumeradas y definidas a continuación. Estas métricas, son comúnmente empleadas para obtener una medida del rendimiento y de las distintas características de los modelos de aprendizaje profundo enfocados en la estimación de profundidad en imágenes monoculares \cite{visiontransformersDPT,midas-intel,eigen-multi-scale,bts,DORN,bhat2020adabins,evaluation-cnn-depth-estimation, depth-estimation-metrics}.
 
-\todo[inline]{Los números de referencias son del paper de IROS2016, hay que comprobarlas}
-\subsection{\textit{Accuracy under a threshold} [7?]}
-\todo[inline]{Esto se puede redactar mejor}
-La primera de estas métricas, el \textit{accuracy under a threshold}, viene dada por la Ecuación \ref{eqn:accuracy_under_thr} y su valor aporta información sobre el porcentaje de píxeles a los que el modelo ha asignado una profundidad cuya relación de escala respecto del valor real es menor que cierto umbral. Los valores que se emplean para este umbral son $1.25$, $1.25^2$ y $1.25^3$.
+\subsection{Calidad de los resultados}
+En las ecuaciones que acompañan los siguientes subapartados, $d_p$ representa el valor del mapa de profundidad original (anotación) para cada pixel $p$, mientras que $\hat{d}_p$ representa el valor de la profundidad estimada por el modelo para cada pixel $p$. Por otro lado, $T$ denota el número de píxeles con información de profundidad disponibles en la anotación, ya que como se ha comentado previamente, \todo{En el apartado de dataset diferenciar entre anotaciones densas y dispersas} no todas las anotaciones tienen información disponible para todos los píxeles de la imagen (anotaciones dispersas).
+
+\subsubsection{\textit{Accuracy under a threshold}}
+La primera de estas métricas, el \textit{accuracy under a threshold}, viene dada por la Ecuación \ref{eqn:accuracy_under_thr} y cuantifica el porcentaje de píxeles a los que el modelo ha asignado una profundidad cuya relación de escala respecto de su valor real es menor que un determinado umbral. Los valores que se emplean para este umbral son $1.25$, $1.25^2$ y $1.25^3$.
 
 \begin{equation}
 \label{eqn:accuracy_under_thr}
 \% \ de \ p \in T : max(\frac{\hat{d}_p}{d_p},\frac{d_p}{\hat{d_p}}) = \delta < umbral 
 \end{equation}
 
-\subsection{\textit{Absolute Relative Error (Abs Rel)} [13?]}
+\subsubsection{\textit{Mean Absolute Value of the Relative Error (Abs Rel)}}
+Otra métrica usada habitualmente es el promedio del error relativo en todos los píxeles que disponen de valor de profundidad anotada. Para conseguir este error relativo, se calcula el error absoluto y se divide entre el valor real de la profundidad (Ecuación \ref{eqn:abs_rel}).
 
 % np.mean(np.abs(gt - pred) / gt)
 \begin{equation}
@@ -505,7 +508,8 @@ La primera de estas métricas, el \textit{accuracy under a threshold}, viene dad
 \frac{1}{T}\sum_{p\ \in\ T} \frac{|d_p - \hat{d}_p|}{d_p}
 \end{equation}
 
-\subsection{\textit{Squared Relative Error (Sq Rel)}}
+\subsubsection{\textit{Mean Squared Relative Error (Sq Rel)}}
+Similar a la métrica anterior, en este caso el error absoluto se eleva al cuadrado antes de ser dividido entre el valor a estimar y de promediarlo con el resto de píxeles (Ecuación \ref{eqn:sq_rel}). De esta forma, por la naturaleza cuadrática de la fórmula, se le da una mayor importancia a los errores mayores que a los menores.
 
 % np.mean(((gt - pred)**2) / gt)
 \begin{equation}
@@ -513,18 +517,18 @@ La primera de estas métricas, el \textit{accuracy under a threshold}, viene dad
 \frac{1}{T}\sum_{p\ \in\ T} \frac{(d_p - \hat{d}_p)^2}{d_p}
 \end{equation}
 
-\subsection{\textit{Linear Root Mean Squared Error (RMSE)} [8?]}
-El valor del error cuadrático medio proporciona una medida del promedio de la magnitud absoluta de la diferencia entre la profundidad predicha para cada uno de los píxeles y su profundidad real. Dos características interesantes de esta métrica son que su valor se puede interpretar \todo{revisar esto} como la desviación estándar de la varianza residual y que sus unidades coinciden con las de la variable predicha, lo que facilita su interpretación. Como los errores se elevan al cuadrado antes de promediarse, los errores tienen una importancia relativa directamente relacionada con su magnitud, es decir, cuanto mayor sea el error, más peso tendrá en el promedio. Es por esto por lo que es especialmente útil si se busca penalizar los errores más grandes en las predicciones.
+\subsubsection{\textit{Linear Root Mean Squared Error (RMSE)}}
+El valor del error cuadrático medio proporciona una medida del promedio de la magnitud de la diferencia entre la profundidad predicha para cada uno de los píxeles y su profundidad real (Ecuación \ref{eqn:rmse}). Dos características interesantes de esta métrica son que su valor se puede interpretar \todo{revisar esto} como la desviación estándar de la varianza residual y que sus unidades coinciden con las de la variable predicha, lo que facilita su interpretación. Como los errores se elevan al cuadrado antes de promediarse, estos tienen una importancia relativa directamente relacionada con su magnitud, es decir, cuanto mayor sea el error, más peso tendrá en el promedio. Es por esto por lo que es especialmente útil si se busca penalizar más los errores más grandes en las predicciones.
 
 \begin{equation}
 \label{eqn:rmse}
 \sqrt{\frac{1}{T}\sum_{p\ \in\ T} (d_p - \hat{d}_p)^2}
 \end{equation}
 
-\subsection{\textit{Logarithmic Root Mean Squared Error (RMSElog)}}
-Similar al caso anterior, en este caso el error cuadrático medio se calcula sobre los logaritmos naturales de las medidas a comparar (Ecuación \ref{eqn:rmselog}). Al realizar la resta de los logaritmos, la operación es equivalente a calcular el logaritmo de la división del valor de profundidad estimado y el valor de profundidad anotado, restando de esta forma importancia a la escala del error y obteniendo una aproximación al error relativo de las medidas (frente al RMSE, que sería una medida del error absoluto). Además, debido al escalado que realizan el logaritmo, los \textit{outliers} pierden importancia, obteniendo así una métrica más robusta frente a este tipo de errores puntuales.
+\subsubsection{\textit{Logarithmic Root Mean Squared Error (RMSElog)}}
+Similar a la métrica anterior, en este caso el error cuadrático medio se calcula sobre los logaritmos naturales de las medidas a comparar (Ecuación \ref{eqn:rmselog}). Al realizar la resta de los logaritmos, la operación es equivalente a calcular el logaritmo de la división del valor de profundidad estimado y el valor de profundidad anotado, restando de esta forma importancia a la escala del error y obteniendo una aproximación al error relativo de las medidas (frente al \textit{RMSE}, que sería una medida del error absoluto). Además, debido al escalado que realizan los logaritmos, los \textit{outliers} pierden importancia, obteniendo así una métrica más robusta frente a este tipo de errores puntuales.
 
-Otra característica a destacar de esta métrica es que está sesgada para penalizar está aquellos casos en los que el valor predicho es menor que el valor real (subestimación). De esta forma, el error en dicha situación será mayor que si el valor predicho es mayor que el valor real (sobreestimación), aún cuando la diferencia entre ambos valores sea la misma.
+Otra característica a destacar de esta métrica es que está sesgada para penalizar aquellos casos en los que el valor predicho es menor que el valor real (subestimación). De esta forma, el error en dicha situación será mayor que si el valor predicho es mayor que el valor real (sobreestimación), aún cuando la diferencia entre ambos valores sea la misma.
 
 %RMSElog es una medida del error relativo, RMSE es una medida del error absoluto
 \begin{equation}
@@ -532,9 +536,8 @@ Otra característica a destacar de esta métrica es que está sesgada para penal
 \sqrt{\frac{1}{T}\sum_{p\ \in\ T} (\ln{d_p} - \ln{\hat{d}_p})^2}
 \end{equation}
 
-\subsection{\textit{Scale Invariant Logarithmic Error (SIlog)}}
-\todo[inline]{Revisar las frases del final y o justificar por qué es invariante a la escala o referenciar la explicación de la función de pérdidas donde se explque por qué es invariante a la escala.}
-Esta métrica, es una versión modificada de la función de pérdida propuesta por Eigen et al. obtenida fijando el valor de $\lambda = 1$, calculando su raíz cuadrada, y multiplicando finalmente por 100. Al fija el valor de $\lambda$ en la unidad, se obtiene una medida totalmente independiente de la escala de la salida\todo{citar a eigen y hacer una referencia al apartado de funciones de pérdida cuando esté hecho}. De esta forma, se obtiene una medida de la calidad de los resultados de los modelos ignorando completamente la escala en la que se han producido las predicciones, que como se ha comentado anteriormente, es uno de los problemas fundamentales de la estimación de profundidad monocular.
+\subsubsection{\textit{Scale Invariant Logarithmic Error (SIlog)}}
+Esta métrica, es una versión modificada de la función de pérdida propuesta por Eigen et al. obtenida fijando el valor de $\lambda = 1$, calculando su raíz cuadrada, y multiplicando finalmente por 100 (Ecuación \ref{eqn:silog}). Al fija el valor de $\lambda$ en la unidad, se obtiene una medida totalmente independiente de la escala de la salida\todo{citar a eigen y hacer una referencia al apartado de funciones de pérdida cuando esté hecho. o justificar por qué es invariante a la escala o referenciar la explicación de la función de pérdidas donde se explque por qué es invariante a la escala}. De esta forma, se obtiene una medida de la calidad de los resultados de los modelos ignorando completamente la escala en la que se han producido las predicciones, que como se ha comentado anteriormente, es uno de los problemas fundamentales de la estimación de profundidades en imagen monocular.
 
 % np.sqrt(np.mean((np.log(pred) - np.log(gt)) ** 2) - np.mean(np.log(pred) - np.log(gt)) ** 2) * 100
 \begin{equation}
@@ -546,13 +549,30 @@ Esta métrica, es una versión modificada de la función de pérdida propuesta p
 } * 100
 \end{equation}
 
-\subsection{\textit{Mean Logarithmic Error (Log10)}}
+\subsubsection{\textit{Mean Logarithmic Error (Log10)}}
+Por último, se calculará también el promedio del error (en escala logarítmica) de las profundidades predichas respecto de las profundidades reales siguiendo la Ecuación \ref{eqn:log10}.
 
 % np.mean(np.abs(np.log10(pred) - np.log10(gt)))
 \begin{equation}
 \label{eqn:log10}
 \frac{1}{T} \sum_{p\ \in\ T} |\log_{10}{d_p} - \log_{10}{\hat{d}_p}|
 \end{equation}
+
+\subsection{Velocidad de procesamiento}
+En las métricas expuestas a continuación, pese a que todas están relacionadas con la velocidad de procesamiento del modelo, pueden distinguirse dos grupos: métricas condicionadas por el \textit{hardware} en el que se realizan las pruebas (Tiempo de inferencia y Tasa de transferencia efectiva) y métricas independientes de este (Número de operaciones en coma flotante).
+
+\subsubsection{Tiempo de inferencia}
+Esta medida corresponderá al tiempo que tarda el modelo en procesar \textbf{una sola} imagen. Si suponemos que la aplicación de estos modelos es el procesamiento de vídeo de forma online, donde los fotogramas no pueden procesarse en lotes, esta medida es la inversa de los fotogramas por segundo (\textit{FPS}). 
+Como se ha mencionado antes, esta métrica estará sujeta al \textit{hardware} en el que se ejecute, y por lo tanto variará de un equipo a otro.
+
+\subsubsection{Tasa de transferencia efectiva \textit{(Throughput)}}
+Por otro lado, en caso de que el procesamiento de imágenes se haga de forma offline y se disponga de todas las imágenes antes de comenzar el procesamiento, estas se podrían agrupar en lotes (\textit{batches}) para paralelizar su inferencia. Al paralelizar el procesamiento de las entradas, aumenta el número de imágenes que se puede procesar por unidad de tiempo, que es lo que medirá esta métrica. Es decir, la tasa de transferencia efectiva es el número máximo de imágenes que puede procesar un modelo por unidad de tiempo.
+De nuevo, como se ha mencionado en el párrafo introductorio, este valor está ligado al equipo en el que se lleve a cabo la inferencia.
+
+\subsubsection{Número de operaciones en coma flotante \textit{(FLOPs)}}
+Número de FLOPs que el modelo tiene que llevar a cabo para procesar una sola entrada.
+\todo[inline]{O desarrollar más esto o hablar de MACs, o hablar de ambas}
+\todo[inline]{Si quantizamos los modelos a int8 dejamos de tener operaciones en coma flotante y esta métrica no servirá de nada. Explorar la opción de usar MACs (\url{https://en.wikipedia.org/wiki/Multiply\%E2\%80\%93accumulate_operation}). En el paper de FastDepth es lo que hacen.}
 
 \section{WIP: Resumen del paper de DPT}
 
