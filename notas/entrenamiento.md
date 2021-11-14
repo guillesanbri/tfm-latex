@@ -55,7 +55,7 @@ Estas métricas son las resultantes de evaluar siguiendo la metodología (y scri
 
 ## 1. Modelo base DPT-Hybrid entrenado en MIX6 sin finetuning
 
-- **Pesos**: weights/dpt_hybrid-midas-d889a103.pt
+- **Pesos**: weights/dpt_hybrid-midas-d889a10e.pt
 
 ``` bash
 
@@ -63,11 +63,17 @@ python run_monodepth.py --model_type dpt_hybrid --kitti_crop --absolute_depth
 python ./eval_with_pngs.py --pred_path ./output_monodepth/ --gt_path ./input/gt/ --dataset kitti --min_depth_eval 1e-3 --max_depth_eval 80 --garg_crop --do_kb_crop
 
 ```
-##### Output
+##### Output (Full size)
 
 |  d1 ↑ |  d2 ↑ |  d3 ↑ | AbsRel ↓ | SqRel ↓ | RMSE ↓ | RMSElog ↓ | SILog ↓ | log10 ↓ |
 |:-----:|:-----:|:-----:|:--------:|:-------:|:------:|:---------:|:-------:|:-------:|
 | 0.166 | 0.326 | 0.461 |   0.590  |  9.326  | 16.758 |   1.574   | 123.437 |  0.501  |
+
+##### Output (Reduced size)
+
+|  d1 ↑ |  d2 ↑ |  d3 ↑ | AbsRel ↓ | SqRel ↓ | RMSE ↓ | RMSElog ↓ | SILog ↓ | log10 ↓ |
+|:-----:|:-----:|:-----:|:--------:|:-------:|:------:|:---------:|:-------:|:-------:|
+| 0.602 | 0.853 | 0.938 |   0.289  |  3.393  |  7.318 |   0.308   |  21.384 |  0.107  |
 
 ---
 
@@ -82,11 +88,17 @@ python ./eval_with_pngs.py --pred_path ./output_monodepth/ --gt_path ./input/gt/
 
 ```
 
-##### Output
+##### Output (Full size)
 
 |  d1 ↑ |  d2 ↑ |  d3 ↑ | AbsRel ↓ | SqRel ↓ | RMSE ↓ | RMSElog ↓ | SILog ↓ | log10 ↓ |
 |:-----:|:-----:|:-----:|:--------:|:-------:|:------:|:---------:|:-------:|:-------:|
 | 0.959 | 0.995 | 0.999 |   0.062  |  0.222  |  2.573 |   0.092   |  8.293  |  0.027  |
+
+##### Output (Reduced size)
+
+|  d1 ↑ |  d2 ↑ |  d3 ↑ | AbsRel ↓ | SqRel ↓ | RMSE ↓ | RMSElog ↓ | SILog ↓ | log10 ↓ |
+|:-----:|:-----:|:-----:|:--------:|:-------:|:------:|:---------:|:-------:|:-------:|
+| 0.752 | 0.974 | 0.994 |   0.182  |  0.741  |  4.647 |   0.202   |  16.119 |  0.074  |
 
 ---
 
@@ -102,7 +114,7 @@ Este modelo era una prueba de concepto para ver si el entrenamiento funcionaba, 
 
 ```
 
-##### Output
+##### Output (Full size)
 
 |  d1 ↑ |  d2 ↑ |  d3 ↑ | AbsRel ↓ | SqRel ↓ | RMSE ↓ | RMSElog ↓ | SILog ↓ | log10 ↓ |
 |:-----:|:-----:|:-----:|:--------:|:-------:|:------:|:---------:|:-------:|:-------:|
@@ -114,7 +126,7 @@ Este modelo era una prueba de concepto para ver si el entrenamiento funcionaba, 
 
 - **Pesos**: weight/dpt_hybrid_custom-kitti-lpuhqnwx.pt
 - **Wandb**: test/twinkling-light-15
-- **Notas**: El modelo no ha saturado y podía haber seguido aprendiendo, seguían bajando tanto la pérdida en el conjunto de entrenamiento como en el conjunto de validación. Sería interesante probar con 20 epochs ¿o más? Probablemente sea'prioritario entrenar los modelos modificados y por lo tanto repetir este entrenamiento se podría dejar para más adelante. Cuando se repita este experimento con más epochs, el bs puede ser 2 en vez de 1.
+- **Notas**: El modelo no ha saturado y podía haber seguido aprendiendo, seguían bajando tanto la pérdida en el conjunto de entrenamiento como en el conjunto de validación. Sería interesante probar con 20 epochs ¿o más? Probablemente sea prioritario entrenar los modelos modificados y por lo tanto repetir este entrenamiento se podría dejar para más adelante. Cuando se repita este experimento con más epochs, el bs puede ser 2 en vez de 1.
 
 ``` bash
 
@@ -122,11 +134,66 @@ Este modelo era una prueba de concepto para ver si el entrenamiento funcionaba, 
 
 ```
 
-##### Output
+##### Output (Full size)
 
 |  d1 ↑ |  d2 ↑ |  d3 ↑ | AbsRel ↓ | SqRel ↓ | RMSE ↓ | RMSElog ↓ | SILog ↓ | log10 ↓ |
 |:-----:|:-----:|:-----:|:--------:|:-------:|:------:|:---------:|:-------:|:-------:|
 | 0.723 | 0.906 | 0.973 |   0.159  |  1.198  |  6.607 |   0.251   |  22.173 |  0.078  |
 
+##### Output (Reduced size)
+
+|  d1 ↑ |  d2 ↑ |  d3 ↑ | AbsRel ↓ | SqRel ↓ | RMSE ↓ | RMSElog ↓ | SILog ↓ | log10 ↓ |
+|:-----:|:-----:|:-----:|:--------:|:-------:|:------:|:---------:|:-------:|:-------:|
+| 0.914 | 0.982 | 0.995 |   0.096  |  0.417  |  3.505 |   0.138   |  11.688 |  0.043  |
+
 ---
 
+## 5. Modelo base DPT-Hybrid con Performer Attention entrenado en MIX6 finetuneado en KITTI por mí (13 epochs, ~44k imágenes por epoch) ~20h
+
+- **Pesos**: weight/dpt_hybrid_custom-kitti-ylqiuazs_006.pt -> A partir del 6 caen en picado los resultados (?)
+- **Wandb**: test/performer-lr1e-4
+- **Notas**: Se fue la luz. No había empezado a crecer la perdida en el conjunto de validación.
+
+``` bash
+
+./run_eval_with_pngs.sh
+
+```
+
+##### Output (Full size)
+
+|  d1 ↑ |  d2 ↑ |  d3 ↑ | AbsRel ↓ | SqRel ↓ | RMSE ↓ | RMSElog ↓ | SILog ↓ | log10 ↓ |
+|:-----:|:-----:|:-----:|:--------:|:-------:|:------:|:---------:|:-------:|:-------:|
+| 0.516 | 0.843 | 0.966 |   0.216  |  1.590  |  7.217 |   0.314   |  19.390 |  0.112  |
+
+##### Output (Reduced size)
+
+|  d1 ↑ |  d2 ↑ |  d3 ↑ | AbsRel ↓ | SqRel ↓ | RMSE ↓ | RMSElog ↓ | SILog ↓ | log10 ↓ |
+|:-----:|:-----:|:-----:|:--------:|:-------:|:------:|:---------:|:-------:|:-------:|
+| 0.918 | 0.984 | 0.995 |   0.089  |  0.428  |  3.433 |   0.144   |  11.643 |  0.045  |
+
+---
+
+## 6. Modelo base DPT-Hybrid con Compressed Attention 2 entrenado en MIX6 finetuneado en KITTI por mí (20 epochs, ~44k imágenes por epoch) ~33.5h
+
+- **Pesos**: weight/dpt_hybrid_custom-kitti-whdtqsbe.pt
+- **Wandb**: test/mem-com-2-lr1e-5
+- **Notas**: Se bajó el lr porque explotaba la función de pérdida. No había empezado a crecer la perdida en el conjunto de validación. Solo se podía usar batch_size 1. Com compression rate 3 explotaba (antes de bajar el learning rate), hay que probar con 3 y este lr más bajo.
+
+``` bash
+
+./run_eval_with_pngs.sh
+
+```
+
+##### Output (Full size)
+
+|  d1 ↑ |  d2 ↑ |  d3 ↑ | AbsRel ↓ | SqRel ↓ | RMSE ↓ | RMSElog ↓ | SILog ↓ | log10 ↓ |
+|:-----:|:-----:|:-----:|:--------:|:-------:|:------:|:---------:|:-------:|:-------:|
+| 0.578 | 0.901 | 0.979 |   0.236  |  1.452  |  6.367 |   0.273   |  24.511 |  0.097  |
+
+##### Output (Reduced size)
+
+|  d1 ↑ |  d2 ↑ |  d3 ↑ | AbsRel ↓ | SqRel ↓ | RMSE ↓ | RMSElog ↓ | SILog ↓ | log10 ↓ |
+|:-----:|:-----:|:-----:|:--------:|:-------:|:------:|:---------:|:-------:|:-------:|
+| 0.924 | 0.986 | 0.997 |   0.088  |  0.385  |  3.421 |   0.129   |  11.053 |  0.040  |
