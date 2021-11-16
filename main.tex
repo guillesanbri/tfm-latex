@@ -28,6 +28,10 @@
 \captionsetup{justification=centering}
 % Bibliografia en la tabla de contenidos
 \usepackage[nottoc,notlot,notlof]{tocbibind}
+% Tablas
+\usepackage{booktabs}
+\usepackage[table,xcdraw]{xcolor}
+
 
 % Definición de un nuevo comando
 \newcommand{\textbfit}[1]{\textbf{\textit{#1}}}
@@ -614,5 +618,43 @@ Además de los modelos entrenados en MIX 6, se proporcionan los parámetros de l
 \todo[inline]{Hablar del proceso de entrenamiento que llevan a cabo en el paper de DPT?}
 
 \todo[inline]{Copiar los resultados del paper en ambos datasets y aclarar que esos resultados son los que se presentan en el paper, después en la sección de resultados pondremos los que consigamos nosotros con un proceso de prueba más cercano a lo que sería un entorno de producción, sin dobles predicciones ni cosas similares.}
+
+\clearpage
+\section{WIP: Hardware empleado}
+
+Durante el desarrollo de este trabajo de fin de máster, se han empleado diferentes equipos informáticos. Para facilitar su referencia a lo largo del documento, se exponen sus características a continuación (Tabla \ref{tab:computer-specs}).
+
+\todo[inline]{Si no se hacen pruebas en una jetson xavier hay que quitarla de aquí}
+
+
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}cccc@{}}
+\toprule
+\rowcolor[HTML]{FFFFFF} 
+ &
+  \begin{tabular}[c]{@{}c@{}}Equipo 1\\ (Sobremesa)\end{tabular} &
+  \begin{tabular}[c]{@{}c@{}}Equipo 2\\ (NVIDIA Jetson Nano)\end{tabular} &
+  \begin{tabular}[c]{@{}c@{}}Equipo 3\\ (NVIDIA Jetson Xavier NX)\end{tabular} \\ \midrule
+\rowcolor[HTML]{EFEFEF} 
+Procesador &
+  \begin{tabular}[c]{@{}c@{}}AMD Ryzen 7 3800x \\ 8 núcleos @ 3.9GHz\end{tabular} &
+  \begin{tabular}[c]{@{}c@{}}ARM A57 \\ 4 núcleos @ 1.43 GHz\end{tabular} &
+  \begin{tabular}[c]{@{}c@{}}NVIDIA Carmel ARM v8.2\\ 2 núcleos @ 1.9 GHz\\ 4/6 núcleos @ 1.4 GHz\end{tabular} \\
+\rowcolor[HTML]{FFFFFF} 
+GPU &
+  \begin{tabular}[c]{@{}c@{}}NVIDIA RTX 3070 \\ 8 GB GDDR6\\ 5888 CUDA cores\\ 184 Tensor cores\\ Arquitectura Ampere\end{tabular} &
+  \begin{tabular}[c]{@{}c@{}}No VRAM\\ 128 CUDA cores\\ Arquitectura Maxwell\end{tabular} &
+  \begin{tabular}[c]{@{}c@{}}No VRAM\\ 384 CUDA cores\\ 48 Tensor cores\\ Arquitectura Volta\end{tabular} \\
+\rowcolor[HTML]{EFEFEF} 
+Aceleradores & N/D        & N/D         & \begin{tabular}[c]{@{}c@{}}2x NVDLA Engines\\ 7-Way VLIW Vision Processor\end{tabular} \\
+\rowcolor[HTML]{FFFFFF} 
+Memoria      & 32 GB DDR4 & 4 GB LPDDR4 & 8GB LPDDR4x                                                                            \\ \bottomrule
+\end{tabular}%
+}
+\caption{Especificaciones de los equipos empleados durante el trabajo de fin de máster.}
+\label{tab:computer-specs}
+\end{table}
 
 \end{document}
