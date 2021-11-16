@@ -16,3 +16,4 @@
 - [ ] Jugar con el número de capas que se ponen eficientes y cuales no, puede que sea interesante poner p.ej. local attention al principio y global al final [link](https://github.com/lucidrains/local-attention)
 - [x] Probar con el test reducido de tamaño
 - [ ] Probar entrenando con los recortes
+- [ ] Probar entrenando partiendo de los pesos finetuneados en kitti y no los base para ver si hace mucho overfitting a kitti.
