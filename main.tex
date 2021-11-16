@@ -657,4 +657,38 @@ Memoria      & 32 GB DDR4 & 4 GB LPDDR4 & 8GB LPDDR4x                           
 \label{tab:computer-specs}
 \end{table}
 
+\clearpage
+\section{Material y métodos}
+
+\subsection{Hardware y software empleado}
+Hablar del hardware sobre la tabla de arriba y hablar del stack de tecnología empleado, no solo para DL, también para gráficas, latex, etc. Puntualizar por qué se ha escogido pytorch frente a tf, por qué python frente a otros lenguajes de programación (Si se ejecutan las redes en C++ en los entornos embebidos justificarlo), por qué onnx, por qué wandb... 
+
+Hablar de los contendores docker que se están empleando para el desarrollo justificando su uso frente a entornos virtuales como conda o venv (portabilidad, abstracción, deployment, migrar de forma sencilla a la(s) jetson...).
+
+\subsection{Dataset(s)}
+Hablar de KITTI y NYUDepthv2(?)
+
+\subsection{Arquitectura y capas}
+Hablar de la arquitectura en concreto que se ha utilizado (DPT) apoyándose en todo lo que se haya explicado en el fundamento teórico. Explicar también las capas de atención que se han empleado en más detalle.
+
+\subsection{Función de pérdida}
+Hablar de la función de pérdida empleada para entrenar, hay que ver como se puede hilar esto con una sección en el fundamento teórico donde se expliquen más funciones de pérdida para estimación de profundidades.
+
+\subsection{Data augmentation}
+Hablar de data augmentation si se lleva a cabo, exponer las operaciones y justificarlas con regularización y generalización a casos nuevos, evitar que siempre se itere sobre las mismas imágenes.
+
+\subsection{Evaluación}
+Explicar el proceso de evaluación, justificar que como las redes grandes se han entrenado por los autores para trabajar con imágenes grandes y que nosotros estamos reduciendo su tamaño en la entrada, para la evaluación final en el conjunto de test se hacen grandes y así tener las mismas métricas. Hablar también de los recortes.
+
+Explicar o aquí o en el dataset que se utiliza el conjunto de test, ni el de entrenamiento ni el de validación y justificarlo.
+
+Meter aquí el apartado de métricas que se ha llevado a cabo.
+
+Mencionar que las pruebas se llevaran a cabo en distintos entornos y que esto se señalará en los resultados.
+
+\subsection{Portabilidad (?) de los modelos}
+Explicar el proceso que se ha llevado a cabo con onnx y por qué se emplea, explicar que hace onnx por debajo, hacer diagramas. Puede que esto colapse con la sección de software de arriba, se puede quitar.
+
+% En los resultados hablar de la distribución de los pesos antes y después de convertir el modelo si es pertinente, hacer una especie de estudio de ablación si se puede entrenar modelos, etc. Puede estar interesante quitar cabezas de atención, quitar bloques de atención, ver como afecta al tamaño dle modelo, su rendimiento (velocidad y métricas)...
+
 \end{document}
