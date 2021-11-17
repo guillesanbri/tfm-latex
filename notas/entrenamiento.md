@@ -162,7 +162,7 @@ Este modelo era una prueba de concepto para ver si el entrenamiento funcionaba, 
 
 ---
 
-## 6. Modelo base DPT-Hybrid con Compressed Attention 2 entrenado en MIX6 finetuneado en KITTI por mí (20 epochs, ~44k imágenes por epoch) ~33.5h
+## 6. Modelo base DPT-Hybrid con Compressed Attention 2 entrenado en MIX6 finetuneado en KITTI por mí (20 epochs, ~44k imágenes por epoch) ~35.5h
 
 - **Pesos**: weight/dpt_hybrid_custom-kitti-whdtqsbe.pt
 - **Wandb**: test/mem-com-2-lr1e-5
@@ -185,3 +185,29 @@ Este modelo era una prueba de concepto para ver si el entrenamiento funcionaba, 
 |  d1 ↑ |  d2 ↑ |  d3 ↑ | AbsRel ↓ | SqRel ↓ | RMSE ↓ | RMSElog ↓ | SILog ↓ | log10 ↓ |
 |:-----:|:-----:|:-----:|:--------:|:-------:|:------:|:---------:|:-------:|:-------:|
 | 0.930 | 0.987 | 0.997 |   0.091  |  0.365  |  3.311 |   0.129   |  10.645 |  0.041  |
+
+---
+
+## 7. Modelo base DPT-Hybrid con Compressed Attention 3 entrenado en MIX6 finetuneado en KITTI por mí (20 epochs, ~44k imágenes por epoch) ~35h
+
+- **Pesos**: weight/dpt_hybrid_custom-kitti-pgjabahj.pt
+- **Wandb**: test/mem-com-3-lr1e-5
+- **Notas**: Se bajó el lr porque explotaba la función de pérdida. No había empezado a crecer la perdida en el conjunto de validación. Solo se podía usar batch_size 1.
+
+``` bash
+
+./run_eval_with_pngs.sh
+
+```
+
+##### Output (Full size)
+
+|  d1 ↑ |  d2 ↑ |  d3 ↑ | AbsRel ↓ | SqRel ↓ | RMSE ↓ | RMSElog ↓ | SILog ↓ | log10 ↓ |
+|:-----:|:-----:|:-----:|:--------:|:-------:|:------:|:---------:|:-------:|:-------:|
+| 0.535 | 0.821 | 0.951 |   0.287  |  2.105  |  6.810 |   0.313   |  25.608 |  0.112  |
+
+##### Output (Reduced size)
+
+|  d1 ↑ |  d2 ↑ |  d3 ↑ | AbsRel ↓ | SqRel ↓ | RMSE ↓ | RMSElog ↓ | SILog ↓ | log10 ↓ |
+|:-----:|:-----:|:-----:|:--------:|:-------:|:------:|:---------:|:-------:|:-------:|
+| 0.927 | 0.987 | 0.997 |   0.093  |  0.373  |  3.332 |   0.130   |  10.739 |  0.042  |
