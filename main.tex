@@ -47,6 +47,11 @@
 \usepackage{graphicx}
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
+%% Simbolo de grado
+\usepackage{gensymb}
+%% Imágenes en vertical
+\usepackage{subfig}
+\usepackage{graphicx}
 
 \usepackage{nomencl}
 \makenomenclature
@@ -665,8 +670,86 @@ Hablar del hardware sobre la tabla de arriba y hablar del stack de tecnología e
 
 Hablar de los contendores docker que se están empleando para el desarrollo justificando su uso frente a entornos virtuales como conda o venv (portabilidad, abstracción, deployment, migrar de forma sencilla a la(s) jetson...).
 
+
+
+
+
+
+
+
+
+
+
 \subsection{Dataset(s)}
 Hablar de KITTI y NYUDepthv2(?). Dejar claro que las anotaciones de KITTI son dispersas porque en el apartado de función de perdidas se va a justificar que no se emplea gradient loss porque no hay información suficiente.
+
+\subsubsection{KITTI}
+\todo[inline]{Hablar de que es kitti}
+KITTI \cite{KITTI-dataset, KITTI-benchmarks, KITTI-road-benchmark, KITTI-sceneflow-benchmark} es un proyecto desarrollado por el \textit{Karlsruhe Institute of Technology} y el \textit{Toyoyta Technological Institute} que engloba un \textit{dataset} y un conjunto de \textit{becnhmarks} enfocados en diferentes tareas relacionadas con la conducción autónoma. Los \textit{benchamrks} que incluye este proyecto evalúan: algorítmo de estereovisión, flujo óptico (\textit{optical flow}), flujo de la escena, \textbf{estimación de profundidades monocular}, \textit{depth completion}, odometría visual/SLAM, localización de objetos (2D, 3D y cenital), seguimiento de objetos, segmentación de carreteras, y por último, segmentación de objetos general, tanto semántica como a nivel de instancia.Debido a la naturaleza de este trabajo, profundizaremos en la parte referente a la predicción de profundidad monocular.
+
+\paragraph{Datos disponibles}\mbox{}\\
+Los datos disponibles en KITTI fueron capturados empleando un vehículo equipado con diferentes sensores, de especial interés para este trabajo son las dos parejas de cámaras para estereovisón - un montaje con dos cámaras en escala de grises (\textit{2x PointGray Flea2 grayscale cameras, FL2-14S3M-C, 1.4 Megapixels, 1/2” Sony ICX267 CCD, global shutter}) y otro montaje con dos cámaras en color (\textit{2x PointGray Flea2 color cameras (FL2-14S3M-C), 1.4 Megapixels, 1/2” Sony ICX267 CCD, global shutter}) - y un escaner láser \textit{Velodyne HDL-64E rotating 3D laser scanner, 10 Hz, 64 beams, 0.09 degree angular resolution, 2 cm distance accuracy, collecting $\sim$ 1.3 million points/second, field of view: $360\degree$ horizontal, $26.8\degree$ vertical, range: 120 m}. 
+\todo[inline]{Posiblemente mover los sensores y añadir las lentes del paper a una tabla, incluso subirlo de sección y hablar de todos los sensores que llevaba y ya está}
+Además de estos sensores, el automóvil también equipaba un sensor \textit{OXTS RT3003} de medida inercial con sistema de navegación GPS para registrar información relacionada con la odometría.
+
+\subparagraph{Datos en bruto}\mbox{}\\
+Si nos centramos en los datos relevantes para la estimación de profundidades monocular, el \textit{dataset} está compuesto de fotogramas muestreados y sincronizados a 10 Hz de los vídeos capturados por las cámaras previamente descritas en diferentes recorridos. Debido a la naturaleza del sistema óptico, para cada instante se disponen de cuatro imágenes, derecha e izquierda en escala de grises, y derecha e izquierda en color. Una muestra de estas imágenes puede observarse en la Figura \ref{fig:kitti_raw}.
+
+\begin{figure}[H]
+\centering
+
+\subfloat[Imagen en escala de grises obtenida por la cámara izquierda.]{
+	\label{subfig:kitti-raw-0}
+	\includegraphics[width=0.75\textwidth]{imagenes/67_img0.png} } 
+
+\subfloat[Imagen en escala de grises obtenida por la cámara derecha.]{
+	\label{subfig:kitti-raw-1}
+	\includegraphics[width=0.75\textwidth]{imagenes/67_img1.png} } 
+
+\subfloat[Imagen en color obtenida por la cámara izquierda.]{
+	\label{subfig:kitti-raw-2}
+	\includegraphics[width=0.75\textwidth]{imagenes/67_img2.png}} 
+
+\subfloat[Imagen en color obtenida por la cámara derecha.]{
+	\label{subfig:kitti-raw-3}
+	\includegraphics[width=0.75\textwidth]{imagenes/67_img3.png}}
+	
+\caption{Muestra de las cuatro imágenes en bruto disponibles en KITTI para un instante dado.}
+\label{fig:kitti_raw}
+
+\end{figure}
+
+En total, se disponen de 192760 imágenes ($\sim$ 196 GB) de tamaño 1242x375 píxeles, de las cuales 96430 (la mitad) corresponden a las cámaras a color. Como el objetivo es la estimación de profundidades monocular, solo se emplea una de las imágenes de cada pareja de imágenes producido por el sistema de estereovisión, por lo que realmente se emplean 48215 imágenes (una cuarta parte de la cantidad original).
+
+\subparagraph{Anotaciones}\mbox{}\\
+Por otro lado, KITTI proporciona también imágenes formadas por los valores numéricos de la profundidad para cada uno de los píxeles de las imágenes presentadas previamente. Estos valores son los obtenidos por el escaner láser equipado en el vehículo, y por lo tanto pueden considerarse una medida fiable de la profundidad en cada imagen. Estas imágenes de profundidad serán las que se emplearan como anotaciones y por lo tanto, los valores que se emplearan para entrenar el modelo y evaluar su capacidad de predicción. Un punto importante a considerar sobre las medidas de estas anotaciones es que debido a la naturaleza del sensor con el que fueron tomadas, son anotaciones \textbf{dispersas} (\textit{sparse}) y no densas. Esto significa que no todos los píxeles de una imagen dada tienen anotación, y por lo tanto, aquellos píxeles no anotados deberán ser ignorados tanto durante el entrenamiento como durante la evaluación. Una muestra de estas etiquetas y de las anotaciones dispersas puede observarse en la Figura \ref{fig:kitti_depth}. Estas anotaciones están disponibles tanto como para las imágenes capturadas con las cámaras derechas como para las capturadas con las cámaras izquierdas, es decir, hay dos anotaciones para cada instante.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{imagenes/depth67_img3_detail.png}
+\caption{Anotación de KITTI y detalle de su carácter disperso para un instante dado.}
+\label{fig:kitti_depth}
+
+\end{figure}
+
+
+\todo[inline]{Hablar de los datos que proporciona kitti}
+
+\todo[inline]{Hablar de los splits de kitti y de la limpieza que se ha llevado a cabo}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \subsection{Arquitectura y capas}
 Hablar de la arquitectura en concreto que se ha utilizado (DPT) apoyándose en todo lo que se haya explicado en el fundamento teórico. Explicar también las capas de atención que se han empleado en más detalle.
@@ -699,7 +782,7 @@ Explicar el proceso que se ha llevado a cabo con onnx y por qué se emplea, expl
 \clearpage
 \section{Resultados}
 
-Hablar de resultados cuantitativos (tablas con las métricas en distintas pruebas) y cualitativos (imágenes resultado de cada una de las pruebas - escaladas si es necesario - con el ground truth y con la imagen real de referencia).
+Hablar de resultados cuantitativos (tablas con las métricas en distintas pruebas) y cualitativos (imágenes resultado de cada una de las pruebas - escaladas si es necesario - con el ground truth y con la imagen real de referencia). Mencionar que para que se vean mejor las imágenes los valores se han hecho relativos para así ocupar toda la escala de grises.
 
 \clearpage
 \section{Discusión}
