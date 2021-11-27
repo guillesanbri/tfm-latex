@@ -684,8 +684,7 @@ Hablar de los contendores docker que se están empleando para el desarrollo just
 Hablar de KITTI y NYUDepthv2(?). Dejar claro que las anotaciones de KITTI son dispersas porque en el apartado de función de perdidas se va a justificar que no se emplea gradient loss porque no hay información suficiente.
 
 \subsubsection{KITTI}
-\todo[inline]{Hablar de que es kitti}
-KITTI \cite{KITTI-dataset, KITTI-benchmarks, KITTI-road-benchmark, KITTI-sceneflow-benchmark} es un proyecto desarrollado por el \textit{Karlsruhe Institute of Technology} y el \textit{Toyoyta Technological Institute} que engloba un \textit{dataset} y un conjunto de \textit{becnhmarks} enfocados en diferentes tareas relacionadas con la conducción autónoma. Los \textit{benchamrks} que incluye este proyecto evalúan: algorítmo de estereovisión, flujo óptico (\textit{optical flow}), flujo de la escena, \textbf{estimación de profundidades monocular}, \textit{depth completion}, odometría visual/SLAM, localización de objetos (2D, 3D y cenital), seguimiento de objetos, segmentación de carreteras, y por último, segmentación de objetos general, tanto semántica como a nivel de instancia.Debido a la naturaleza de este trabajo, profundizaremos en la parte referente a la predicción de profundidad monocular.
+KITTI \cite{KITTI-dataset, KITTI-benchmarks, KITTI-road-benchmark, KITTI-sceneflow-benchmark} es un proyecto desarrollado por el \textit{Karlsruhe Institute of Technology} y el \textit{Toyoyta Technological Institute} que engloba un \textit{dataset} y un conjunto de \textit{becnhmarks} enfocados a diferentes tareas relacionadas con la conducción autónoma. Los \textit{benchamrks} que incluye este proyecto evalúan: estereovisión, flujo óptico (\textit{optical flow}), flujo de la escena, \textbf{estimación de profundidades monocular}, \textit{depth completion}, odometría visual/SLAM, localización de objetos (2D, 3D y cenital), seguimiento de objetos, segmentación de carreteras, y por último, segmentación de objetos general, tanto semántica como a nivel de instancia. Debido a la naturaleza de este trabajo, este apartado se centrará en la parte referente a la predicción de profundidad monocular.
 
 \paragraph{Datos disponibles}\mbox{}\\
 Los datos disponibles en KITTI fueron capturados empleando un vehículo equipado con diferentes sensores, de especial interés para este trabajo son las dos parejas de cámaras para estereovisón - un montaje con dos cámaras en escala de grises (\textit{2x PointGray Flea2 grayscale cameras, FL2-14S3M-C, 1.4 Megapixels, 1/2” Sony ICX267 CCD, global shutter}) y otro montaje con dos cámaras en color (\textit{2x PointGray Flea2 color cameras (FL2-14S3M-C), 1.4 Megapixels, 1/2” Sony ICX267 CCD, global shutter}) - y un escaner láser \textit{Velodyne HDL-64E rotating 3D laser scanner, 10 Hz, 64 beams, 0.09 degree angular resolution, 2 cm distance accuracy, collecting $\sim$ 1.3 million points/second, field of view: $360\degree$ horizontal, $26.8\degree$ vertical, range: 120 m}. 
@@ -698,19 +697,19 @@ Si nos centramos en los datos relevantes para la estimación de profundidades mo
 \begin{figure}[H]
 \centering
 
-\subfloat[Imagen en escala de grises obtenida por la cámara izquierda.]{
+\subfloat[Imagen en escala de grises capturada por la cámara izquierda.]{
 	\label{subfig:kitti-raw-0}
 	\includegraphics[width=0.75\textwidth]{imagenes/67_img0.png} } 
 
-\subfloat[Imagen en escala de grises obtenida por la cámara derecha.]{
+\subfloat[Imagen en escala de grises capturada por la cámara derecha.]{
 	\label{subfig:kitti-raw-1}
 	\includegraphics[width=0.75\textwidth]{imagenes/67_img1.png} } 
 
-\subfloat[Imagen en color obtenida por la cámara izquierda.]{
+\subfloat[Imagen en color capturada por la cámara izquierda.]{
 	\label{subfig:kitti-raw-2}
 	\includegraphics[width=0.75\textwidth]{imagenes/67_img2.png}} 
 
-\subfloat[Imagen en color obtenida por la cámara derecha.]{
+\subfloat[Imagen en color capturada por la cámara derecha.]{
 	\label{subfig:kitti-raw-3}
 	\includegraphics[width=0.75\textwidth]{imagenes/67_img3.png}}
 	
@@ -722,6 +721,7 @@ Si nos centramos en los datos relevantes para la estimación de profundidades mo
 En total, se disponen de 192760 imágenes ($\sim$ 196 GB) de tamaño 1242x375 píxeles, de las cuales 96430 (la mitad) corresponden a las cámaras a color. Como el objetivo es la estimación de profundidades monocular, solo se emplea una de las imágenes de cada pareja de imágenes producido por el sistema de estereovisión, por lo que realmente se emplean 48215 imágenes (una cuarta parte de la cantidad original).
 
 \subparagraph{Anotaciones}\mbox{}\\
+\todo[inline]{Hablar del formato de las imágenes, rango, etc.}
 Por otro lado, KITTI proporciona también imágenes formadas por los valores numéricos de la profundidad para cada uno de los píxeles de las imágenes presentadas previamente. Estos valores son los obtenidos por el escaner láser equipado en el vehículo, y por lo tanto pueden considerarse una medida fiable de la profundidad en cada imagen. Estas imágenes de profundidad serán las que se emplearan como anotaciones y por lo tanto, los valores que se emplearan para entrenar el modelo y evaluar su capacidad de predicción. Un punto importante a considerar sobre las medidas de estas anotaciones es que debido a la naturaleza del sensor con el que fueron tomadas, son anotaciones \textbf{dispersas} (\textit{sparse}) y no densas. Esto significa que no todos los píxeles de una imagen dada tienen anotación, y por lo tanto, aquellos píxeles no anotados deberán ser ignorados tanto durante el entrenamiento como durante la evaluación. Una muestra de estas etiquetas y de las anotaciones dispersas puede observarse en la Figura \ref{fig:kitti_depth}. Estas anotaciones están disponibles tanto como para las imágenes capturadas con las cámaras derechas como para las capturadas con las cámaras izquierdas, es decir, hay dos anotaciones para cada instante.
 
 \begin{figure}[H]
@@ -732,10 +732,31 @@ Por otro lado, KITTI proporciona también imágenes formadas por los valores num
 
 \end{figure}
 
+\subparagraph{Conjuntos de entrenamiento, validación y evaluación}\mbox{}\\
+El \textit{dataset} de KITTI ya está dividido en entrenamiento y validación e incluye una descarga adicional con el conjunto de test, para el cual no están disponibles públicamente las anotaciones. No obstante, en las publicaciones científicas sobre estimación de profundidad monocular \cite{,,,} es común encontrar que se emplean los conjuntos de entrenamiento/validación/evaluación definidos por Eigen et al. \cite{eigen-multi-scale} (conocido como el \textit{Eigen split}) que no respeta las particiones originales del \textit{dataset} de KITTI. Las listas con los archivos que pertenecen a cada uno de las particiones se han descargado desde el repositorio\footnote{\url{https://github.com/nianticlabs/monodepth2/tree/master/splits} - (\textit{Eigen full})} del trabajo de Godard et al. \cite{monodepth}. En estas listas, hay nombres de archivos que no tienen ninguna anotación asociada, por lo que se eliminan de sus respectivas particiones. La distribución del número de imágenes, así como el número de imágenes eliminadas de cada conjunto se muestran en la Tabla \ref{tab:kitti-splits}.
 
-\todo[inline]{Hablar de los datos que proporciona kitti}
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}cccc@{}}
+\toprule
+\multicolumn{1}{l}{}       & \multicolumn{1}{l}{} & \multicolumn{1}{l}{Eigen split} & \multicolumn{1}{l}{} \\ \cmidrule(l){2-4} 
+\rowcolor[HTML]{FFFFFF} 
+                        & Entrenamiento & Validación & Evaluación \\ \midrule
+\rowcolor[HTML]{EFEFEF} 
+Num. de archivos        & 45200         & 1776       & 697        \\
+\rowcolor[HTML]{FFFFFF} 
+Imágenes no encontradas & 0 (0\%)       & 0 (0\%)    & 0 (0\%)    \\
+\rowcolor[HTML]{EFEFEF} 
+Anotaciones no encontradas & 630 (1.39\%)         & 30 (1.69\%)                     & 45 (6.46\%)          \\
+\rowcolor[HTML]{FFFFFF} 
+Num. imágenes útiles    & 44570         & 1746       & 652        \\ \bottomrule
+\end{tabular}
+\caption{Distribución de las imágenes y número de imágenes no encontradas en el dataset.}
+\label{tab:kitti-splits}
+\end{table}
 
-\todo[inline]{Hablar de los splits de kitti y de la limpieza que se ha llevado a cabo}
+Como comprobación adicional, se han cruzado las listas de archivos descargadas para asegurar que ninguno de los elementos de los conjuntos de entrenamiento y validación se encuentras en el conjunto de evaluación.
+\todo[inline]{Adjuntar el código usado para estas cosillas?}
 
 
 
