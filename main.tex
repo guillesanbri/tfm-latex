@@ -492,17 +492,8 @@ Estos datasets se usan para entrenamiento solamente. Para el test, se usan los s
 Tanto en el paper de DPT como en el paper de MiDas (versión anterior y convolucional de DPT (\url{https://github.com/isl-org/MiDaS})).
 \end{itemize}
 
-\clearpage
-\section{WIP: Métricas}
-
-De cara a llevar a cabo la evaluación de los modelos desarrollados y entrenados en este trabajo de fin de máster, se han elegido una serie de métricas, enumeradas y definidas a continuación. Estas métricas, son comúnmente empleadas para obtener una medida del rendimiento y de las distintas características de los modelos de aprendizaje profundo enfocados en la estimación de profundidad en imágenes monoculares \cite{visiontransformersDPT,midas-intel,eigen-multi-scale,bts,DORN,bhat2020adabins,evaluation-cnn-depth-estimation, depth-estimation-metrics}.
-
-\subsection{Calidad de los resultados}
 
 
-
-
-\subsection{Velocidad de procesamiento}
 
 
 \section{WIP: Resumen del paper de DPT}
@@ -803,6 +794,21 @@ Número de FLOPs que el modelo tiene que llevar a cabo para procesar una sola en
 
 \subsection{Portabilidad (?) de los modelos}
 Explicar el proceso que se ha llevado a cabo con onnx y por qué se emplea, explicar que hace onnx por debajo, hacer diagramas. Puede que esto colapse con la sección de software de arriba, se puede quitar.
+
+
+\clearpage
+\section{Modificaciones de la arquitectura y desarrollo}
+\subsection{Entrenamiento}
+Script de entrenamiento, dataloader
+\subsection{Número de cabezas}
+Hablar del cambio en el número de cabezas
+\subsection{Capas de atención eficiente}
+Cambio de las capas
+\subsection{Cambio en los hooks del transformer y eliminación de las capas de atención posteriores}
+Lorem
+\subsection{Cambio del backbone convolucional}
+Lorem
+
 
 % En los resultados hablar de la distribución de los pesos antes y después de convertir el modelo si es pertinente, hacer una especie de estudio de ablación si se puede entrenar modelos, etc. Puede estar interesante quitar cabezas de atención, quitar bloques de atención, ver como afecta al tamaño dle modelo, su rendimiento (velocidad y métricas)...
 
