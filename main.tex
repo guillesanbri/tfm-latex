@@ -578,7 +578,48 @@ Memoria      & 32 GB DDR4 & 4 GB LPDDR4 & 8GB LPDDR4x                           
 \clearpage
 \section{Material y métodos}
 
-\subsection{Hardware y software empleado}
+\subsection{\textit{Software} y \textit{hardware} empleado}
+\todo[inline]{Poner links, citas, etc. Repasar todo lo que hay escrito. No usados aún (?): (onnx, kornia, c++)}
+
+A la hora de elegir un lenguaje de programación en el que llevar a cabo el desarrollo de este trabajo, Python se posiciona como la opción lógica debido a la gran cantidad de herramientas, frameworks y librerías disponibles, especialmente en el campo del aprendizaje automático. Por esta razón, todo el código de este trabajo relacionado con los modelos, su entrenamiento y su evaluación ha sido escrito en Python.  Una parte fundamental del proyecto es Pytorch, una librería de aprendizaje automático de código abierto que proporciona multitud de herramientas para llevar a cabo operaciones con tensores 
+Además, se han usado las siguientes librerías: NumPy, para trabajar con matrices; OpenCV, para cargar y manipular imágenes y tqdm, para crear barras de progreso.
+
+\subsubsection{Software}
+\todo[inline]{Hay que repasar todo, está un poco liado}
+\begin{itemize}
+	\item \textbf{General}
+	\begin{itemize}
+		\item \textit{Git}:
+		\item \textbf{\LaTeX}: Para redactar este documento, se ha empleado LaTeX como sistema de composición de texto y BibTeX para gestionar las referencias bibliográficas. Además, se ha empleado el editor de código abierto Texmaker.
+	\end{itemize}
+	\item \textbf{Lenguajes y librerías}
+	\begin{itemize}
+		\item \textit{Python}
+		\item \textit{NumPy}
+		\item \textbf{OpenCV}: Inicialmente desarrollada para C++ pero con \textit{bindings} para Python, esta librería es una herramienta fundamental dentro del campo de la visión artificial, ofreciendo operaciones y transformaciones fundamentales optimizadas para funcionamiento en tiempo real. En este trabajo se ha empleado para llevar a cabo tanto la carga como la manipulación de imágenes antes de convertirlas en tensores.
+		\item \textbf{Seaborn}: Construida sobre la librería matplotlib, esta librería proporciona una interfaz de más alto nivel para representar gráficos y visualizaciones. Se ha empleado para obtener algunas de las figuras que aparecen en este documento.
+	\end{itemize}
+	\item \textbf{Aprendizaje profundo y aceleración por hardware}
+	\begin{itemize}
+		\item \textbf{Pytorch}: Dentro del ecosistema de Python, en el momento en el que se ha llevado a cabo este trabajo, existen principalmente dos opciones gratuitas de código abierto para trabajar de forma eficiente con modelos de aprendizaje profundo, Pytorch y Tensorflow/Keras. Estas librerías permiten construir modelos de aprendizaje profundo a partir de funciones y abstracciones que representan distintos tipos de capas, funciones de activación, procesamiento de datos, etc. Ambas librerías permiten la aceleración por \textit{hardware} de estas arquitecturas y su despliegue en sistemas de producción (predominando en el despliegue de aplicaciones Tensorflow). Si hubiese que compararlas, las dos podrían ser perfectamente escogidas para realizar este trabajo de fin de máster. No obstante, Pytorch está tomando la delantera en cuanto a uso en proyectos de investigación. Uno de los proyectos que ha sido desarrollado usando Pytorch es precisamente DPT \cite{visiontransformersDPT} (arquitectura que se modificará en este proyecto), por lo que para facilitar el desarrollo de las modificaciones a realizar y la reproducción de los resultados de la publicación original se elige dicha opción.
+		\item \textit{timm? lucidrains?}:
+		\item \textit{CUDA, CuDNN}:
+		\item \textbf{\textit{Weights and Biases}}: Dada la naturaleza del proyecto, era de esperar que los experimentos y entrenamientos llevados a cabo fuesen numerosos. Para poder comparar experimentos, visualizar su evolución y registrar métricas y resultados de una forma efectiva y organizada, se eligió la plataforma \textit{Weight and Biases}. \textit{Weight and Biases} es un servicio de seguimiento de experimentos, gratuito para uso académico y personal, que se ejecuta en la nube y permite registrar de forma sencilla variables y métricas durante los distintos experimentos que se lleven a cabo. Además de esto, ofrece también un gestor de búsqueda de hiperparámetros, también empleado en este trabajo, que gestiona la inicialización de los scripts de entrenamiento en tantas máquinas como se dispongan. 
+	\end{itemize}
+	\item \textbf{Entorno de desarrollo}
+	\begin{itemize}
+		\item \textbf{Docker}: Para el desarrollo del proyecto se ha elegido como entorno un contenedor Docker funcionando junto al NVIDIA Container Toolkit. Docker proporciona una capa de abstracción virtualizando a nivel del sistema operativo. Esto significa que es capaz de utilizar el kernel de Linux de la máquina anfitrión, consiguiendo de esta manera ser mucho más rápido y eficiente que una máquina virtual. Por otro lado, el NVIDIA Container Toolkit envuelve el Docker Engine y mapea las primitivas de CUDA desde el interior del contenedor hasta el driver de la GPU del sistema anfitrión. De esta forma, la máquina anfitrión solo necesita tener actualizados los drivers de la(s) tarjeta gráfica para que puedan ser empleados de manera transparente por CUDA. Para el desarrollo, se parte de una de las imágenes proporcionadas por Pytorch con la versión de Pytorch y de CUDA necesarias donde posteriormente se instalan todas las librerías necesarias. Si bien es cierto, existen otras opciones para conseguir entornos de desarrollo funcionalmente similares: Conda, por ejemplo, también gestiona las dependencias de CUDA de las librerías de aprendizaje profundo, pero puede entrar en conflicto con las librerías instaladas usando pip en su mismo entorno virtual, ya que no todas las librerías están disponibles en los repositorios de conda; otra opción que nos permite usar pip sin riesgo de dañar otras instalaciones en el equipo es el uso de entornos virtuales como venv, pero estos no gestionan correctamente el software y las dependencias de los paquetes relacionados con CUDA. No obstante, Docker ofrece una ventaja más, y es la portabilidad que ofrece entre sistemas. En caso de querer ejecutar los scripts en cloud o en dispositivos embebidos (p.e. los dispositivos Jetson de NVIDIA, que incluyen el NVIDIA Container Toolkit) sería suficiente con usar la misma imagen para tener un entorno idéntico.
+%%https://developer.nvidia.com/embedded/jetson-cloud-native
+%%https://github.com/NVIDIA/nvidia-docker/issues/1268
+		\item \textit{Pycharm}
+		\item \textit{Jupyter notebook}
+	\end{itemize}
+\end{itemize}
+
+
+
+
+
 Hablar del hardware sobre la tabla de arriba y hablar del stack de tecnología empleado, no solo para DL, también para gráficas, latex, etc. Puntualizar por qué se ha escogido pytorch frente a tf, por qué python frente a otros lenguajes de programación (Si se ejecutan las redes en C++ en los entornos embebidos justificarlo), por qué onnx, por qué wandb... 
 
 Hablar de los contendores docker que se están empleando para el desarrollo justificando su uso frente a entornos virtuales como conda o venv (portabilidad, abstracción, deployment, migrar de forma sencilla a la(s) jetson...).
@@ -592,7 +633,7 @@ Hablar de los contendores docker que se están empleando para el desarrollo just
 Hablar de KITTI y NYUDepthv2(?). Dejar claro que las anotaciones de KITTI son dispersas porque en el apartado de función de perdidas se va a justificar que no se emplea gradient loss porque no hay información suficiente.
 
 \subsubsection{KITTI}
-KITTI \cite{KITTI-dataset, KITTI-benchmarks, KITTI-road-benchmark, KITTI-sceneflow-benchmark} es un proyecto desarrollado por el \textit{Karlsruhe Institute of Technology} y el \textit{Toyoyta Technological Institute} que engloba un \textit{dataset} y un conjunto de \textit{becnhmarks} enfocados a diferentes tareas relacionadas con la conducción autónoma. Los \textit{benchamrks} que incluye este proyecto evalúan: estereovisión, flujo óptico (\textit{optical flow}), flujo de la escena, \textbf{estimación de profundidades monocular}, \textit{depth completion}, odometría visual/SLAM, localización de objetos (2D, 3D y cenital), seguimiento de objetos, segmentación de carreteras, y por último, segmentación de objetos general, tanto semántica como a nivel de instancia. Debido a la naturaleza de este trabajo, este apartado se centrará en la parte referente a la predicción de profundidad monocular.
+KITTI \cite{KITTI-dataset, KITTI-benchmarks, KITTI-road-benchmark, KITTI-sceneflow-benchmark} es un proyecto desarrollado por el \textit{Karlsruhe Institute of Technology} y el \textit{Toyota Technological Institute} que engloba un \textit{dataset} y un conjunto de \textit{becnhmarks} enfocados a diferentes tareas relacionadas con la conducción autónoma. Los \textit{benchamrks} que incluye este proyecto evalúan: estereovisión, flujo óptico (\textit{optical flow}), flujo de la escena, \textbf{estimación de profundidades monocular}, \textit{depth completion}, odometría visual/SLAM, localización de objetos (2D, 3D y cenital), seguimiento de objetos, segmentación de carreteras, y por último, segmentación de objetos general, tanto semántica como a nivel de instancia. Debido a la naturaleza de este trabajo, este apartado se centrará en la parte referente a la predicción de profundidad monocular.
 
 \paragraph{Datos disponibles}\mbox{}\\
 Los datos disponibles en KITTI fueron capturados empleando un vehículo equipado con diferentes sensores, de especial interés para este trabajo son las dos parejas de cámaras para estereovisón - un montaje con dos cámaras en escala de grises (\textit{2x PointGray Flea2 grayscale cameras, FL2-14S3M-C, 1.4 Megapixels, 1/2” Sony ICX267 CCD, global shutter}) y otro montaje con dos cámaras en color (\textit{2x PointGray Flea2 color cameras (FL2-14S3M-C), 1.4 Megapixels, 1/2” Sony ICX267 CCD, global shutter}) - y un escaner láser \textit{Velodyne HDL-64E rotating 3D laser scanner, 10 Hz, 64 beams, 0.09 degree angular resolution, 2 cm distance accuracy, collecting $\sim$ 1.3 million points/second, field of view: $360\degree$ horizontal, $26.8\degree$ vertical, range: 120 m}. 
