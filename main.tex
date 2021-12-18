@@ -6,7 +6,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Qué tipo de documento estamos por comenzar:
-\documentclass[a4paper]{article}
+\documentclass[a4paper, 11pt]{article}
 % Esto es para que el LaTeX sepa que el texto está en español:
 \usepackage[spanish,es-tabla]{babel}
 \selectlanguage{spanish}
@@ -32,6 +32,10 @@
 \usepackage{booktabs}
 \usepackage[table,xcdraw]{xcolor}
 
+%\setlength{\parskip}{\baselineskip}
+\edef\restoreparindent{\parindent=\the\parindent\relax}
+\usepackage{parskip}
+\restoreparindent
 
 % Definición de un nuevo comando
 \newcommand{\textbfit}[1]{\textbf{\textit{#1}}}
@@ -116,34 +120,7 @@
 
 % \todo[inline]{Hacer portada y buscar normas del tfm. (TFM)}
 %% Iniciamos "secciones" que servirán como subtítulos
-\section{Introducción}
-Al capturar a través de una cámara una imagen o un vídeo, se proyecta en dos dimensiones una realidad tridimensional, perdiendo así la información relativa a la profundidad de la escena. Existen soluciones hardware que capturan escenas tridimensionales sin perder ninguna dimensión, por ejemplo, los LiDAR, las cámaras de tiempo de vuelo o conjuntos de cámaras para estereovisión\footnote{Con una pareja de cámaras con posiciones conocidas, es posible estimar la profundidad a partir de la disparidad geométrica entre las dos imágenes capturadas.}. Sin embargo, recuperar la profundidad de una imagen obtenida con una cámara corriente sigue siendo un problema cuya solución sería de gran utilidad:
-\begin{itemize}
-    \item En distintos campos como la robótica/conducción autónoma (navegación, odometría visual, etc.), la realidad aumentada, la generación de modelos 3D, etc.
-    \item Como información de apoyo en otras tareas típicas de la visión artificial (detección, segmentación, clasificación).
-\end{itemize}
-
-Pese a haberse estudiado extensamente, la estimación de profundidades aún está lejos de ser resuelta por completo. Dentro de las técnicas que se han desarrollado y probado a lo largo de los años, tanto dentro de la visión artificial en general como en concreto para la estimación de profundidades, destacan aquellas que se basan en aprendizaje automático debido a su alta capacidad para trabajar en nuevas situaciones desconocidas previamente y bajo condiciones donde las técnicas de visión artificial tradicionales sufren ya que ocurren cambios significativos en la iluminación, los colores y/o orientaciones. 
-
-Este trabajo, resultado de la asignatura I+D+i en Informática del máster en Ingeniería Informática desarrollada en el Grupo de Sistemas Inteligentes, se centra en estudiar y revisar aquellas propuestas para estimar profundidades basadas en aprendizaje automático, en especial las que emplean \textit{transformers}, así como las técnicas existentes para acelerar su inferencia.
-
-\subsection{Motivación}
-El campo del aprendizaje automático progresa a un ritmo considerablemente difícil de seguir (34736 publicaciones relacionadas con aprendizaje automático en arXiv en el año 2020 \cite{ai_index_report_2021}). Por esto, surge la necesidad de un documento que recoja los distintos enfoques relacionados con la estimación de profundidades basados en aprendizaje automático en conjunto con las técnicas que permiten ejecutar estos modelos de forma online (entendiendo por online el procesamiento de las entradas a medida que llegan, pero sin las restricciones propias de un entorno de tiempo real).
-
-Además de esto, parte de la motivación de este documento viene dada por el trabajo de fin de máster que se realizará como continuación de este trabajo. Este trabajo, consistirá en la modificación de uno de los modelos basados en \textit{transformers} y aprendizaje supervisado para inferir resultados en equipos con recursos de computación limitada de forma online. En este caso, los equipos con recursos de computación limitada serán equipos de nivel consumidor o dispositivos embebidos con hardware especializado.
-
-%% \textbf{(TFM)} Lorem ipsum
-
-\subsection{Objetivos}
-Los objetivos definidos para este periodo de prácticas, y por lo tanto aquellos en los que se centra este documento son los siguientes:
-\begin{enumerate}
-    \item Revisión del estado del arte relacionado con la estimación de profundidades empleando técnicas de aprendizaje automático, con especial hincapié en aquellas donde se emplean \textit{transformers}.
-    \item Revisión de distintos métodos, tanto especializados en \textit{transformers} como generales, que aceleren entrenamiento e inferencia y reduzcan el tamaño de los modelos.
-    \item Realización de distintas pruebas de rendimiento y comparación de resultados entre distintas arquitecturas del estado del arte actual de estimación de profundidades dentro del aprendizaje supervisado empleando \textit{transformers}.
-\end{enumerate}
-
-\clearpage
-% \textbf{(TFM)} Lorem ipsum
+\include{Introduccion}
 
 \section{Plan de trabajo}
 El plan de trabajo inicial destinaba aproximadamente la mitad de las horas de la estancia a la realización de \textit{benchmarks} sobre los distintos modelos existentes para estimación de profundidades. Sin embargo, con el trabajo de la primera semana, que sirvió para contextualizar el problema, se comprobó que las soluciones existentes eran demasiado numerosas y variadas como para compararlas sistemáticamente entre sí. Por lo tanto, la planificación pasó a centrarse en la elaboración de una base de conocimiento suficientemente sólida con la que ajustar el enfoque del trabajo de fin de máster. Esta segunda planificación, ha sido controlada y modificada semanalmente en las reuniones semanales con el tutor donde se han presentado resultados parciales, resultando de la siguiente manera. 
@@ -848,6 +825,27 @@ Hablar del cambio en el número de cabezas
 Cambio de las capas, hacer una gráfica midiendo en función del tamaño de la cadena la velocidad en la que pasa por una de estas capas? Puede ser interesante. (Sería para imágenes mayores)
 \subsection{Cambio en los hooks del transformer y eliminación de las capas de atención posteriores}
 Lorem
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{imagenes/DPT-cambio-bloques-transformer.png}
+\caption{Cambio en el número de bloques de atención.}
+\label{fig:attention_block_num}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{imagenes/DPT-general.png}
+\caption{Arquitectura general DPT.}
+\label{fig:dpt-general}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{imagenes/DPT-modificado-general.png}
+\caption{Arquitectura general DPT tras las modificaciones.}
+\label{fig:dpt-mod-general}
+\end{figure}
+
 \subsection{Cambio del backbone convolucional}
 Lorem
 
