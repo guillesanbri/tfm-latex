@@ -51,13 +51,24 @@ Hablar de los contendores docker que se están empleando para el desarrollo just
 
 
 
-\subsection{Dataset(s)}
-En este sección, se introducen aquellos conjuntos de datos, que, de forma directa o indirecta, se emplean en este trabajo.
+\subsection{Datasets}
+En esta sección, se introducen aquellos conjuntos de datos, que, de forma directa o indirecta, se emplean en este trabajo.
 
-\subsection{Imagenet}
+\subsection{ImageNet}
+ImageNet \cite{imagenet_cvpr09, ILSVRC15} es un \textit{dataset} que proporciona un gran número de imágenes etiquetadas en función de la presencia o ausencia de una serie de conceptos definidos como \textit{synsets}. Estos conceptos siguen la jerarquía propuesta por WordNet \cite{wordnet}, donde se agrupan palabras y categorías en función de sus relaciones semánticas. Para construir ImageNet, partiendo de una fracción de la ya mencionada estructura de WordNet, se buscaron imágenes de Internet para poblar cada una de las categorías. Estas imágenes, se filtraron y posteriormente fueron manualmente etiquetadas por humanos. 
 
+Dentro del proyecto de Imagenet, existen dos conjuntos: ImageNet21K e ImageNet1K (este último, normalmente llamado ImageNet). La principal diferencia entre estos dos conjuntos es que el primero, ImageNet21K suma más de 14 millones de imágenes clasificadas en más de 21 mil clases diferentes. Por otro lado, ImageNet1K es un subconjunto de ImageNet21K compuesto por cerca de 1.2 millones de imágenes clasificadas en 1000 categorías diferentes. Además de esto, también cuenta con anotaciones de localización de objetos (\textit{bounding boxes}) en más de medio millón de imágenes. Debido a la gran cantidad de imágenes y la variedad de elementos que abarcan, ImageNet es normalmente empleado para entrenar las arquitecturas de aprendizaje automático profundo. De esta forma, los modelos preentrenados en ImageNet pueden ajustarse de una manera mucho más rápida y efectiva a tareas e imágenes nuevas con otros \textit{datasets}, ya que al haber sido entrenadas previamente, los modelos han aprendido a extraer características generales (normalmente reutilizables) de las imágenes.
+
+Una muestra de las imágenes que conforman ImageNet está disponible en la Figura \ref{fig:imagenet}.
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{imagenes/imagenet.png}
+\caption{Muestra de las imágenes de ImageNet. Fuente: \cite{ILSVRC15}}
+\label{fig:imagenet}
+\end{figure}
 
 \subsection{MIX6}
+%TODO Poner una nota al pie con los links de hacer los datasets piratas.
 MIX6 \cite{visiontransformersDPT}, es una ampliación de MIX5 \cite{midas-intel}. Estos dos \textit{datasets}, son en realidad agrupaciones de otros \textit{datasets} que proporcionan anotaciones de profundidad de sus imágenes. Estas agrupaciones consiguen dos puntos importantes: Primero, suman una cantidad de imágenes considerablemente alta; segundo, al tener los datos naturalezas tan distintas, existe una enorme variedad entre las imágenes, lo que permite entrenar modelos de estimación de profundidades generales, es decir, que no estén especializados en ninguna tarea. Estas dos características, hacen que MIX6 sea una muy buena opción especialmente para entrenar arquitecturas basadas en \textit{transformers}, pero también dificultan el entrenamiento de modelos debido a la falta de homogeneidad entre los formatos de las imágenes, sus anotaciones, etc. Un desglose resumido de estos \textit{datasets} está disponible en la Tabla \ref{tab:mix6-datasets}.
 
 % https://www.sascha-frank.com/Faq/tables_one.html
@@ -79,7 +90,7 @@ WSVD \cite{wang2019web} &
   \begin{tabular}[c]{@{}c@{}}Vídeos recuperados de YouTube en formato de estereovisión \\ anotados a partir de dicha pareja de imágenes.\end{tabular} &
   1.5M \\
 \rowcolor[HTML]{EFEFEF} 
-3D Movies \cite{} &
+3D Movies \cite{midas-intel} &
   \begin{tabular}[c]{@{}c@{}}Películas 3D grabadas con cámaras estereoscópicas \\ anotadas a partir de la pareja de imágenes.\end{tabular} &
   75K \\
 \underline{TartanAir} \cite{tartanair2020iros}     & Imágenes sínteticas.                                                             & 1M               \\
