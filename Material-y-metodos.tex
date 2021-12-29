@@ -3,32 +3,29 @@
 \subsection{\textit{Software} y \textit{hardware} empleado}
 \todo[inline]{Poner links, citas, etc. Repasar todo lo que hay escrito. No usados aún (?): (onnx, kornia, c++)}
 
-A la hora de elegir un lenguaje de programación en el que llevar a cabo el desarrollo de este trabajo, Python se posiciona como la opción lógica debido a la gran cantidad de herramientas, frameworks y librerías disponibles, especialmente en el campo del aprendizaje automático. Por esta razón, todo el código de este trabajo relacionado con los modelos, su entrenamiento y su evaluación ha sido escrito en Python.  Una parte fundamental del proyecto es Pytorch, una librería de aprendizaje automático de código abierto que proporciona multitud de herramientas para llevar a cabo operaciones con tensores 
-Además, se han usado las siguientes librerías: NumPy, para trabajar con matrices; OpenCV, para cargar y manipular imágenes y tqdm, para crear barras de progreso.
-
 \subsubsection{Software}
 
 \todo[inline]{Citar todo, mencionar las licencias que tiene cada software}
 
-Para el desarrollo de este proyecto, se ha optado por el lenguaje de programación Python 3.7.10, debido a su ecosistema de librerías y código disponible orientado al aprendizaje automático profundo. Dentro de Python, las librerías y paquetes que se han empleado pueden distinguirse en dos grupos: 
+Para el desarrollo de este proyecto, se ha optado por el lenguaje de programación \textbf{Python 3.7.10} debido a su ecosistema de librerías y código disponible orientado al aprendizaje profundo. Dentro de Python, las librerías y paquetes que se han empleado pueden distinguirse en dos grupos: 
 \begin{itemize}
-\item \textbf{Uso en CPU}: Numpy, para trabajar con matrices y acelerar operaciones matemáticas; OpenCV, para la carga y manipulación de imágenes antes de convertirlas en tensores, Matplotlib/Seaborn, para graficar resultados y otras figuras del documento.
-\item \textbf{Uso en GPU}: Pytorch 1.9.0, para la creación, modificación, entrenamiento y evaluación de modelos de aprendizaje profundo acelerados por \textit{hardware} (es decir, ejecutados en GPUs); 	timm (Pytorch Image Models) 0.4.9, desarrollado y mantenido por Ross Whigtman, que hace disponibles un gran número modelos del estado del arte escritos en Pytorch con sus pesos preentrenados; el repositorio de DPT, modelo que se modifica a lo largo del proyecto; y por último, el repositorio performer-pytorch de Phil Wang, que ofrece una implementación, también en Pytorch, de la arquitectura Performer y sus capas de atención.
+\item Uso de CPU: \textbf{Numpy}, para trabajar con matrices y acelerar operaciones matemáticas; \textbf{OpenCV}, para la carga y manipulación de imágenes antes de convertirlas en tensores, y \textbf{Matplotlib/Seaborn}, para graficar resultados y otras figuras del documento.
+\item Uso de GPU: \textbf{Pytorch 1.9.0}, para la creación, modificación, entrenamiento y evaluación de modelos de aprendizaje profundo acelerados por \textit{hardware} (es decir, ejecutados en GPUs); \textbf{timm (Pytorch Image Models) 0.4.9}, desarrollado y mantenido por Ross Whigtman, que hace disponibles un gran número modelos del estado del arte escritos en Pytorch con sus pesos preentrenados; el \textbf{repositorio de DPT}, modelo que se modifica a lo largo del proyecto; y por último, el repositorio \textbf{performer-pytorch} de Phil Wang, que ofrece una implementación, también en Pytorch, de la arquitectura Performer y sus capas de atención.
 \end{itemize}
 
 Algunas de estas librerías tienen alternativas que podrían haberse empleado perfectamente en este proyecto. La elección más importante es probablemente el uso de Pytorch frente a Tensorflow/Keras, ya que ambas librerías permiten construir y entrenar modelos de \textit{Deep Learning} a partir de funciones y abstracciones que representan distintos tipos de capas, funciones de activación o procesos de transformación de datos, entre otras. Además, ambos paquetes de software ofrecen la posibilidad de ejecutar estos modelos, así como sus entrenamientos y evaluaciones en tarjetas gráficas dedicadas (GPU), reduciendo de forma drástica el tiempo necesario para completar entrenamiento e inferencia. Esta decisión, se ha tomado principalmente por la cada vez más frecuente elección de Pytorch en proyectos de investigación gracias a su mayor flexibilidad. Consecuencia directa de esto, es que gran parte de los repositorios de código relacionados con publicaciones científicas usan Pytorch para crear sus modelos.
 
-En el parrafo anterior, se ha mencionado que Pytorch acelera por hardware el entrenamiento y la inferencia de los modelos de aprendizaje profundo. Para esto, se apoya principalmente en CUDA y CuDNN, ...
+En el parrafo anterior, se ha mencionado que Pytorch acelera por hardware el entrenamiento y la inferencia de los modelos de aprendizaje profundo. Para esto, se apoya principalmente en \textbf{CUDA} y \textbf{cuDNN}. El primero, es una plataforma de computación paralela desarrollada por NVIDIA para sus tarjetas gráficas dedicadas que permite desarrollar código para ejecutarlo en dichos dispositivos, aprovechando así el gran número de procesadores que tienen estas tarjetas. El segundo, es una librería de primitivas aceleradas por GPU preparadas para construir redes neuronales. Pese a que en este proyecto no se ha trabajado directamente con ninguna de estas herramientas, es necesario disponer de ellas ya que Pytorch las utiliza. Las versiones empleadas son TODO, respectivamente.
 
 Dada la naturaleza del proyecto, era de esperar que el número de experimentos y variaciones de modelos que se iban a llevar a cabo fuese numeroso, por esta razón, se elige \textbfit{Weights and Biases (wandb)} para gestionar y monitorizar dichas pruebas, es decir, visualizar y controlar su evolución o registrar métricas y resultados para su posterior comparación. \textit{Weight and Biases} es un servicio de seguimiento de experimentos, gratuito para uso académico y personal, que se ejecuta en la nube y permite registrar de forma sencilla variables y métricas durante las distintas ejecuciones que se lleven a cabo. Además, ofrece también un gestor de búsqueda de hiperparámetros, donde es posible configurar los valores que se quieren probar para que wandb se encarge de inicializar los scripts de entrenamiento con las configuraciones correspondientes de forma automática y coordinada en todas las máquinas en las que se ejecute su cliente. Ya que para el entrenamiento se han empleado varios equipos en paralelo, esta capacidad se ha valorado muy positivamente al compararlo con otros \textit{software} de monitorización como puede ser Tensorboard.
 
-Para gestionar la instalación y ejecución de este conjunto de \textit{software} en un entorno controlado, limitado y fácilmente replicable; se ha elegido Docker funcionando junto al NVIDIA Container Toolkit. Docker proporciona una capa de abstracción virtualizando a nivel del sistema operativo. Esto significa que es capaz de utilizar el kernel de Linux de la máquina anfitrión, consiguiendo de esta manera ser mucho más rápido y eficiente que una máquina virtual. Por otro lado, el NVIDIA Container Toolkit envuelve el Docker Engine y mapea las primitivas de CUDA desde el interior del contenedor hasta el driver de la GPU del sistema anfitrión. De esta forma, la máquina anfitrión solo necesita tener actualizados los drivers de la(s) tarjeta gráfica para que puedan ser empleados de manera transparente por CUDA. Para el desarrollo, se parte de una de las imágenes proporcionadas por Pytorch con la versión de Pytorch y de CUDA necesarias donde posteriormente se instalan todas las librerías requeridas. 
+Para gestionar la instalación y ejecución de este conjunto de \textit{software} en un entorno controlado, limitado y fácilmente replicable; se ha elegido \textbf{Docker} junto al \textbf{NVIDIA Container Toolkit}. Docker proporciona una capa de abstracción virtualizando a nivel del sistema operativo. Esto significa que es capaz de utilizar el kernel de Linux de la máquina anfitrión, consiguiendo de esta manera ser mucho más rápido y eficiente que una máquina virtual. Por otro lado, el NVIDIA Container Toolkit envuelve el Docker Engine y mapea las primitivas de CUDA desde el interior del contenedor hasta el driver de la GPU del sistema anfitrión. De esta forma, la máquina anfitrión solo necesita tener actualizados los drivers de la(s) tarjeta gráfica para que puedan ser empleados de manera transparente por CUDA. Para el desarrollo, se parte de una de las imágenes proporcionadas por Pytorch con la versión de Pytorch y de CUDA necesarias donde posteriormente se instalan todas las librerías requeridas. 
 
 Si bien es cierto, existen otras opciones para conseguir entornos de desarrollo funcionalmente similares: Conda, por ejemplo, también gestiona las dependencias de CUDA de las librerías de aprendizaje profundo, pero puede entrar en conflicto con las librerías instaladas usando pip en su mismo entorno virtual ya que no todas las librerías están disponibles en los repositorios de conda; otra opción que nos permite usar pip sin riesgo de dañar otras instalaciones en el equipo es el uso de entornos virtuales como venv, pero estos no gestionan correctamente el software y las dependencias de los paquetes relacionados con CUDA. 
 
 No obstante, Docker ofrece una ventaja más, y es la portabilidad que ofrece entre sistemas. En caso de querer ejecutar los scripts en cloud (tal y como se explicará en la sección TODO) o en dispositivos embebidos (p.e. los dispositivos Jetson de NVIDIA, que incluyen el NVIDIA Container Toolkit) sería suficiente con usar la misma imagen para tener un entorno idéntico. Los ficheros necesarios para crear el entorno empleado en el proyecto están disponibles tanto en el repositorio del proyecto como en el Anexo TODO.
 
-Por último, para la redacción de este documento se ha empleado LaTeX como sistema de composición de texto y BibTeX para gestionar las referencias bibliográficas. Tanto esta memoria como el desarrollo del código relacionado con el proyecto se han llevado a cabo empleado Git como software de control de versiones y se pueden encontrar en los repositorios TODO y TODO respectivamente.
+Por último, para la redacción de este documento se ha empleado \textbf{LaTeX} como sistema de composición de texto y \textbf{BibTeX} para gestionar las referencias bibliográficas. Tanto esta memoria como el desarrollo del código relacionado con el proyecto se han llevado a cabo empleado \textbf{Git} como software de control de versiones y se pueden encontrar en los repositorios TODO y TODO respectivamente.
 
 ---
 
@@ -71,7 +68,40 @@ Opción 2, queda más ordenado pero me gusta menos, no creo que sea necesario de
 
 
 \subsubsection{Hardware}
+Para el desarrollo de este proyecto y entrenamiento/evaluación de los modelos resultantes, se han empleado dos configuraciones de equipos (Tabla \ref{tab:computer-specs}):
 
+\begin{table}[H]
+\centering
+\begin{tabular}{ccc}
+\hline
+\rowcolor[HTML]{FFFFFF} 
+           & \begin{tabular}[c]{@{}c@{}}Equipo 1\\ (Sobremesa)\end{tabular}                   & \begin{tabular}[c]{@{}c@{}}Equipo 2\\ (Google Cloud)\end{tabular}      \\ \hline
+\rowcolor[HTML]{EFEFEF} 
+Procesador & \begin{tabular}[c]{@{}c@{}}AMD Ryzen 7 3800x \\ 8 núcleos @ 3.9 GHz\end{tabular} & \begin{tabular}[c]{@{}c@{}}Intel Xeon\\ 4 vCPU @ 2.30 GHz\end{tabular} \\
+\rowcolor[HTML]{FFFFFF} 
+GPU &
+  \begin{tabular}[c]{@{}c@{}}NVIDIA RTX 3070 \\ 8 GB GDDR6\\ 5888 CUDA cores\\ 184 Tensor cores\\ Arquitectura Ampere\end{tabular} &
+  \begin{tabular}[c]{@{}c@{}}NVIDIA Tesla T4\\ 16 GB GDDR6\\ 2560 CUDA cores\\ 320 Tensor cores\\ Arquitectura Turing\end{tabular} \\
+\rowcolor[HTML]{EFEFEF} 
+Memoria    & 32 GB DDR4                                                                       & 15 GB                                                                  \\ \hline
+\end{tabular}
+\caption{Especificaciones de los equipos empleados durante el trabajo de fin de máster.}
+\label{tab:computer-specs}
+\end{table}
+
+\subsection{Cloud} TODO Repasar, aparece muchas veces instancia, aclarar que imagen es de docker y cual de vm
+Con el objetivo de reducir el tiempo necesario para entrenar los distintos modelos que se plantean en este trabajo, se ha recurrido al IaaS (\textit{Infraestructure as a Service}) que ofrece la empresa Google. Los servicios en la nube (\textit{cloud}), nos permiten disponer de recursos informáticos de manera flexible, pagando únicamente por aquellos que tengamos activos. Los proveedores de IaaS, se encargan del mantenimiento y gestión de la infraestructura (redes, almacenamiento, servidores, virtualización), mientras que el usuario se encarga de la gestión del sistema operativo y todo lo que hay por encima. 
+
+Dentro de Google Cloud, se han empleado los servicios \textbfit{Compute Engine}, para crear instancias de máquinas virtuales y \textbfit{Cloud Storage}, para crear recursos de almacenamiento (\textit{buckets}).
+
+El flujo de trabajo que se ha seguido ha sido el siguiente:
+
+\begin{enumerate}
+\item Primero, se ha creado un \textit{bucket} en el que se han dejado disponibles el conjunto de datos empleado durante el entrenamiento, el código necesario para ejecutar el entrenamiento, y una serie de scripts para facilitar la configuración del equipo. Al disponer de estos archivos en la nube, se desacoplan totalmente la configuración de las instancias y el ordenador local en el que se lleva a cabo el desarrollo (Equipo 1 en Tabla \ref{tab:computer-specs}).
+\item A continuación, se crea una instancia con las características deseadas (Equipo 2 en Tabla \ref{tab:computer-specs}). Una vez conectados a esta máquina virtual a través de SSH, se copia del \textit{bucket} previamente creado el script de configuración (disponible en el Anexo TODO) y se ejecuta. Este script, se encarga de: descargar el resto de archivos disponibles en el \textit{bucket}, instalar los drivers de NVIDIA necesarios para poder usar la GPU de la instancia, instalar Docker y el NVIDIA Container Toolkit, instalar Weights and Biases, y construir la imagen de Docker especificada en el Dockerfile descargado.
+\item Una vez configurada la instancia con todos los archivos necesarios en su disco SSD, se crea una imagen de dicha instancia de forma que sea fácilmente replicable y se configura desde la consola de Google Cloud el inicio de estas instancias de forma que cada vez que se encienda una (nueva o ya existente), se cree dentro del equipo un contenedor de Docker de la imagen construida en el cual se ejecuta el cliente de Weight and Biases para entrenar modelos automáticamente. De esta forma, para añadir una nueva máquina al proceso de entrenamiento de experimentos, solamente hay que crear un nuevo equipo a partir de la imagen preconfigurada.
+\item Por último, una vez finalizados los experimentos, se copia a través de SSH los modelos entrenados que se han guardado en cada una de las instancias empleadas.
+\end{enumerate}
 
 \subsection{Datasets}
 En esta sección, se introducen aquellos conjuntos de datos, que, de forma directa o indirecta, se emplean en este trabajo.
