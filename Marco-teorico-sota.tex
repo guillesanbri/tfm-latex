@@ -1,15 +1,64 @@
 \section{Marco teórico y Estado del Arte}
 
 \subsection{Inteligencia Artificial, Aprendizaje automático, y Aprendizaje Profundo}
-Lorem ipsum
+La Inteligencia Artificial (IA), engloba el estudio de agentes que perciben un entorno y actúan en consecuencia. Este campo, engloba multitud de disciplinas y técnicas con las que se TODO
+
+Cabe mencionar que pese a que muchos de los conceptos explicados a continuación son perfectamente validos en otras modalidades, este trabajo se centra en el aprendizaje supervisado y por lo tanto el marco teórico se ajusta y limita a este. 
 
 \subsection{Redes neuronales}
-Lorem
+Las redes neuronales (en inglés, \textit{Neural Networks} - NN), son sistemas computacionales inspirados en una versión simplificada de las neuronas biológicas. Estas neuronas artificiales, están definidas por una serie de elementos: entradas, \textbf{pesos}, \textbf{bias}, \textbf{función de activación} y salida (Figura \ref{}). El valor que toma la salida, viene definido por la Ecuación \ref{}.
 
-\subsection{RNN}
+Uno de los puntos más importantes de las NN, es que con un conjunto de neuronas lo suficientemente grande y funciones de activación no lineales, las NN pueden aproximar cualquier función continua (\textit{Universal approximation theorem} \cite{}). No obstante, ajustar los parámetros (pesos y bias) de cada una de las neuronas de dicha red para aproximar la función deseada no es un problema trivial. 
+
+Una de las soluciones más comunes, es, de forma iterativa, modificar los parámetros de forma que minimicen la distancia entre la salida de la red y la función que se busca aproximar. Para esto, se emplea la propagación hacia atrás (\textbfit{backpropagation}) \cite{}, que necesita: un \textbf{optimizador} (TODO decir que se explica más adelante), un \textbf{conjunto de entradas con salidas conocidas} y una \textbf{función de perdida} que se emplea como aproximación optimizable de la distancia previamente mencionada. Este algoritmo, de forma simplificada, consiste en:
+
+\begin{enumerate}
+\item Calcular la salida de la red a partir de las entradas de las cuales conocemos la salida esperada (\textbfit{forward pass}).
+\item Emplear una \textbf{función de pérdida} para calcular una medida del error entre la salida obtenida y la salida esperada.
+\item Calcular las derivadas parciales del error respecto de cada uno de los parámetros (\textbf{pesos} y \textbfit{bias}) que se quieren ajustar.
+\item Ajustar los valores de los parámetros en función de su influencia en el error empleando un optimizador concreto.
+\end{enumerate}
+
+Estos pasos, normalmente se repiten varias veces para cada ejemplo disponible (entendiendo como ejemplo las parejas entrada-salida conocida). En el contexto de las redes neuronales, este proceso de ajuste se conoce como \textbf{entrenamiento} y cada una de las iteraciones que la red realiza sobre el conjunto de ejemplos se conoce como época (\textit{epoch}, en inglés). 
+
+Calcular las derivadas parciales del error para todos los ejemplos sin actualizar los parámetros puede ser muy poco eficiente cuando el número de datos es grande, que suele ser lo normal. Por esta razón, el conjunto de datos que se consideran para llevar a cabo una actualización de los parámetros (lote o \textit{batch}), suele ser un subconjunto muy reducido en comparación con el conjunto de datos disponible total. El tamaño de este subconjunto (\textbfit{batch size}), influye en múltiples factores \cite{on batch size paper} del entrenamiento, como pueden ser la velocidad de entrenamiento, la velocidad de convergencia, o el mínimo al que se converge durante el entrenamiento.
+
+El proceso de entrenamiento, sin embargo, hay que controlarlo y validarlo de alguna forma, ya que existe el riesgo de sobreajustar los parámetros de la red neuronal a los datos de entrenamiento, siendo el modelo incapaz de generalizar a datos no antes vistos, este sobreajuste se conoce en inglés como \textbfit{overfitting}. Para controlar si el modelo se está sobreajustando, es común dividir el conjunto de datos en tres subconjuntos: entrenamiento, validación, y evaluación. En el trabajo de ... \cite{El paper ese de 50 páginas con splits} distintas formas de hacer estas particiones. El conjunto de entrenamiento, se emplea para ajustar los parámetros del modelo; el de evaluación, para comprobar si hay \textit{overfitting} y para elegir entre distintas configuraciones de un mismo modelo o distintos modelos; y el de evaluación, para calcular las métricas finales del modelo elegido para un problema concreto.
+
+%TODO ? sesgo/varianza
+
+En esta introducción, se han mencionado algunos conceptos en los que se profundiza a continuación prestando especial atención a los elementos que aparecen en este trabajo.
+
+\subsubsection{Funciones de activación}
+Tal y como se puede ver en la Ecuación \ref{}, la función de activación transforma la suma del \textit{bias} y el producto de los pesos y las entradas para obtener el valor de salida. En la Figura \ref{}, es posible observar varias de estas funciones junto con sus ecuaciones.
+
+Figura (lineal, sigmoide, tanh, relu, gelu
+
+La primera de estas funciones de activación \ref{} es la función de activación lineal, esta función, no suele emplearse, ya que si concatenamos múltiples neuronas con activaciones lineales, serían equivalentes a una sola neurona con la función lineal equivalente. Por esta razón, son funciones como la sigmoide \ref{}, la tangente hiperbólica \ref{}, ReLU \cite{} (\textit{Rectified Linear Unit}) \ref{} o GELU \cite{} (\textit{Gaussian Error Linear Unit}) \ref{}. TODO: Hablar de cada una un poco por encima.
+
+\url{https://towardsdatascience.com/if-rectified-linear-units-are-linear-how-do-they-add-nonlinearity-40247d3e4792} - Mencionar que las ReLU son lineales a medias.
+
+\subsubsection{Funciones de pérdida}
+Lorem ipsum
+
+\subsubsection{Optimizadores}
+Los optimizadores son algoritmos que a partir de los gradientes de los parámetros respecto de una función de perdida (también llamada función objetivo), ajustan estos parámetros para minimizar dicha perdida. Existen distintos optimizadores, algunos de los más empleados: SGD, Adagrad, RMSProp (primero el que tenga más sentido), Adam, Adamw
+
+Our method is designed to combine the advantages of two recently popular methods: AdaGrad (Duchi et al., 2011), which works well with sparse gradients, and RMSProp (Tieleman \& Hinton, 2012), which works well in on-line and non-stationary settings;
+
+\subsection{MLP}
 Lorem
 
 \subsection{CNN}
+A la hora de trabajar con imágenes (matrices de dos o tres dimensiones), el número de conexiones, y por lo tanto, parámetros, que tendrían que existir para conectar cada valor de entrada con cada neurona crecería enormemente a la hora de trabajar con imágenes cuyo tamaño no fuese especialmente reducido. Las redes convolucionales, no solo lidian con este problema, si no que lo hacen proporcionando muy buenos resultados. Este tipo de redes, se basan en el concepto de núcleo (\textit{kernel}) proveniente del procesamiento digital de imágenes y la operación de convolución y su origen se atribuye al trabajo de LeCun \cite{}. Estos \textit{kernels} son pequeñas matrices que se convolucionan sobre la imagen de entrada, extrayendo de esta forma mapas de características (también conocidos como mapas de activaciones) que son a su vez la entrada de las siguientes capas convolucionales. Los \textit{kernels}, normalmente tienden a extraer características de más alto nivel cuanto más adelante están en la red. Esto significa que las características que se extraen en las capas iniciales son características de muy bajo nivel (lineas verticales, horizontales, curvas, esquinas, etc.), mientras que las de las últimas capas extraen características más complejas.
+
+En las redes convolucionales, es común encontrar otras operaciones como son:
+\begin{itemize}
+\item Pooling: TODO
+\item Deconvolución / Convolución transpuesta: TODO
+\end{itemize}
+
+\subsubsection{ResNet}
 Lorem ipsum
 
 \subsubsection{Efficientnet}
@@ -17,6 +66,9 @@ Lorem ipsum
 
 \subsubsection{Fusionnet}
 Lorem ipsum
+
+\subsection{RNN}
+Lorem
 
 \subsection{Transformers}
 Lorem ipsum
