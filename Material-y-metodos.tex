@@ -7,11 +7,37 @@ A la hora de elegir un lenguaje de programación en el que llevar a cabo el desa
 Además, se han usado las siguientes librerías: NumPy, para trabajar con matrices; OpenCV, para cargar y manipular imágenes y tqdm, para crear barras de progreso.
 
 \subsubsection{Software}
-\todo[inline]{Hay que repasar todo, está un poco liado}
+
+\todo[inline]{Citar todo, mencionar las licencias que tiene cada software}
+
+Para el desarrollo de este proyecto, se ha optado por el lenguaje de programación Python 3.7.10, debido a su ecosistema de librerías y código disponible orientado al aprendizaje automático profundo. Dentro de Python, las librerías y paquetes que se han empleado pueden distinguirse en dos grupos: 
+\begin{itemize}
+\item \textbf{Uso en CPU}: Numpy, para trabajar con matrices y acelerar operaciones matemáticas; OpenCV, para la carga y manipulación de imágenes antes de convertirlas en tensores, Matplotlib/Seaborn, para graficar resultados y otras figuras del documento.
+\item \textbf{Uso en GPU}: Pytorch 1.9.0, para la creación, modificación, entrenamiento y evaluación de modelos de aprendizaje profundo acelerados por \textit{hardware} (es decir, ejecutados en GPUs); 	timm (Pytorch Image Models) 0.4.9, desarrollado y mantenido por Ross Whigtman, que hace disponibles un gran número modelos del estado del arte escritos en Pytorch con sus pesos preentrenados; el repositorio de DPT, modelo que se modifica a lo largo del proyecto; y por último, el repositorio performer-pytorch de Phil Wang, que ofrece una implementación, también en Pytorch, de la arquitectura Performer y sus capas de atención.
+\end{itemize}
+
+Algunas de estas librerías tienen alternativas que podrían haberse empleado perfectamente en este proyecto. La elección más importante es probablemente el uso de Pytorch frente a Tensorflow/Keras, ya que ambas librerías permiten construir y entrenar modelos de \textit{Deep Learning} a partir de funciones y abstracciones que representan distintos tipos de capas, funciones de activación o procesos de transformación de datos, entre otras. Además, ambos paquetes de software ofrecen la posibilidad de ejecutar estos modelos, así como sus entrenamientos y evaluaciones en tarjetas gráficas dedicadas (GPU), reduciendo de forma drástica el tiempo necesario para completar entrenamiento e inferencia. Esta decisión, se ha tomado principalmente por la cada vez más frecuente elección de Pytorch en proyectos de investigación gracias a su mayor flexibilidad. Consecuencia directa de esto, es que gran parte de los repositorios de código relacionados con publicaciones científicas usan Pytorch para crear sus modelos.
+
+En el parrafo anterior, se ha mencionado que Pytorch acelera por hardware el entrenamiento y la inferencia de los modelos de aprendizaje profundo. Para esto, se apoya principalmente en CUDA y CuDNN, ...
+
+Dada la naturaleza del proyecto, era de esperar que el número de experimentos y variaciones de modelos que se iban a llevar a cabo fuese numeroso, por esta razón, se elige \textbfit{Weights and Biases (wandb)} para gestionar y monitorizar dichas pruebas, es decir, visualizar y controlar su evolución o registrar métricas y resultados para su posterior comparación. \textit{Weight and Biases} es un servicio de seguimiento de experimentos, gratuito para uso académico y personal, que se ejecuta en la nube y permite registrar de forma sencilla variables y métricas durante las distintas ejecuciones que se lleven a cabo. Además, ofrece también un gestor de búsqueda de hiperparámetros, donde es posible configurar los valores que se quieren probar para que wandb se encarge de inicializar los scripts de entrenamiento con las configuraciones correspondientes de forma automática y coordinada en todas las máquinas en las que se ejecute su cliente. Ya que para el entrenamiento se han empleado varios equipos en paralelo, esta capacidad se ha valorado muy positivamente al compararlo con otros \textit{software} de monitorización como puede ser Tensorboard.
+
+Para gestionar la instalación y ejecución de este conjunto de \textit{software} en un entorno controlado, limitado y fácilmente replicable; se ha elegido Docker funcionando junto al NVIDIA Container Toolkit. Docker proporciona una capa de abstracción virtualizando a nivel del sistema operativo. Esto significa que es capaz de utilizar el kernel de Linux de la máquina anfitrión, consiguiendo de esta manera ser mucho más rápido y eficiente que una máquina virtual. Por otro lado, el NVIDIA Container Toolkit envuelve el Docker Engine y mapea las primitivas de CUDA desde el interior del contenedor hasta el driver de la GPU del sistema anfitrión. De esta forma, la máquina anfitrión solo necesita tener actualizados los drivers de la(s) tarjeta gráfica para que puedan ser empleados de manera transparente por CUDA. Para el desarrollo, se parte de una de las imágenes proporcionadas por Pytorch con la versión de Pytorch y de CUDA necesarias donde posteriormente se instalan todas las librerías requeridas. 
+
+Si bien es cierto, existen otras opciones para conseguir entornos de desarrollo funcionalmente similares: Conda, por ejemplo, también gestiona las dependencias de CUDA de las librerías de aprendizaje profundo, pero puede entrar en conflicto con las librerías instaladas usando pip en su mismo entorno virtual ya que no todas las librerías están disponibles en los repositorios de conda; otra opción que nos permite usar pip sin riesgo de dañar otras instalaciones en el equipo es el uso de entornos virtuales como venv, pero estos no gestionan correctamente el software y las dependencias de los paquetes relacionados con CUDA. 
+
+No obstante, Docker ofrece una ventaja más, y es la portabilidad que ofrece entre sistemas. En caso de querer ejecutar los scripts en cloud (tal y como se explicará en la sección TODO) o en dispositivos embebidos (p.e. los dispositivos Jetson de NVIDIA, que incluyen el NVIDIA Container Toolkit) sería suficiente con usar la misma imagen para tener un entorno idéntico. Los ficheros necesarios para crear el entorno empleado en el proyecto están disponibles tanto en el repositorio del proyecto como en el Anexo TODO.
+
+Por último, para la redacción de este documento se ha empleado LaTeX como sistema de composición de texto y BibTeX para gestionar las referencias bibliográficas. Tanto esta memoria como el desarrollo del código relacionado con el proyecto se han llevado a cabo empleado Git como software de control de versiones y se pueden encontrar en los repositorios TODO y TODO respectivamente.
+
+---
+
+Opción 2, queda más ordenado pero me gusta menos, no creo que sea necesario dedicar un párrafo a cada librería de python.
+
 \begin{itemize}
 	\item \textbf{General}
 	\begin{itemize}
-		\item \textit{Git}:
+		\item \textit{Git}: 
 		\item \textbf{\LaTeX}: Para redactar este documento, se ha empleado LaTeX como sistema de composición de texto y BibTeX para gestionar las referencias bibliográficas. Además, se ha empleado el editor de código abierto Texmaker.
 	\end{itemize}
 	\item \textbf{Lenguajes y librerías}
@@ -41,14 +67,10 @@ Además, se han usado las siguientes librerías: NumPy, para trabajar con matric
 
 
 
-
-Hablar del hardware sobre la tabla de arriba y hablar del stack de tecnología empleado, no solo para DL, también para gráficas, latex, etc. Puntualizar por qué se ha escogido pytorch frente a tf, por qué python frente a otros lenguajes de programación (Si se ejecutan las redes en C++ en los entornos embebidos justificarlo), por qué onnx, por qué wandb... 
-
-Hablar de los contendores docker que se están empleando para el desarrollo justificando su uso frente a entornos virtuales como conda o venv (portabilidad, abstracción, deployment, migrar de forma sencilla a la(s) jetson...).
+(Si se ejecutan las redes en C++ en los entornos embebidos justificarlo), por qué onnx, por qué wandb... 
 
 
-
-
+\subsubsection{Hardware}
 
 
 \subsection{Datasets}
