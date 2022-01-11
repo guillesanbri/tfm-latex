@@ -1,19 +1,16 @@
 \section{Resultados}
 
-En este capítulo se exponen los resultados obtenidos tras entrenar las arquitecturas con las modificaciones planteadas. Para poder hacer un estudio riguroso, se han tomado una serie de valores candidatos para cada modificación (contarles) y se ha llevado a cabo el producto cartesiano de dichos conjuntos, obteniendo así $3 \times 2 \times 3 \times 2 = 36$ distintos modelos.
+En este capítulo se exponen los resultados obtenidos tras entrenar las arquitecturas con las modificaciones planteadas. Para poder llevar a cabo un estudio lo más completo posible, se han tomado una serie de valores candidatos para cada modificación (TODO contarles) y se ha llevado a cabo el producto cartesiano de dichos conjuntos, obteniendo así $3 \times 2 \times 3 \times 2 = 36$ modelos distintos.
 
-Hablar de resultados cuantitativos (tablas con las métricas en distintas pruebas) y cualitativos (imágenes resultado de cada una de las pruebas - escaladas si es necesario - con el ground truth y con la imagen real de referencia). Mencionar que para que se vean mejor las imágenes los valores se han hecho relativos para así ocupar toda la escala de grises.
-
-\todo[inline]{Meter comparación de los tiempos de inferencia con autocast y sin autocast}
+\todo[inline]{Meter comparación de los tiempos de inferencia con autocast y sin autocast -> Llevar la gráfica al apartado teórico?}
 
 \subsection{Resultados cuantitativos}
 
 \subsubsection{Reducción de tamaño de la entrada}
 
-Dado que el entrenamientos de los modelos - por motivos de disponibilidad de recursos físicos y temporales - se ha llevado a cabo con la entrada del modelo reducida, no es posible realizar una comparación exhaustiva de los resultados obtenidos para cada una de las modificaciones de la arquitectura respecto del modelo correspondiente entrenado con las imágenes en su tamaño original. 
+Dado que el entrenamientos de los modelos - por limitaciones materiales y temporales - se ha llevado a cabo con la entrada del modelo reducida, no es posible realizar una comparación exhaustiva de los resultados obtenidos para cada una de las modificaciones de la arquitectura respecto del modelo correspondiente entrenado con las imágenes en su tamaño original. 
 
 \todo[inline]{Hacer una prueba si cabe en la GPU entrenando solo un modelo}
-\todo[inline]{Poner las dos barras del mismo color?}
 
 \begin{wrapfigure}{r}{0.5\textwidth}
 \vspace{-10pt}
@@ -68,6 +65,7 @@ Respecto de la influencia de este parámetro en la velocidad de inferencia, en l
 \subsubsection{Cambio del backbone convolucional}
 
 \todo[inline]{Comparar los feature maps que saca uno y otro?}
+\todo[inline]{Justificar que al no estar preentrenado en mix6 los resultados son peores con un entrenamiento de un resnet a partir de imagenet}
 
 \begin{figure}[H]
 \centering
