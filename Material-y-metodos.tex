@@ -86,12 +86,12 @@ El flujo de trabajo que se ha seguido ha sido el siguiente (\ref{fig:cloud-diagr
 \end{figure}
 
 \subsection{Datasets}
-En esta sección, se introducen aquellos conjuntos de datos, que, de forma directa o indirecta, se emplean en este trabajo.
+Durante este trabajo, de forma directa o indirecta, se emplean ciertos conjuntos de datos. Más concretamente, ImageNet \cite{imagenet_cvpr09, ILSVRC15} y MIX6 \cite{visiontransformersDPT} han sido empleados (no durante el desarrollo de este trabajo) para preentrenar los distintos modelos usados, mientras que KITTI \cite{KITTI-dataset, KITTI-benchmarks, KITTI-road-benchmark, KITTI-sceneflow-benchmark} se elige como conjunto de datos con el que comparar y evaluar las distintas modificaciones, y por lo tanto se emplea para entrenar los modelos. En esta sección, se resumen las características de estos tres \textit{datasets}.
 
 \subsection{ImageNet}
 ImageNet \cite{imagenet_cvpr09, ILSVRC15} es un \textit{dataset} que proporciona un gran número de imágenes etiquetadas en función de la presencia o ausencia de una serie de conceptos definidos como \textit{synsets}. Estos conceptos siguen la jerarquía propuesta por WordNet \cite{wordnet}, donde se agrupan palabras y categorías en función de sus relaciones semánticas. Para construir ImageNet, partiendo de una fracción de la ya mencionada estructura de WordNet, se buscaron imágenes de Internet para poblar cada una de las categorías. Estas imágenes, se filtraron y posteriormente fueron manualmente etiquetadas por humanos. 
 
-Dentro del proyecto de Imagenet, existen dos conjuntos: ImageNet21K e ImageNet1K (este último, normalmente llamado ImageNet). La principal diferencia entre estos dos conjuntos es que el primero, ImageNet21K suma más de 14 millones de imágenes clasificadas en más de 21 mil clases diferentes. Por otro lado, ImageNet1K es un subconjunto de ImageNet21K compuesto por cerca de 1.2 millones de imágenes clasificadas en 1000 categorías diferentes. Además de esto, también cuenta con anotaciones de localización de objetos (\textit{bounding boxes}) en más de medio millón de imágenes. Debido a la gran cantidad de imágenes y la variedad de elementos que abarcan, ImageNet es normalmente empleado para entrenar las arquitecturas de aprendizaje automático profundo. De esta forma, los modelos preentrenados en ImageNet pueden ajustarse de una manera mucho más rápida y efectiva a tareas e imágenes nuevas con otros \textit{datasets}, ya que al haber sido entrenadas previamente, los modelos han aprendido a extraer características generales (normalmente reutilizables) de las imágenes.
+Dentro del proyecto de Imagenet, existen dos conjuntos: ImageNet21K e ImageNet1K (este último, normalmente llamado ImageNet). La principal diferencia entre estos dos conjuntos es que el primero, ImageNet21K suma más de 14 millones de imágenes clasificadas en más de 21 mil clases diferentes. Por otro lado, ImageNet1K es un subconjunto de ImageNet21K compuesto por cerca de 1.2 millones de imágenes clasificadas en 1000 categorías diferentes. Además de esto, también cuenta con anotaciones de localización de objetos (\textit{bounding boxes}) en más de medio millón de imágenes. Debido a la gran cantidad de imágenes y la variedad de elementos que abarcan, ImageNet es normalmente empleado para entrenar las arquitecturas de aprendizaje automático profundo. De esta forma, los modelos preentrenados en ImageNet pueden ajustarse de una manera mucho más rápida y efectiva a tareas e imágenes nuevas con otros \textit{datasets} ya que al haber sido entrenados previamente, los modelos han aprendido a extraer características generales (normalmente reutilizables) de las imágenes.
 
 Una muestra de las imágenes que conforman ImageNet está disponible en la Figura \ref{fig:imagenet}.
 \begin{figure}[H]
@@ -158,36 +158,48 @@ TUM \cite{sturm12iros}                             & \cellcolor[HTML]{FFFFFF}Im�
 \subsubsection{KITTI}
 KITTI \cite{KITTI-dataset, KITTI-benchmarks, KITTI-road-benchmark, KITTI-sceneflow-benchmark} es un proyecto desarrollado por el \textit{Karlsruhe Institute of Technology} y el \textit{Toyota Technological Institute} que engloba un \textit{dataset} y un conjunto de \textit{becnhmarks} enfocados a diferentes tareas relacionadas con la conducción autónoma. Los \textit{benchamrks} que incluye este proyecto evalúan: estereovisión, flujo óptico (\textit{optical flow}), flujo de la escena, \textbf{estimación de profundidades monocular}, \textit{depth completion}, odometría visual/SLAM, localización de objetos (2D, 3D y cenital), seguimiento de objetos, segmentación de carreteras, y por último, segmentación de objetos general, tanto semántica como a nivel de instancia. Debido a la naturaleza de este trabajo, este apartado se centrará en la parte referente a la predicción de profundidad monocular.
 
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}lcr@{}}
+\toprule
+Tipo de sensor       & Modelo                & Características                                                                                               \\ \midrule
+\rowcolor[HTML]{EFEFEF} 
+Cámara escala de grises (x2) & PointGray Flea2 grayscale & \begin{tabular}[c]{@{}r@{}}Sensor: FL2-14S3M 1.4 MP\\ 1/2” Sony ICX267 CCD\\ Global Shutter\end{tabular} \\
+Cámara color (x2)    & PointGray Flea2 color & \begin{tabular}[c]{@{}r@{}}Sensor: FL2-14S3M 1.4 MP\\ 1/2” Sony ICX267 CCD\\ Global Shutter\end{tabular}      \\
+\rowcolor[HTML]{EFEFEF} 
+Escáner láser (x1)   & Velodyne HDL-64E      & \begin{tabular}[c]{@{}r@{}}64 haces a $10 Hz$\\ Resolución en distancia: $2 cm$\\ Rango: $120 m$\end{tabular} \\
+Medida inercial (x1) & OXTS RT3003           & \begin{tabular}[c]{@{}r@{}}Posicionamiento GPS\\ Velocímetro\\ Acelerómetro - Giroscopio\end{tabular}         \\ \bottomrule
+\end{tabular}
+\caption{Sensores equipados en el vehículo empleado para recoger los datos de KITTI.}
+\label{tab:sensores-kitti}
+\end{table}
+
+Los datos disponibles en KITTI fueron capturados empleando un vehículo equipado con diferentes sensores (Tabla \ref{tab:sensores-kitti}) para realizar diferentes recorridos en distintas zonas urbanas e interurbanas. Capturando, de esta forma, escenarios variados en múltiples condiciones de luz, hora, presencia de vehículos y peatones, etc. Dentro de los sensores equipados, son de especial interés para este trabajo son las dos parejas de cámaras para estereovisón (un montaje con dos cámaras en escala de grises y otro montaje con dos cámaras en color) y el escáner láser rotatorio de $360\degree$. Además de estos sensores, el automóvil también equipaba un sensor de medida inercial con sistema de navegación GPS para registrar información relacionada con la odometría, pero esta información no se ha empleado durante el desarrollo del trabajo.
+
+% (\textit{2x PointGray Flea2 grayscale cameras, FL2-14S3M-C, 1.4 Megapixels, 1/2” Sony ICX267 CCD, global shutter}) 
+ 
+% (\textit{2x PointGray Flea2 color cameras (FL2-14S3M-C), 1.4 Megapixels, 1/2” Sony ICX267 CCD, global shutter}) - 
+ 
+% \textit{Velodyne HDL-64E rotating 3D laser scanner, 10 Hz, 64 beams, 0.09 degree angular resolution, 2 cm distance accuracy, collecting $\sim$ 1.3 million points/second, field of view: $360\degree$ horizontal, $26.8\degree$ vertical, range: 120 m}. 
+
 \paragraph{Datos disponibles}\mbox{}\\
-Los datos disponibles en KITTI fueron capturados empleando un vehículo equipado con diferentes sensores, de especial interés para este trabajo son las dos parejas de cámaras para estereovisón - un montaje con dos cámaras en escala de grises (\textit{2x PointGray Flea2 grayscale cameras, FL2-14S3M-C, 1.4 Megapixels, 1/2” Sony ICX267 CCD, global shutter}) y otro montaje con dos cámaras en color (\textit{2x PointGray Flea2 color cameras (FL2-14S3M-C), 1.4 Megapixels, 1/2” Sony ICX267 CCD, global shutter}) - y un escaner láser \textit{Velodyne HDL-64E rotating 3D laser scanner, 10 Hz, 64 beams, 0.09 degree angular resolution, 2 cm distance accuracy, collecting $\sim$ 1.3 million points/second, field of view: $360\degree$ horizontal, $26.8\degree$ vertical, range: 120 m}. 
-\todo[inline]{Posiblemente mover los sensores y añadir las lentes del paper a una tabla, incluso subirlo de sección y hablar de todos los sensores que llevaba y ya está}
-Además de estos sensores, el automóvil también equipaba un sensor \textit{OXTS RT3003} de medida inercial con sistema de navegación GPS para registrar información relacionada con la odometría.
+Los datos recogidos, pueden agruparse en:
 
 \subparagraph{Datos en bruto}\mbox{}\\
-Si nos centramos en los datos relevantes para la estimación de profundidades monocular, el \textit{dataset} está compuesto de fotogramas muestreados y sincronizados a 10 Hz de los vídeos capturados por las cámaras previamente descritas en diferentes recorridos. Debido a la naturaleza del sistema óptico, para cada instante se disponen de cuatro imágenes, derecha e izquierda en escala de grises, y derecha e izquierda en color. Una muestra de estas imágenes puede observarse en la Figura \ref{fig:kitti_raw}.
+Si nos centramos en los datos relevantes para la estimación de profundidades monocular, el \textit{dataset} está compuesto de fotogramas muestreados y sincronizados a 10 Hz de los vídeos capturados por las cámaras previamente descritas en diferentes recorridos. Debido a la naturaleza del sistema óptico, para cada instante se disponen de cuatro imágenes, derecha e izquierda en escala de grises, y derecha e izquierda en color. Una muestra de estas imágenes puede observarse en la Figura \ref{fig:kitti-raw}.
 
 \begin{figure}[H]
 \centering
+	\subfloat[Imagen en escala de grises capturada por la cámara izquierda.]{\includegraphics[width=0.48\textwidth]{imagenes/67_img0.png} } 
+\hfil
+	\subfloat[Imagen en escala de grises capturada por la cámara derecha.]{\includegraphics[width=0.48\textwidth]{imagenes/67_img1.png} }\\[-2ex]
 
-\subfloat[Imagen en escala de grises capturada por la cámara izquierda.]{
-	\label{subfig:kitti-raw-0}
-	\includegraphics[width=0.75\textwidth]{imagenes/67_img0.png} } 
-
-\subfloat[Imagen en escala de grises capturada por la cámara derecha.]{
-	\label{subfig:kitti-raw-1}
-	\includegraphics[width=0.75\textwidth]{imagenes/67_img1.png} } 
-
-\subfloat[Imagen en color capturada por la cámara izquierda.]{
-	\label{subfig:kitti-raw-2}
-	\includegraphics[width=0.75\textwidth]{imagenes/67_img2.png}} 
-
-\subfloat[Imagen en color capturada por la cámara derecha.]{
-	\label{subfig:kitti-raw-3}
-	\includegraphics[width=0.75\textwidth]{imagenes/67_img3.png}}
+	\subfloat[Imagen en color capturada por la cámara izquierda.]{\includegraphics[width=0.48\textwidth]{imagenes/67_img2.png}} 
+\hfil
+	\subfloat[Imagen en color capturada por la cámara derecha.]{\includegraphics[width=0.48\textwidth]{imagenes/67_img3.png}}\\[-2ex]
 	
 \caption{Muestra de las cuatro imágenes en bruto disponibles en KITTI para un instante dado.}
-\label{fig:kitti_raw}
-
+\label{fig:kitti-raw}
 \end{figure}
 
 En total, se disponen de 192760 imágenes ($\sim$ 196 GB) de tamaño 1242x375 píxeles, de las cuales 96430 (la mitad) corresponden a las cámaras a color. Como el objetivo es la estimación de profundidades monocular, solo se emplea una de las imágenes de cada pareja de imágenes producido por el sistema de estereovisión, por lo que realmente se emplean 48215 imágenes (una cuarta parte de la cantidad original).
