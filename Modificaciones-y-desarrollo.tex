@@ -1,8 +1,47 @@
 \section{Modificaciones de la arquitectura y desarrollo}
-\todo[inline]{MEter los resultados y las imágenes aquí? O en la sección de resultados? Podriamos o hacer referencia a esta sección en la de discusión o limitar esta sección a esquemas, código y explicación teórica de que se ha cambiado para luego en la sección de resultados repetir entre comillas los apartados de esta seccion solamente con las gráficas pertinentes (evidentemente comentandolas). Puede que sea mejor opción la segunda}
+
+En este capítulo, se introducen los cambios y desarrollos principales que se han llevado a cabo durante el trabajo.
 
 \subsection{Entrenamiento}
-Script de entrenamiento, dataloader, todas las cosas que se han hecho para acelerar el entrenamiento. Hablar de las horas de entrenamiento? Puede que se mezclen cosas con el apartado de metodología?
+Pese a que los autores del artículo de DPT \cite{} han publicado el código del modelo y sus pesos preentrenados en MIX6 y ajustados a NYUDepthv2 y KITTI, a día de hoy no han hecho público el \textit{script} de entrenamiento empleado. Por esto, ha sido necesario escribir el proceso de entrenamiento así como el \texttt{Dataset} de PyTorch con el que leer los datos de KITTI.
+
+Para el \texttt{Dataset}, se crea una clase \texttt{KITTIDataset}\footnote{URL al repo?} que hereda de la clase abstracta base para conjuntos de datos que ofrece PyTorch, \texttt{torch.utils.data.Dataset}, y sobreescribe los métodos \texttt{\_\_len\_\_()} y \texttt{\_\_getitem\_\_()} de forma que estos se adapten a la estructura de directorios y nombres de las imágenes de sus anotaciones. Al sobreescribir estos métodos, es posible crear un \texttt{torch.utils.data.Dataloader} de forma directa, pasando las imágenes y las etiquetas a los modelos aprovechando las herramientas de PyTorch. En el método \texttt{\_\_getitem\_\_()}, además, se aplican las transformaciones necesarias a los datos, así como el \textit{Data Augmentation}.
+
+En cuanto al \textit{script} de entrenamiento\footnote{URL de train.py y train\_ utils.py?}, se tienen en cuenta una serie de factores para acelerar el proceso lo máximo posible:
+\begin{itemize}
+
+\item \textbf{Número de trabajadores en el \texttt{Dataloader}}: Con el objetivo de asegurar que la limitación en la velocidad de entrenamiento sea el procesamiento en la GPU, se cambia el valor del parámetro \texttt{num\_workers} del constructor del \texttt{Dataloader} de entrenamiento a 8. Este parámetro, controla el número de procesos que se lanzan en paralelo para leer los datos del disco y preprocesarlos.
+
+\item \textbf{\texttt{pin\_memory}}: También en el constructor del \texttt{Dataloader}, es posible activar \texttt{pin\_memory}, parámetro desactivado por defecto. Este parámetro, acelera la transferencia a la memoria de la GPU de los datos cargados en memoria (RAM) por la CPU \cite{harris2012}. De forma resumida, lo que habilita este parámetro es que la carga de datos se haga en memoria no paginable (\textit{pinned}) a la que la GPU accede directamente, evitando así cargar los datos en una zona de memoria paginable y transferir estos a una \textit{pinned memory} temporal cada vez que la GPU quiere leerlos para transferirlos a su propia memoria.
+
+\item \textbf{\texttt{torch.backends.cudnn.enabled y \texttt{torch.backends.cudnn.benchmark}}}: Estas dos opciones, se activan para asegurar, respectivamente, que se use CuDNN en la ejecución del modelo, y que se ejecuten al comienzo del \textit{script} distintas implementaciones de algoritmos de convolución para emplear el más rápido en el sistema actual.
+
+\item \textbf{\textit{Mixed precision}}: Ya mencionado en el apartado TODO, pese a que finalmente se ha descartado su uso en el entrenamiento debido a la inestabilidad numérica que introducía y los fallos que ocasionaba, el \textit{script} de entrenamiento incluye la opción de activar el uso de precisión mixta con el escalado pertinente.
+\end{itemize}
+
+\todo[inline]{Medir y hacer una gráfica de la influencia de cada uno de estos en un trozo de epoch}
+
+El entrenamiento en sí, se ha llevado a cabo empleando como optimizador \texttt{AdamW} con $lr = 1e-5$, $\beta_1 = 0.9$, $\beta_2 = 0.999$, $\epsilon = 1e-8$ y $\textit{weight decay} = 0.01$ con un número de épocas fijado a 20 (el entrenamiento se detiene en caso de que la función de pérdida se desestabilice y se vuelva $\pm \infty$). Como se ha mencionado en el apartado TODO, el tamaño de lote es uno, pero el \textit{script} de entrenamiento implementa la posibilidad de usar acumulación de gradientes para simular tamaños de lote mayores. La función de pérdida, ha sido TODO, (citar y Ecuación X). Por último, durante el entrenamiento se ha empleado la función \texttt{torch.nn.utils.clip\_grad\_value\_} con un \texttt{clip\_value} de 0.5, que se encarga de limitar los valores de los gradientes en función de su valor, para limitar considerablemente las posibilidades de que explotasen los gradientes del modelo haciendo que se desestabilizase su entrenamiento.
+
+
+%\todo[inline]{Pseudocódigo del script de entrenamiento}
+%\begin{algorithm}
+%\floatname{algorithm}{Pseudocódigo}
+%\caption{My algorithm}\label{euclid}
+%\begin{algorithmic}[1]
+%
+%\For{\texttt{época = 1 a 20}}
+%\State \texttt{train()}
+%\State \texttt{val()}
+%\If {\texttt{época mod 5 == 0}}
+%\State {\texttt{guardaModelo()}}
+%\EndIf
+%\EndFor
+%\end{algorithmic}
+%\end{algorithm}
+
+
+\todo[inline]{En la tabla de resultados generales sumar las horas de entrenamiento y ya de paso mencionar el total de horas atribuyendolas a otros entrenamientos y pruebas/experimentos (en la sección de resultados)}
 
 \subsection{Reducción de tamaño de la entrada}
 Para acelerar DPT, lo primero que se modificó fue el tamaño de la entrada. Los resultados de la publicación original calculan la profundidad en el conjunto de evaluación de KITTI con las imágenes en su tamaño original, 1216x352, para reducir el consumo de memoria del modelo durante su entrenamiento, así como acelerar entrenamiento e inferencia, se han añadido dos operaciones de cambio de tamaño: una al principio de la red que reduce el tamaño de las imágenes a 640x192 píxeles, y otra al final de la red que reescala la salida al tamaño original. La primera operación emplea como método de interpolación el algorítmo \texttt{INTER{\_}AREA} de OpenCV, que TODO y está recomendado para reducir el tamaño de imágenes ya que proporciona resultados sin efecto Moire; la operación que amplia la salida al tamaño de la imagen original, por otro lado, emplea interpolación bicúbica, que ofrece los mejores resultados pese a ser más lenta, ya que el tiempo empleado en las operaciones de reescalado es despreciable en comparación con el tiempo de inferencia de la red.
