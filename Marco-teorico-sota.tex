@@ -6,7 +6,15 @@ La Inteligencia Artificial (IA), engloba el estudio de agentes que perciben un e
 Cabe mencionar que pese a que muchos de los conceptos explicados a continuación son perfectamente validos en otras modalidades, este trabajo se centra en el aprendizaje supervisado y por lo tanto el marco teórico se ajusta y limita a este. 
 
 \subsection{Redes neuronales}
-Las redes neuronales (en inglés, \textit{Neural Networks} - NN), son sistemas computacionales inspirados en una versión simplificada de las neuronas biológicas. Estas neuronas artificiales, están definidas por una serie de elementos: entradas, \textbf{pesos}, \textbf{bias}, \textbf{función de activación} y salida (Figura \ref{}). El valor que toma la salida, viene definido por la Ecuación \ref{}.
+Las redes neuronales (en inglés, \textit{Neural Networks} - NN), son sistemas computacionales inspirados en una versión simplificada de las neuronas biológicas. Estas neuronas artificiales, están definidas por una serie de elementos: entradas, \textbf{pesos}, \textbf{bias}, \textbf{función de activación} y salida. El valor que toma la salida, siguiendo la notación de la Figura \ref{fig:neurona}, viene dado por la ecuación $y = f(Wx + b)$.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.75\linewidth]{imagenes/neurona.png} 
+\captionsetup{width=.5\linewidth}
+\caption{Estructura de una neurona artificial.}
+\label{fig:neurona}
+\end{figure}
 
 Uno de los puntos más importantes de las NN, es que con un conjunto de neuronas lo suficientemente grande y funciones de activación no lineales, las NN pueden aproximar cualquier función continua (\textit{Universal approximation theorem} \cite{}). Por desgracia, ajustar los parámetros (pesos y bias) de cada una de las neuronas de dicha red para aproximar la función deseada no es un problema trivial. 
 
