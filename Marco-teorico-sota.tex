@@ -29,8 +29,6 @@ Una de las soluciones más comunes, es, de forma iterativa, modificar los parám
 
 Estos pasos, normalmente se repiten varias veces para cada ejemplo disponible (entendiendo como ejemplo las parejas entrada-salida conocida). En el contexto de las redes neuronales, este proceso de ajuste se conoce como \textbf{entrenamiento} y cada una de las iteraciones que la red realiza sobre el conjunto de ejemplos se conoce como época (\textit{epoch}, en inglés). 
 
-Calcular las derivadas parciales del error para todos los ejemplos sin actualizar los parámetros puede ser muy poco eficiente cuando el número de datos es grande, que suele ser lo normal. Por esta razón, el conjunto de datos que se consideran para llevar a cabo una actualización de los parámetros (lote o \textit{batch}), suele ser un subconjunto muy reducido en comparación con el conjunto de datos disponible total. El tamaño de este subconjunto (\textbfit{batch size}), influye en múltiples factores \cite{on batch size paper} del entrenamiento, como pueden ser la velocidad de entrenamiento, la velocidad de convergencia, o el mínimo al que se converge durante el entrenamiento.
-
 El proceso de entrenamiento, sin embargo, hay que controlarlo y validarlo de alguna forma, ya que existe el riesgo de sobreajustar los parámetros de la red neuronal a los datos de entrenamiento, siendo el modelo incapaz de generalizar a datos no antes vistos, este sobreajuste se conoce en inglés como \textbfit{overfitting}. Para controlar si el modelo se está sobreajustando, es común dividir el conjunto de datos en tres subconjuntos: entrenamiento, validación, y evaluación. El conjunto de entrenamiento, se emplea para ajustar los parámetros del modelo; el de evaluación, para comprobar si hay \textit{overfitting} y para elegir entre distintas configuraciones de un mismo modelo o distintos modelos; y el de evaluación, para calcular las métricas finales del modelo elegido para un problema concreto. En el trabajo de ... \cite{El paper ese de 50 páginas con splits} se presentan distintas formas de hacer estas particiones, en este trabajo, no obstante, se emplearán particiones establecidas en la literatura para los conjuntos de datos empleados (Ver sección TODO).
 
 %TODO ? sesgo/varianza
@@ -56,9 +54,91 @@ Cada una de estas funciones de activación tiene características propias que la
 Las funciones de pérdida, tal y como se ha mencionado previamente, son aproximaciones optimizables de la distancia o error entre el valor real a predecir y la predicción realizada. Dentro de estas funciones, cuyo valor se busca minimizar, existen diferentes situaciones que pueden dificultar el aprendizaje de los modelos, por ejemplo, los mínimos locales, donde los valores de la función de pérdida son menores que los valores de su entorno, originando que los gradientes se desvanezcan y detengan el proceso de optimización, o los puntos de silla (\textit{saddle points}), donde, pese a no haber un mínimo local, los gradientes también se desvanecen deteniendo la minimización.
 
 \subsubsection{Optimizadores}
-Los optimizadores son algoritmos que a partir de los gradientes de los parámetros respecto de una función de perdida (también llamada función objetivo), ajustan estos parámetros para minimizar dicha perdida. Existen distintos optimizadores, algunos de los más empleados: SGD, Adagrad, RMSProp (primero el que tenga más sentido), Adam, Adamw
+Los optimizadores son algoritmos que minimizan el valor de la función de pérdida ($f(\theta)$) ajustando los parámetros ($\theta$) de los modelos, entre otras cosas, en base a la influencia de estos parámetros en el error obtenido en dicha función. Esta influencia se obtiene calculando las derivadas parciales del error respecto de cada parámetro (gradiente: $\nabla_{\theta} f_t(\theta_{t-1})$), y, en función del algoritmo que se elija, puede verse afectada por distintos factores. Algunos de los optimizadores más empleados son SGD \cite{}, AdaGrad \cite{}, RMSProp \cite{}, Adam \cite{} o Adamw \cite{}.
 
-Our method is designed to combine the advantages of two recently popular methods: AdaGrad (Duchi et al., 2011), which works well with sparse gradients, and RMSProp (Tieleman \& Hinton, 2012), which works well in on-line and non-stationary settings;
+El descenso de gradiente tradicional promedia los gradientes del error en todos los ejemplos disponibles para actualizar los parámetros. La modificación que introduce el \textbf{SGD (\textit{Stochastic Gradient Descent})}, es actualizar los parámetros tras ver cada uno de los ejemplos. De esta forma, se acelera el entrenamiento ya que aunque cada ajuste no es óptimo, se actualizan mucho más frecuentemente. Además, el ruido intrínseco de cada ejemplo tiene un efecto regularizador que puede ayudar a salir de mínimo locales.
+
+No obstante, gracias a la capacidad de procesamiento paralelo de las tarjetas gráficas es muy común promediar el cálculo del error en pequeños subconjuntos (\textbfit{batch}) de todos los datos disponibles. Esto se conoce como \textit{Mini Batch Gradient Descent} y el tamaño (\textbfit{batch size}) que se elija influye directamente en diferentes factores como son la velocidad de entrenamiento, la rapidez para converger, o el punto al que se converge \cite{on batch size paper}.
+
+Estos tres algoritmos, y en general la mayoría de los optimizadores, controlan el cambio de los parámetros mediante un hiperparámetro conocido como tasa de aprendizaje (\textit{learning rate}: $\gamma$), que se multiplica por el valor del gradiente de la función de pérdida respecto de los parámetros (Ecuación \ref{eqn:sgd}).
+
+\begin{equation}
+\label{eqn:sgd}
+\theta_t = \theta_{t-1} - \gamma (\nabla_{\theta} f_t(\theta_{t-1}))
+\end{equation}
+
+En el caso del \textit{Mini Batch Gradient Descent}, al promediar los gradientes de varios ejemplos se reduce el ruido del SGD. Inspirado por el concepto físico de \textbf{Momento}, es posible añadir a estos optimizadores una modificación para que se consideren también los gradientes de los pasos anteriores del optimizador. De esta forma, se reduce el ruido y se hace más robusta la optimización frente a mínimos locales. El momento se controla con un hiperparámetro $\mu$ siguiendo la Ecuación \ref{eqn:momento}, donde $v_t$ es el Momento en un paso concreto y $g_{t, t-1}$ los gradientes correspondientes a este paso. 
+
+\begin{equation}
+\label{eqn:momento}
+v_t = \mu v_{t-1} + g_{t, t-1}
+\end{equation}
+
+Este cálculo multiplica los momentos anteriores de forma recursiva por un valor menor que uno, de forma que influyen todos los gradientes anteriores, pero cada vez con menos fuerza. Esto se puede ver comprobar matemáticamente desarrollando la Ecuación \ref{eqn:momento} (Ecuación \ref{eqn:momento2}). Finalmente, este momento toma la posición del gradiente en la actualización de los parámetros (Ecuación \ref{eqn:momento3}).
+
+\begin{equation}
+\label{eqn:momento2}
+v_t = \mu^2 v_{t-2} + \mu g_{t-1, t-2} + g_{t, t-1} = \sum_{i=0}^{t-1}\mu^{i}g_{t-i, t-i-1}
+\end{equation}
+\begin{equation}
+\label{eqn:momento3}
+\theta_t = \theta_{t-1} - \gamma (v_t)
+\end{equation}
+
+\textbf{AdaGrad (\textit{Adaptative Gradients})}, otro optimizador, también modifica el descenso del gradiente para reducir las tasas de aprendizaje en aquellos parámetros que han tenido mayores derivadas parciales dividiendolas entre la suma de los gradientes ($g$) anteriores (Ecuaciones \ref{eqn:adagrad} y \ref{eqn:adagrad2}). Estos gradientes se acumulan durante toda la optimización, por lo que es especialmente efectivo en datos dispersos donde no en todos los ejemplos se dispone de todas las características, donde las características que no se hayan visto tan frecuentemente tendrán actualizaciones mayores. Esto, sin embargo, también ralentiza el algoritmo, ya que según avanza el proceso, las actualizaciones de los parámetros son menores, llegando incluso a impedir que se alcance a un mínimo aceptable.
+
+\begin{equation}
+\label{eqn:adagrad}
+acumulaci\acute{o}n_t = acumulaci\acute{o}n_{t-1} + g^{2}_{t}
+\end{equation}
+\begin{equation}
+\label{eqn:adagrad2}
+\theta_t = \theta_{t-1} - \gamma \frac{g_t}{\sqrt{acumulaci\acute{o}n_t}}
+\end{equation}
+
+% https://towardsdatascience.com/a-visual-explanation-of-gradient-descent-methods-momentum-adagrad-rmsprop-adam-f898b102325c
+
+\textbf{RMSProp (\textit{Root Mean Square Propagation})} soluciona el problema de la velocidad de AdaGrad añadiendo un factor de decaimiento. Este factor de decaimiento (\textit{decay rate}: $\alpha$), escala de forma recursiva la suma acumulada de los gradientes anteriores (media movil exponencialmente ponderada - \textit{Exponential weighted moving averages}), por lo que a medida que el optimizador avanza, la influencia de los gradientes anteriores disminuye. De esta forma, se mantienen los beneficios de AdaGrad evitando reducir indefinidamente la magnitud de la actualización de los parámetros (Ecuaciones \ref{eqn:RMSProp} y \ref{eqn:RMSProp2}).
+
+\begin{equation}
+\label{eqn:RMSProp}
+acumulaci\acute{o}n_t = (\alpha) acumulaci\acute{o}n_{t-1} + (1-\alpha) g^{2}_{t}
+\end{equation}
+\begin{equation}
+\label{eqn:RMSProp2}
+\theta_t = \theta_{t-1} - \gamma \frac{g_t}{\sqrt{acumulaci\acute{o}n_t}}
+\end{equation}
+
+Por último, \textbf{Adam} y \textbf{AdamW} son dos optimizadores que fusionan las ideas y ventajas detrás del momento y de RMSProp. Para conseguir esto, se vuelve a aplicar la media móvil exponencialmente ponderada, esta vez tanto para el primer como el segundo momento, controlado por dos parámetros $\beta$ (Ecuaciones \ref{eqn:Adam} y \ref{eqn:Adam2}).
+
+\begin{equation}
+\label{eqn:Adam}
+m_t = \beta_1 m_{t-1} + (1-\beta_1) g_{t}
+\end{equation}
+\begin{equation}
+\label{eqn:Adam2}
+v_t = \beta_2 v_{t-1} + (1-\beta_2) g^{2}_{t}
+\end{equation}
+
+Además, para reducir la influencia del valor inicial (igual a cero) de $m_0$ y $v_0$, se añade una normalización que sigue las Ecuaciones \ref{eqn:Adam3} y \ref{eqn:Adam4}.
+
+\begin{equation}
+\label{eqn:Adam3}
+\hat{m}_t = \frac{m_t}{(1-\beta^{t}_{1})}
+\end{equation}
+\begin{equation}
+\label{eqn:Adam4}
+\hat{v}_t = \frac{v_t}{(1-\beta^{t}_{2})}
+\end{equation}
+
+Una vez calculados estos dos términos, se actualizan los parámetros de forma similar a como se hacía en RMSProp, con la diferencia de que esta vez se multiplica por el momento acumulado y no por los gradientes (Ecuación \ref{eqn:Adam5}).
+
+\begin{equation}
+\label{eqn:Adam5}
+\theta_t = \theta_{t-1} - \gamma \frac{\hat{m}_t}{\sqrt{\hat{v}_t}}
+\end{equation}
+
+En cuanto a la diferencia entre Adam y AdamW, TODO
 
 \subsection{MLP}
 Lorem
