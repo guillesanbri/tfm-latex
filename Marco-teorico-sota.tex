@@ -141,7 +141,18 @@ Una vez calculados estos dos términos, se actualizan los parámetros de forma s
 En cuanto a la diferencia entre Adam y AdamW, TODO
 
 \subsection{MLP}
-Lorem
+El Perceptrón Multicapa, o por sus sigles en ingles, \textbf{MLP} (\textit{Multi Layer Perceptron}), es una de las arquitecturas de red neuronal más básicas y está formado por una capa de entrada, una capa de salida, y un bloque de capas intermedias u ocultas. Estas capas intermedias, son agrupaciones de neuronas donde cada una de las neuronas (normalmente) se conecta con todas las neuronas de la capa anterior y con todas las neuronas de la capa posterior (Figura \ref{fig:mlp}). De esta forma, se crea una sucesión donde las entradas de una neurona son las salidas de las neuronas de la capa anterior y la salida de dicha neurona es una de las entradas de todas las neuronas de la capa siguiente. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{imagenes/mlp.png} 
+\captionsetup{width=.8\linewidth}
+\caption{Perceptrón Multicapa.}
+\label{fig:mlp}
+\end{figure}
+
+\todo[inline]{Este parrafillo no me convence mucho}
+Con este tipo de arquitectura, comienza a desdibujarse la linea entre el aprendizaje automático y el aprendizaje profundo, ya que a medida que aumentamos el número de capas intermedias del modelo nos adentramos en el campo del \textit{Deep Learning} y su capacidad de ajuste aumenta.
 
 \subsection{CNN}
 A la hora de trabajar con imágenes (matrices de dos o tres dimensiones), el número de conexiones, y por lo tanto, parámetros, que tendrían que existir para conectar cada valor de entrada con cada neurona crecería enormemente a la hora de trabajar con imágenes cuyo tamaño no fuese especialmente reducido. Las redes convolucionales, no solo lidian con este problema, si no que lo hacen proporcionando muy buenos resultados. Este tipo de redes, se basan en el concepto de núcleo (\textit{kernel}) proveniente del procesamiento digital de imágenes y la operación de convolución y su origen se atribuye al trabajo de LeCun \cite{}. Estos \textit{kernels} son pequeñas matrices que se convolucionan sobre la imagen de entrada, extrayendo de esta forma mapas de características (también conocidos como mapas de activaciones) que son a su vez la entrada de las siguientes capas convolucionales. Los \textit{kernels}, normalmente tienden a extraer características de más alto nivel cuanto más adelante están en la red. Esto significa que las características que se extraen en las capas iniciales son características de muy bajo nivel (lineas verticales, horizontales, curvas, esquinas, etc.), mientras que las de las últimas capas extraen características más complejas.
