@@ -178,7 +178,16 @@ Los \textit{kernels}, normalmente tienden a extraer características de más alt
 
 En las redes convolucionales, es común encontrar otras operaciones como son:
 \begin{itemize}
-\item Pooling: TODO
+\item Pooling: Las capas de \textit{Pooling} se emplean principalmente para reducir el tamaño de los mapas de características resultantes de las capas convolucionales. Para conseguirlo, agrupan un conjunto de valores en un solo valor aplicando una función que normalmente es el máximo (\textit{MaxPooling} - se escoge el máximo valor) o la media (\textit{AveragePooling} - se calcula la media de los valores). La operación de \textit{Pooling} está definida principalmente por dos valores similares a los de la convolución: el tamaño del \textit{kernel}, que define el tamaño del subconjunto de valores; y la zancada o \textit{stride}, que define el número de valores que se traslada el \textit{kernel} cada paso. En la Figura \ref{fig:pooling}, se puede observar una operación de \textit{Pooling} con un \textit{kernel} y un \textit{stride} de $2\times2$ donde cada uno de los valores de la salida se calcula a partir de los valores de la entrada con el mismo color.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\linewidth]{imagenes/pooling.png} 
+\captionsetup{width=.5\linewidth}
+\caption{Operación de Pooling2D.}
+\label{fig:pooling}
+\end{figure}
+
 \item Deconvolución / Convolución transpuesta: TODO
 \end{itemize}
 
