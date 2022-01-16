@@ -158,6 +158,9 @@ El Perceptrón Multicapa, o por sus sigles en ingles, \textbf{MLP} (\textit{Mult
 \todo[inline]{Este parrafillo no me convence mucho}
 Con este tipo de arquitectura, comienza a desdibujarse la linea entre el aprendizaje automático y el aprendizaje profundo, ya que a medida que aumentamos el número de capas intermedias del modelo nos adentramos en el campo del \textit{Deep Learning} y su capacidad de ajuste aumenta.
 
+\subsection{RNN}
+Lorem
+
 \subsection{CNN}
 A la hora de trabajar con imágenes (matrices de dos o tres dimensiones), el número de conexiones, y por lo tanto, parámetros, que tendrían que existir para conectar cada valor de entrada con cada neurona crecería enormemente a la hora de trabajar con imágenes cuyo tamaño no fuese especialmente reducido. Las redes convolucionales, no solo lidian con este problema, si no que lo hacen proporcionando muy buenos resultados. Este tipo de redes, se basan en el concepto de núcleo (\textit{kernel}) proveniente del procesamiento digital de imágenes y la operación de convolución y su origen se atribuye al trabajo de LeCun \cite{}. Estos \textit{kernels} son pequeñas matrices que se convolucionan sobre la imagen de entrada, extrayendo de esta forma mapas de características (también conocidos como mapas de activaciones) que son a su vez la entrada de las siguientes capas convolucionales. Los \textit{kernels}, normalmente tienden a extraer características de más alto nivel cuanto más adelante están en la red. Esto significa que las características que se extraen en las capas iniciales son características de muy bajo nivel (lineas verticales, horizontales, curvas, esquinas, etc.), mientras que las de las últimas capas extraen características más complejas.
 
@@ -172,12 +175,6 @@ Lorem ipsum
 
 \subsubsection{Efficientnet}
 Lorem ipsum
-
-\subsubsection{Fusionnet}
-Lorem ipsum
-
-\subsection{RNN}
-Lorem
 
 \subsection{Transformers}
 La arquitectura inicial del \textit{transformer} (Figura \ref{fig:arquitectura-transformer}), propuesta en \textit{Attention is All You Need} \cite{NIPS2017_3f5ee243}, se basa en una estructura \textit{encoder-decoder}. Es decir, un conjunto de capas (\textit{encoder}) que codifica la entrada en una representación latente, que después es tomada como entrada del \textit{decoder}, otro conjunto de capas que decodifica esta representación latente en una salida útil. En la propuesta inicial, destinada a procesamiento de lenguaje natural, el \textit{encoder} se encarga de trasladar una secuencia de entrada $(x_1, ..., x_n)$ - una frase - en una secuencia de representación $(z_1, ..., z_n)$. Esta secuencia $z$, es la entrada del \textit{decoder}, que la convierte en una secuencia de salida $(y_1, ..., y_m)$ - otra frase -. Una de las principales diferencias frente a los modelos \textit{encoder-decoder} basados en redes recurrentes, es que a pesar de que el modelo sigue siendo auto-regresivo, es decir, sigue utilizando los elementos generados por la salida del modelo como entrada para el siguiente elemento a generar, en este caso la secuencia de entrada no está alineada temporalmente con la ejecución del modelo y por lo tanto puede paralelizarse todo el procesamiento de dicha secuencia, acelerando entrenamiento e inferencia.
