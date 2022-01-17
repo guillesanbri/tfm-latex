@@ -318,19 +318,27 @@ Por último, y aunque podrían entrar dentro del grupo de disminución de rango,
 Este trabajo se centra en el mecanismo propuesto por .., el performer, para...
 
 \subsection{Transformers para visión artificial - ViT}
-A la hora de aplicar la arquitectura de los \textit{transformers} a problemas de tratamiento de imágenes, surge un problema importante. La complejidad del mecanismo de atención es $O(n^{2})$, siendo n el número de elementos en la secuencia de entrada, por lo que para una imagen de dimensiones $lado \times lado$, el número de píxeles que conformarían la secuencia de entrada al mecanismo de atención es $n = l^2$, disparando la complejidad de la atención a $O(l^{4})$. Para lidiar con este problema, se han propuesto distintas soluciones como limitar el mecanismo de atención al entorno de cada píxel (presentado en \textit{Image Transformers} \cite{image_transformer}) o aplicar convoluciones para reducir el tamaño de la secuencia de entrada \cite{detrfacebookdetectiontransformers}. 
+A la hora de aplicar la arquitectura de los \textit{transformers} a procesamiento de imágenes, surge un problema importante. La complejidad del mecanismo de atención es $O(n^{2})$, siendo n el número de elementos en la secuencia de entrada, por lo que para una imagen de dimensiones $lado \times lado$, el número de píxeles que conformarían la secuencia de entrada al mecanismo de atención es $n = l^2$, disparando la complejidad de la atención a $O(l^{4})$. Para lidiar con este problema, se han propuesto distintas soluciones como limitar el mecanismo de atención al entorno de cada píxel (presentado en \textit{Image Transformers} \cite{image_transformer}) o aplicar convoluciones para reducir el tamaño de la secuencia de entrada \cite{detrfacebookdetectiontransformers}. 
 
-Sin embargo, la solución propuesta en \textit{An Image is Worth 16x16 Words} con el \textit{Vision Transformer} \cite{image16x16words} es la que mejores resultados ha obtenido y por lo tanto aquella que más popularidad ha ganado como base de arquitecturas para otros problemas de visión artificial \cite{visiontransformersDPT, bhat2020adabins, chen2021transunet, liu2021Swin}. Esta solución, consiste en dividir la imagen original en fragmentos de tamaño fijo y convertir con una proyección cada fragmento en un vector de valores (\textit{embedding}). Estos vectores, son equivalentes al resultado del \textit{embedding} de palabras en la arquitectura original y se introducen al modelo como tal, es decir, cada fragmento extraído de la imagen correspondería a una palabra de una frase (Figura \ref{fig:vision-transformer}). Como nota, esta arquitectura, inicialmente propuesta para realizar clasificación, solamente emplea el \textit{encoder} del \textit{transformer}.
+Sin embargo, la solución propuesta en \textit{An Image is Worth 16x16 Words} con el \textit{Vision Transformer} \cite{image16x16words} es la que mejores resultados ha obtenido y por lo tanto aquella que más popularidad ha ganado como base de arquitecturas para otros problemas de visión artificial \cite{visiontransformersDPT, bhat2020adabins, chen2021transunet, liu2021Swin}. Esta solución, consiste en dividir la imagen original en fragmentos de tamaño fijo y convertir con una proyección cada fragmento en un vector de valores (\textit{embedding}). Estos vectores, son equivalentes al resultado del \textit{embedding} de palabras en la arquitectura original y se introducen al modelo como tal, es decir, cada fragmento extraído de la imagen correspondería a una palabra de una frase (Figura \ref{fig:vit}). Esta arquitectura, al ser inicialmente propuesta para realizar clasificación, solamente emplea el \textit{encoder} del \textit{transformer}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=1\linewidth]{imagenes/vision-transformer.png} 
+\includegraphics[width=1\linewidth]{imagenes/vit.png} 
 \captionsetup{width=.8\linewidth}
-\caption{Separación de una imagen en fragmentos siguiendo la propuesta de \cite{image16x16words}. Fuente: Elaboración propia inspirada en \cite{image16x16words}}
-\label{fig:vision-transformer}
+\caption{\textit{Backbone} basado en fragmentos y proyección lineal del ViT. Figura inspirada en \cite{image16x16words}}
+\label{fig:vit}
 \end{figure}
 
-\todo[inline]{Hablar del vit hybrid y mencionar que es el que se emplea}
+En esta publicación, además, se presenta una variante del \textit{Vision Transformer}, el \textbfit{Hybrid Vision Transformer}. La diferencia entre esta arquitectura y la original es la sustitución del \textit{backbone} del ViT, es decir, de la separación en fragmentos y la proyección lineal, por una red convolucional de cuyos mapas de características se extraen los vectores que pasan a los bloques de atención (Figura \ref{fig:hybrid-vit}). Para formar estos vectores, en la implementación usada en este trabajo, se agrupan los mapas de características en función de sus píxeles, por lo tanto, si hay $n$ mapas de características, el píxel número 1 de cada uno de ellos formará un vector de dimensión n. De esta forma, la dimensión del vector viene dada por el número de mapas de características y el número de \textit{tokens} será equivalente al número de píxeles de los mapas de características (imágenes mayores conllevan un mayor número de \textit{tokens}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\linewidth]{imagenes/vit-hybrid.png} 
+\captionsetup{width=.8\linewidth}
+\caption{\textit{Backbone} convolucional del Hybrid-ViT.}
+\label{fig:hybrid-vit}
+\end{figure}
 
 \subsection{Estimación de profundidades}
 \todo[inline]{Repasar estos tres parrafo}
