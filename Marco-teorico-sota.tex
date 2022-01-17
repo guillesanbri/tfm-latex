@@ -149,7 +149,7 @@ El Perceptrón Multicapa, o por sus sigles en ingles, \textbf{MLP} (\textit{Mult
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\linewidth]{imagenes/mlp.png} 
+\includegraphics[width=0.8\linewidth]{imagenes/mlp.png} 
 \captionsetup{width=.8\linewidth}
 \caption{Perceptrón Multicapa.}
 \label{fig:mlp}
@@ -159,7 +159,19 @@ El Perceptrón Multicapa, o por sus sigles en ingles, \textbf{MLP} (\textit{Mult
 Con este tipo de arquitectura, comienza a desdibujarse la linea entre el aprendizaje automático y el aprendizaje profundo, ya que a medida que aumentamos el número de capas intermedias del modelo nos adentramos en el campo del \textit{Deep Learning} y su capacidad de ajuste aumenta.
 
 \subsection{RNN}
-Lorem
+Las redes neuronales recurrentes (RNN - \textit{Recurrent Neural Networks}) son un grupo de redes neuronales, introducidas por TODO \cite{rnn}. La arquitectura de estas redes se fundamenta en la utilización repetida de la salida de la propia red en un instante como entrada adicional de la red en el instante siguiente. Para conseguir esto, se mantiene la información en forma de estado escondido (\textit{hidden state}). Gracias a esta transmisión recurrente, es posible transferir información entre entradas sucesivas de la red.
+
+Este tipo de redes está especialmente diseñado para trabajar con entradas secuenciales de valores (series temporales, texto, señales de audio y video, etc.) ya que su arquitectura aprovecha la información de los datos previos y no tiene limitaciones en el tamaño de la secuencia de entrada.
+
+Sin embargo, la ejecución y entrenamiento de este tipo de redes requiere ejecutarlas individualmente con cada uno de los valores de la entrada, haciendo que el proceso sea temporalmente costoso. Además, pese a que se han presentado distintas modificaciones como las celdas GRU (\textit{Gated Recurrent Units}) \cite{gru} o LSTM (\textit{Long Short-Term Memory}) \cite{lstm} que los mitigan, también sufren tanto de desvanecimientos de gradientes por las activaciones sucesivas como de pérdida de información en cadenas de gran tamaño (al codificar toda la información anterior en un estado oculto, llega un punto en el que la información almacenada en instantes alejados temporalmente deja de ser representativa).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\linewidth]{imagenes/rnn.png} 
+\captionsetup{width=.8\linewidth}
+\caption{Red recurrente.}
+\label{fig:rnn}
+\end{figure}
 
 \subsection{CNN}
 A la hora de trabajar con imágenes (matrices de dos o tres dimensiones), el número de conexiones, y por lo tanto, parámetros, que tendrían que existir para conectar cada valor de entrada con cada neurona crece enormemente. Las redes convolucionales, no solo lidian con este problema, si no además lo hacen proporcionando muy buenos resultados. Este tipo de redes, se basan en el concepto de núcleo (\textit{kernel}) proveniente del procesamiento digital de imágenes y la operación de convolución, y su origen se atribuye al trabajo de LeCun et al. \cite{}.
