@@ -205,13 +205,7 @@ En las redes convolucionales, es común encontrar otras operaciones como son:
 
 \pagebreak
 
-\subsubsection{Conexiones residuales y ResNet}
-
-%\begin{wrapfigure}{r}{0.5\textwidth}
-%\includegraphics[width=0.95\linewidth]{imagenes/residual-connection.png} 
-%\caption{Conexión residual básica.}
-%\label{fig:residual}
-%\end{wrapfigure}
+\subsubsection{Conexiones residuales y ResNets}
 
 En el artículo publicado por He et al. \cite{resnet} se presentan las conexiones residuales y la familia de redes ResNet, compuesta por distintos modelos en función de su número de capas. En el momento en el que se publicó dicho estudio, gracias a las conexiones residuales, se consiguió aumentar el número de capas en los modelos del estado del arte en cerca de un orden de magnitud (de las 22 capas de GoogleLeNet \cite{googlelenet} a las 152 capas de ResNet152). Para conseguir esto, las ResNet se apoyan en las conexiones residuales (Figura \ref{fig:residual}), que permiten aumentar tanto la capacidad de aprendizaje de las redes como la calidad de sus resultados.
 
@@ -231,6 +225,8 @@ En el artículo publicado por He et al. \cite{resnet} se presentan las conexione
 \end{wrapfigure}
 
 Las conexiones residuales están motivadas por la idea de que dada una red con una profundidad óptima para una tarea, en teoría, por muchas capas que se incluyesen, el descenso del gradiente sería capaz de hacer que las capas adicionales convergiesen en una función identidad y no perjudicasen los resultados. No obstante, empíricamente se ha comprobado que con las redes neuronales llega un punto en el que añadir más profundidad hace que los resultados empeoren. Aquí es donde entran las conexiones residuales, ya que al pasar hacia adelante la entrada de un bloque de capas y sumarlo a su salida (Figura \ref{fig:residual}), se facilita que el descenso del gradiente reste importancia a la señal que ha atravesado dicho bloque ($F(x)$) en caso de que no mejore a la salida final de la red.
+
+Además, para reducir el uso de recursos computacionales al incrementar el número de capas, las ResNet utilizan conexiones residuales con cuellos de botella (\textit{bottleneck}) para reducir el tiempo de ejecución. Este sistema, en vez de usar como $F(x)$ (Figura \ref{fig:residual}) dos capas convolucionales, emplea tres, siendo la primera y la tercera convoluciones de filtros $1\times1$ (Sección TODO) que se encargan de reducir el número de canales y posteriormente incrementarlo para que se pueda sumar con la entrada. De esta forma, se reducen en gran medida el número de operaciones a realizar en la capa convolucional central, con filtros de tamaño $3\times3$. 
 
 % Aunque se supone que es resnetv2, https://github.com/rwightman/pytorch-image-models/blob/b669f4a5881d17fe3875656ec40138c1ef50c4c9/timm/models/resnetv2.py#L194 en ViT no se usa el bloque con preactivación.
 
