@@ -209,14 +209,6 @@ En las redes convolucionales, es común encontrar otras operaciones como son:
 
 En el artículo publicado por He et al. \cite{resnet} se presentan las conexiones residuales y la familia de redes ResNet, compuesta por distintos modelos en función de su número de capas. En el momento en el que se publicó dicho estudio, gracias a las conexiones residuales, se consiguió aumentar el número de capas en los modelos del estado del arte en cerca de un orden de magnitud (de las 22 capas de GoogleLeNet \cite{googlelenet} a las 152 capas de ResNet152). Para conseguir esto, las ResNet se apoyan en las conexiones residuales (Figura \ref{fig:residual}), que permiten aumentar tanto la capacidad de aprendizaje de las redes como la calidad de sus resultados.
 
-%\begin{figure}[H]
-%\centering
-%\includegraphics[width=0.5\linewidth]{imagenes/residual-connection.png} 
-%\captionsetup{width=.5\linewidth}
-%\caption{Conexión residual básica.}
-%\label{fig:residual}
-%\end{figure}
-
 \begin{wrapfigure}{r}{0.4\textwidth}
 \vspace{-10pt}
 \includegraphics[width=0.95\linewidth]{imagenes/residual-connection.png} 
@@ -232,7 +224,13 @@ Además, para reducir el uso de recursos computacionales al incrementar el núme
 
 
 \subsubsection{Efficientnet}
-Lorem ipsum
+Posteriormente, el artículo \textit{EfficientNet: Rethinking Model Scaling for Convolutional Neuronal Networks} \cite{efficientnet} propone un método para escalar de forma proporcional la profundidad (número de capas), anchura (número de filtros) y resolución de entrada de las redes convolucionales de forma que se puedan adaptar los modelos a los recursos disponibles. Además, esta publicación también presenta la red \textbf{EfficientNet-B0} (inicialmente diseñada para ilustrar el escalado proporcional propuesto) y su familia de redes. Esta red, se emplea para ilustrar el escalado proporcional propuesto, obteniendo así múltiples modelos. Sin embargo, más allá de ilustrar el escalado en anchura, profundidad y resolución, la arquitectura de la familia de EfficientNets obtiene resultados muy competitivos con un número de parámetros muy reducido en comparación con el de sus competidores.
+
+Para diseñar esta red, se extiende el trabajo de Tan et al. \cite{}, y se emplea \textit{Neural Architecture Search - NAS} (una técnica que automatiza la búsqueda y configuración de arquitecturas de redes neuronales) buscando optimizar el \textit{accuracy} \todo{En español exactitud me suena feo y precisión me suena a precision} y el número de operaciones en coma flotante (FLOPS). Como resultado, se obtiene una arquitectura que emplea principalmente bloques de capas MBConv (\textit{Mobile Inverted Bottleneck Residual Convolution}) \cite{mobilenetv2} y \textit{Squeeze-and-Excitation} \cite{squeeze and excitation}.
+
+La primera de estas dos capas, (MBConv) se propone en la publicación de \textbf{MobileNetV2} \cite{mobilenetv2} y modifica los bloques con conexiones y cuello de botella (Sección TODO) inviertiendolo, es decir, en vez de utilizar filtros de $1\times1$ para reducir el número de filtros y después aumentarlos, este bloque emplea dichos filtros para aumentar y luego reducir el número de mapas de características. No obstante, también emplea convoluciones por profundidad separables \textit{Depthwise Separable Convolutions} (Sección TODO) para reducir enormemente el número de operaciones cuando el número de canales aumenta. 
+
+La segunda, es uno de los bloques principales de la \textbf{SENet} \cite{} y basa su funcionamiento en dos operaciones que realmente pueden añadirse a cualquier otra capa: el mecanismo de \textit{squeeze}, que crea un descriptor de cada canal de la entrada agregando sus características espacialmente; y el mecanismo de \textit{excitation}, que toma como entrada los descriptores anteriores y los utiliza para modular los pesos de sus canales correspondientes.
 
 \subsection{Transformers}
 La arquitectura inicial del \textit{transformer} (Figura \ref{fig:arquitectura-transformer}), propuesta en \textit{Attention is All You Need} \cite{NIPS2017_3f5ee243}, se basa en una estructura \textit{encoder-decoder}. Es decir, un conjunto de capas (\textit{encoder}) que codifica la entrada en una representación latente, que después es tomada como entrada del \textit{decoder}, otro conjunto de capas que decodifica esta representación latente en una salida útil. En la propuesta inicial, destinada a procesamiento de lenguaje natural, el \textit{encoder} se encarga de trasladar una secuencia de entrada $(x_1, ..., x_n)$ - una frase - en una secuencia de representación $(z_1, ..., z_n)$. Esta secuencia $z$, es la entrada del \textit{decoder}, que la convierte en una secuencia de salida $(y_1, ..., y_m)$ - otra frase -. Una de las principales diferencias frente a los modelos \textit{encoder-decoder} basados en redes recurrentes, es que a pesar de que el modelo sigue siendo auto-regresivo, es decir, sigue utilizando los elementos generados por la salida del modelo como entrada para el siguiente elemento a generar, en este caso la secuencia de entrada no está alineada temporalmente con la ejecución del modelo y por lo tanto puede paralelizarse todo el procesamiento de dicha secuencia, acelerando entrenamiento e inferencia.
