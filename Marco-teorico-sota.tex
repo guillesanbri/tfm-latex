@@ -201,9 +201,33 @@ En las redes convolucionales, es común encontrar otras operaciones como son:
 \end{figure}
 
 \item Deconvolución / Convolución transpuesta: TODO
-\end{itemize}
 
-\pagebreak
+\item Convolución 1x1 (\textit{Pointwise Convolution}): Pese a que no es un tipo de capa distinta per se, esta aplicación particular de la convolución suele emplearse junto a otro tipo de capas o como proyección para modificar el número de canales. Su principio de funcionamiento es el uso de \textit{kernels} de tamaño $1\times1$ y tantos canales como mapas de características tenga la entrada. De esta forma, cada uno de los filtros produce un solo canal de igual altura y anchura que la entrada en la salida, permitiendo por lo tanto controlar con el número de filtros de la capa convolucional el nuevo número de canales en el que se proyecta la entrada (Figura \ref{fig:convolucion1x1}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\linewidth]{imagenes/convolucion1x1.png} 
+\captionsetup{width=.9\linewidth}
+\caption{\textit{Pointwise convolution}.}
+\label{fig:convolucion1x1}
+\end{figure}
+
+\item Convolución por profundidad separable (\textit{Depthwise Separable Convolution}): Similar al caso anterior, este cálculo es mas bien un caso especial de la capa de convolución. La operación de convolución por profundidad separable se compone de dos partes: 
+
+\begin{enumerate}
+\item Una convolución por profundidad donde los \textit{kernels} solamente tienen un canal y se aplican de forma individual en solo uno de los canales (el número de \textit{kernels} tiene que ser igual al número de canales en la entrada) para luego agrupar los resultados (Figura \ref{fig:convolucion-depthwise}).
+\item Una convolución con un solo \textit{kernel} de tamaño $1\times1$, fusionando los canales individuales resultantes de la operación anterior en uno solo. De esta forma, la operación se asemeja a una convolución corriente en la que el \textit{kernel} tendría tantos canales como la entrada, pero reduciendo muy considerablemente el número de operaciones\footnote{TODO poner un ejemplo del cambio de número de operaciones}.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\linewidth]{imagenes/convolucion-depthwise.png} 
+\captionsetup{width=.9\linewidth}
+\caption{\textit{Depthtwise convolution}.}
+\label{fig:convolucion-depthwise}
+\end{figure}
+
+\end{itemize}
 
 \subsubsection{Conexiones residuales y ResNets}
 
