@@ -342,23 +342,11 @@ En esta publicación, además, se presenta una variante del \textit{Vision Trans
 
 \subsection{Estimación de profundidades}
 \todo[inline]{Repasar estos tres parrafo}
-La estimación de profundidades, tanto cuando es llevada a cabo por humanos como por máquinas, consiste en detectar la distancia relativa entre todo aquello que se ve. Para conseguir esto, nuestro cerebro se apoya principalmente en la disparidad existente entra las imágenes que capturan cada uno de nuestros ojos, ya que las cosas que están más lejanas ven su posición menos alterada entre la vista de un ojo y de otro que las cosas cercanas. Esto se conoce como estereovisión.
+La estimación de profundidades, tanto cuando es llevada a cabo por humanos como por máquinas, consiste en detectar la distancia relativa entre todo aquello que se ve. Tal y como se ha mencionado en el capítulo de Introducción TODO, el cerebro humano se apoya principalmente en la disparidad existente entra las imágenes que capturan cada uno de los ojos (estereovisión), ya que las cosas que están más lejanas ven su posición menos alterada entre la vista de un ojo y de otro que las cosas cercanas. Sin embargo, el cerebro es también capaz de, a partir de nuestro conocimiento previo del mundo y nuestro entorno (pistas monoculares), estimar la profundidad en una sola imagen. 
 
-Si nos tapamos un ojo, deberíamos perder esta capacidad para percibir la profundidad, sin embargo, esto no ocurre debido a que el cerebro explota lo que se conocen como pistas monoculares, que aportan información sobre la distancia a la que están las cosas a partir de las oclusiones, sombras, perspectiva, el tamaño esperado de un objeto, el paralaje, etc.
+Las técnicas de visión artificial tradicional (basadas en dos cámaras - visión estereoscópica) no pueden lidiar con este problema, por lo que la estimación monocular (con una sola cámara) es prácticamente imposible. Para este tipo de estimación (monocular), entran en juego los modelos de aprendizaje automático, que han demostrado una gran capacidad para explotar el conocimiento sobre el entorno en todo tipo de tareas, no siendo la estimación de profundidades diferente. 
 
-Las técnicas de visión artificial tradicional (basadas en dos cámaras - visión estereoscópica) no pueden lidiar con este problema, por lo que la estimación monocular (con una sola cámara) es prácticamente imposible. Para este tipo de estimación (monocular), entran en juego los modelos de aprendizaje automático, que han demostrado una gran capacidad para explotar este tipo de construcciones en todo tipo de tareas, no siendo la estimación de profundidades diferente. No obstante, a continuación se enumeran los distintos enfoques existentes, tanto tradicionales como basados en aprendizaje automático, en los cuales se profundizará especialmente.
-
-% \todo[inline]{Hablar de la estimación de profundidades desde un punto de vista general, explicar por qué es un problema hacerlo con solo una cámara, por qué es interesante resolver este problema, qué utilidades puede tener, etc.}
-% \todo[inline]{Contar un poco cómo usamos estereovisión y las pistas monoculares, se puede mover también al contexto/motivación de la introducción.}
-
-% \subsection{Redes neuronales y distintas topologías}
-% \todo[inline]{Hablar brevemente de las redes neuronales, en las subsecciones, hablar, de más a menos, de transformers > convolucionales > recurrentes.}
-
-% \subsubsection{Redes convolucionales}
-% Lorem ipsum
-% \subsubsection{Redes recurrentes}
-% Lorem ipsum
-% \subsubsection{Transformers}
+A continuación, aunque haciendo especial hincapié en aquellos basados en aprendizaje automático, se enumeran los distintos enfoques existentes, incluyendo aquellos propios de la visión artificial tradicional, las soluciones \textit{hardware}, y las técnicas de aprendizaje profundo.
 
 \subsubsection{Técnicas de estimación de profundidades} \label{estimacion-profundidades-sota}
 
