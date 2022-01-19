@@ -142,7 +142,11 @@ Una vez calculados estos dos términos, se actualizan los parámetros de forma s
 \theta_t = \theta_{t-1} - \gamma \frac{\hat{m}_t}{\sqrt{\hat{v}_t}}
 \end{equation}
 
-En cuanto a la diferencia entre Adam y AdamW, TODO
+En cuanto a la diferencia entre Adam y AdamW, esta reside en como se implementa el \textit{weight decay}, un tipo de regularización que penaliza los pesos mayores y que por lo tanto pueden introducir mayor varianza en el modelo. Tal y como se indica en el artículo \textit{Decoupled Weight Decay Regularization} \cite{adamw}, la implementación del \textit{weight decay} en los optimizadores (Adam entre ellos) aplica este decaimiento en los gradientes. Sin embargo, al añadir las operaciones relacionadas con los gradientes adaptativos, aplicar el decaimiento en los gradientes deja de ser equivalente a aplicarlo realmente en los pesos. AdamW soluciona este problema implementando el método de regularización correctamente.
+
+% https://stackoverflow.com/questions/64621585/adamw-and-adam-with-weight-decay
+% https://www.fast.ai/2018/07/02/adam-weight-decay/
+% https://towardsdatascience.com/weight-decay-l2-regularization-90a9e17713cd
 
 \subsection{MLP}
 El Perceptrón Multicapa, o por sus sigles en ingles, \textbf{MLP} (\textit{Multi Layer Perceptron}), es una de las arquitecturas de red neuronal más básicas y está formado por una capa de entrada, una capa de salida, y un bloque de capas intermedias u ocultas. Estas capas intermedias, son agrupaciones de neuronas donde cada una de las neuronas (normalmente) se conecta con todas las neuronas de la capa anterior y con todas las neuronas de la capa posterior (Figura \ref{fig:mlp}). De esta forma, se crea una sucesión donde las entradas de una neurona son las salidas de las neuronas de la capa anterior y la salida de dicha neurona es una de las entradas de todas las neuronas de la capa siguiente. 
