@@ -200,7 +200,15 @@ En las redes convolucionales, es común encontrar otras operaciones como son:
 \label{fig:pooling}
 \end{figure}
 
-\item Deconvolución / Convolución transpuesta: TODO
+\item Convolución transpuesta: La operación de convolución puede, dependiendo del tamaño del \textit{kernel}, producir un resultado de dimensiones espaciales (altura y anchura) iguales o menores que las de la entrada. Sin embargo, para obtener una salida con mayores dimensiones que la entrada es necesario recurrir a la convolución transpuesta, una operación similar a la convolución donde para obtener los valores de la salida, se multiplican todos los valores del \textit{kernel} por solo uno de los valores de la entrada, que se recorren individualmente. Al hacer el cálculo de esta forma, dependiendo de la zancada (\textit{stride}) que se elija, pueden solaparse valores de la salida, por lo que se suman aquellos que hayan obtenido un valor en más de una operación (Figura \ref{fig:transpose}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\linewidth]{imagenes/transpose-convolution.png} 
+\captionsetup{width=.75\linewidth}
+\caption{Primeros pasos de una convolución transpuesta.}
+\label{fig:transpose}
+\end{figure}
 
 \item Convolución 1x1 (\textit{Pointwise Convolution}): Pese a que no es un tipo de capa distinta per se, esta aplicación particular de la convolución suele emplearse junto a otro tipo de capas o como proyección para modificar el número de canales. Su principio de funcionamiento es el uso de \textit{kernels} de tamaño $1\times1$ y tantos canales como mapas de características tenga la entrada. De esta forma, cada uno de los filtros produce un solo canal de igual altura y anchura que la entrada en la salida, permitiendo por lo tanto controlar con el número de filtros de la capa convolucional el nuevo número de canales en el que se proyecta la entrada (Figura \ref{fig:convolucion1x1}).
 
