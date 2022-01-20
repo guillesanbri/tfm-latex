@@ -1012,4 +1012,211 @@ pages={211-252}
  month={Dec}
  } 
 
+@article{universal-approximators,
+title = {Multilayer feedforward networks are universal approximators},
+journal = {Neural Networks},
+volume = {2},
+number = {5},
+pages = {359-366},
+year = {1989},
+issn = {0893-6080},
+doi = {https://doi.org/10.1016/0893-6080(89)90020-8},
+url = {https://www.sciencedirect.com/science/article/pii/0893608089900208},
+author = {Kurt Hornik and Maxwell Stinchcombe and Halbert White},
+keywords = {Feedforward networks, Universal approximation, Mapping networks, Network representation capability, Stone-Weierstrass Theorem, Squashing functions, Sigma-Pi networks, Back-propagation networks},
+abstract = {This paper rigorously establishes that standard multilayer feedforward networks with as few as one hidden layer using arbitrary squashing functions are capable of approximating any Borel measurable function from one finite dimensional space to another to any desired degree of accuracy, provided sufficiently many hidden units are available. In this sense, multilayer feedforward networks are a class of universal approximators.}
+}
 
+@article{backprop,
+  added-at = {2019-05-21T10:10:49.000+0200},
+  author = {Rumelhart, David E. and Hinton, Geoffrey E. and Williams, Ronald J.},
+  biburl = {https://www.bibsonomy.org/bibtex/2a392597c4f9cff2cd3c96c2191fa1eb6/sxkdz},
+  doi = {10.1038/323533a0},
+  interhash = {c354bc293fa9aa7caffc66d40a014903},
+  intrahash = {a392597c4f9cff2cd3c96c2191fa1eb6},
+  journal = {Nature},
+  keywords = {imported},
+  number = 6088,
+  pages = {533--536},
+  timestamp = {2019-05-21T10:10:49.000+0200},
+  title = {{Learning Representations by Back-propagating Errors}},
+  url = {http://www.nature.com/articles/323533a0},
+  volume = 323,
+  year = 1986
+}
+
+@article{model-evaluation,
+  author    = {Sebastian Raschka},
+  title     = {Model Evaluation, Model Selection, and Algorithm Selection in Machine
+               Learning},
+  journal   = {CoRR},
+  volume    = {abs/1811.12808},
+  year      = {2018},
+  url       = {http://arxiv.org/abs/1811.12808},
+  eprinttype = {arXiv},
+  eprint    = {1811.12808},
+  timestamp = {Mon, 03 Dec 2018 07:50:28 +0100},
+  biburl    = {https://dblp.org/rec/journals/corr/abs-1811-12808.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{relu,
+author = {Nair, Vinod and Hinton, Geoffrey E.},
+title = {Rectified Linear Units Improve Restricted Boltzmann Machines},
+year = {2010},
+isbn = {9781605589077},
+publisher = {Omnipress},
+address = {Madison, WI, USA},
+booktitle = {Proceedings of the 27th International Conference on International Conference on Machine Learning},
+pages = {807–814},
+numpages = {8},
+location = {Haifa, Israel},
+series = {ICML'10}
+}
+
+@article{gelu,
+  title={Gaussian error linear units (gelus)},
+  author={Hendrycks, Dan and Gimpel, Kevin},
+  journal={arXiv preprint arXiv:1606.08415},
+  year={2016}
+}
+
+@incollection{lecun2012efficient,
+  title={Efficient backprop},
+  author={LeCun, Yann A and Bottou, L{\'e}on and Orr, Genevieve B and M{\"u}ller, Klaus-Robert},
+  booktitle={Neural networks: Tricks of the trade},
+  pages={9--48},
+  year={2012},
+  publisher={Springer}
+}
+
+@article{adagrad,
+  author  = {John Duchi and Elad Hazan and Yoram Singer},
+  title   = {Adaptive Subgradient Methods for Online Learning and Stochastic Optimization},
+  journal = {Journal of Machine Learning Research},
+  year    = {2011},
+  volume  = {12},
+  number  = {61},
+  pages   = {2121-2159},
+  url     = {http://jmlr.org/papers/v12/duchi11a.html}
+}
+
+@inproceedings{adam,
+  author={Diederik P. Kingma and Jimmy Ba},
+  title={Adam: A Method for Stochastic Optimization},
+  year={2015},
+  cdate={1420070400000},
+  url={http://arxiv.org/abs/1412.6980},
+  booktitle={ICLR (Poster)},
+  crossref={conf/iclr/2015}
+}
+
+@inproceedings{adamw,
+title={Decoupled Weight Decay Regularization},
+author={Ilya Loshchilov and Frank Hutter},
+booktitle={International Conference on Learning Representations},
+year={2019},
+url={https://openreview.net/forum?id=Bkg6RiCqY7},
+}
+
+@conference{on-large-batch,
+title = "On large-batch training for deep learning: Generalization gap and sharp minima",
+abstract = "The stochastic gradient descent (SGD) method and its variants are algorithms of choice for many Deep Learning tasks. These methods operate in a small-batch regime wherein a fraction of the training data, say 32-512 data points, is sampled to compute an approximation to the gradient. It has been observed in practice that when using a larger batch there is a degradation in the quality of the model, as measured by its ability to generalize. We investigate the cause for this generalization drop in the large-batch regime and present numerical evidence that supports the view that large-batch methods tend to converge to sharp minimizers of the training and testing functions-and as is well known, sharp minima lead to poorer generalization. In contrast, small-batch methods consistently converge to flat minimizers, and our experiments support a commonly held view that this is due to the inherent noise in the gradient estimation. We discuss several strategies to attempt to help large-batch methods eliminate this generalization gap.",
+author = "Keskar, {Nitish Shirish} and Jorge Nocedal and Tang, {Ping Tak Peter} and Dheevatsa Mudigere and Mikhail Smelyanskiy",
+year = "2017",
+language = "English (US)",
+note = "5th International Conference on Learning Representations, ICLR 2017 ; Conference date: 24-04-2017 Through 26-04-2017",
+}
+
+@Inbook{LeCun1999,
+author="LeCun, Yann
+and Haffner, Patrick
+and Bottou, L{\'e}on
+and Bengio, Yoshua",
+title="Object Recognition with Gradient-Based Learning",
+bookTitle="Shape, Contour and Grouping in Computer Vision",
+year="1999",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="319--345",
+abstract="Finding an appropriate set of features is an essential problem in the design of shape recognition systems. This paper attempts to show that for recognizing simple objects with high shape variability such as handwritten characters, it is possible, and even advantageous, to feed the system directly with minimally processed images and to rely on learning to extract the right set of features. Convolutional Neural Networks are shown to be particularly well suited to this task. We also show that these networks can be used to recognize multiple objects without requiring explicit segmentation of the objects from their surrounding. The second part of the paper presents the Graph Transformer Network model which extends the applicability of gradient-based learning to systems that use graphs to represents features, objects, and their combinations.",
+isbn="978-3-540-46805-9",
+doi="10.1007/3-540-46805-6_19",
+url="https://doi.org/10.1007/3-540-46805-6_19"
+}
+
+@inproceedings{zeiler2014visualizing,
+  title={Visualizing and understanding convolutional networks},
+  author={Zeiler, Matthew D and Fergus, Rob},
+  booktitle={European conference on computer vision},
+  pages={818--833},
+  year={2014},
+  organization={Springer}
+}
+
+@INPROCEEDINGS{resnet,
+  author={He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
+  booktitle={2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, 
+  title={Deep Residual Learning for Image Recognition}, 
+  year={2016},
+  volume={},
+  number={},
+  pages={770-778},
+  doi={10.1109/CVPR.2016.90}}
+  
+  
+@InProceedings{efficientnet,
+  title = 	 {{E}fficient{N}et: Rethinking Model Scaling for Convolutional Neural Networks},
+  author =       {Tan, Mingxing and Le, Quoc},
+  booktitle = 	 {Proceedings of the 36th International Conference on Machine Learning},
+  pages = 	 {6105--6114},
+  year = 	 {2019},
+  editor = 	 {Chaudhuri, Kamalika and Salakhutdinov, Ruslan},
+  volume = 	 {97},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {09--15 Jun},
+  publisher =    {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v97/tan19a/tan19a.pdf},
+  url = 	 {https://proceedings.mlr.press/v97/tan19a.html},
+  abstract = 	 {Convolutional Neural Networks (ConvNets) are commonly developed at a fixed resource budget, and then scaled up for better accuracy if more resources are given. In this paper, we systematically study model scaling and identify that carefully balancing network depth, width, and resolution can lead to better performance. Based on this observation, we propose a new scaling method that uniformly scales all dimensions of depth/width/resolution using a simple yet highly effective compound coefficient. We demonstrate the effectiveness of this method on MobileNets and ResNet. To go even further, we use neural architecture search to design a new baseline network and scale it up to obtain a family of models, called EfficientNets, which achieve much better accuracy and efficiency than previous ConvNets. In particular, our EfficientNet-B7 achieves stateof-the-art 84.4% top-1 / 97.1% top-5 accuracy on ImageNet, while being 8.4x smaller and 6.1x faster on inference than the best existing ConvNet (Huang et al., 2018). Our EfficientNets also transfer well and achieve state-of-the-art accuracy on CIFAR-100 (91.7%), Flower (98.8%), and 3 other transfer learning datasets, with an order of magnitude fewer parameters.}
+}
+
+@INPROCEEDINGS{mnasnet,
+  author={Tan, Mingxing and Chen, Bo and Pang, Ruoming and Vasudevan, Vijay and Sandler, Mark and Howard, Andrew and Le, Quoc V.},
+  booktitle={2019 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 
+  title={MnasNet: Platform-Aware Neural Architecture Search for Mobile}, 
+  year={2019},
+  volume={},
+  number={},
+  pages={2815-2823},
+  doi={10.1109/CVPR.2019.00293}}
+
+@INPROCEEDINGS{mobilenetv2,
+  author={Sandler, Mark and Howard, Andrew and Zhu, Menglong and Zhmoginov, Andrey and Chen, Liang-Chieh},
+  booktitle={2018 IEEE/CVF Conference on Computer Vision and Pattern Recognition}, 
+  title={MobileNetV2: Inverted Residuals and Linear Bottlenecks}, 
+  year={2018},
+  volume={},
+  number={},
+  pages={4510-4520},
+  doi={10.1109/CVPR.2018.00474}}
+
+@INPROCEEDINGS{googlelenet,
+  author={Szegedy, Christian and Wei Liu and Yangqing Jia and Sermanet, Pierre and Reed, Scott and Anguelov, Dragomir and Erhan, Dumitru and Vanhoucke, Vincent and Rabinovich, Andrew},
+  booktitle={2015 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, 
+  title={Going deeper with convolutions}, 
+  year={2015},
+  volume={},
+  number={},
+  pages={1-9},
+  doi={10.1109/CVPR.2015.7298594}}
+
+@INPROCEEDINGS{senet,
+  author={Hu, Jie and Shen, Li and Sun, Gang},
+  booktitle={2018 IEEE/CVF Conference on Computer Vision and Pattern Recognition}, 
+  title={Squeeze-and-Excitation Networks}, 
+  year={2018},
+  volume={},
+  number={},
+  pages={7132-7141},
+  doi={10.1109/CVPR.2018.00745}}
