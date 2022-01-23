@@ -22,7 +22,7 @@ Las redes neuronales (en inglés, \textit{Neural Networks} - NN), son sistemas c
 
 Una de las bases teóricas más importantes de las NN, es que con un conjunto de neuronas lo suficientemente grande y funciones de activación no lineales, es posible aproximar cualquier función continua (\textit{Universal approximation theorem} \cite{universal-approximators}). Por desgracia, ajustar los parámetros (pesos y bias) de cada una de las neuronas de dicha red para aproximar la función deseada no es un problema trivial. 
 
-Una de las soluciones más comunes a este problema, es, de forma iterativa, modificar los parámetros de forma que minimicen la distancia entre la salida de la red y la función que se busca aproximar. Para esto, se emplea la propagación hacia atrás (\textbfit{backpropagation}) \cite{backprop}, que necesita: un \textbf{optimizador} (en los que se profundiza en la sección TODO), un \textbf{conjunto de entradas con salidas conocidas} y una \textbf{función de perdida} que se emplea como aproximación optimizable de la distancia previamente mencionada. Este algoritmo, de forma simplificada, consiste en:
+Una de las soluciones más comunes a este problema, es, de forma iterativa, modificar los parámetros de forma que minimicen la distancia entre la salida de la red y la función que se busca aproximar. Para esto, se emplea la propagación hacia atrás (\textbfit{backpropagation}) \cite{backprop}, que necesita: un \textbf{optimizador} (en los que se profundiza más adelante), un \textbf{conjunto de entradas con salidas conocidas} y una \textbf{función de perdida} que se emplea como aproximación optimizable de la distancia previamente mencionada. Este algoritmo, de forma simplificada, consiste en:
 
 \begin{enumerate}
 \item Calcular la salida de la red a partir de las entradas de las cuales conocemos la salida esperada (\textbfit{forward pass}).
@@ -254,7 +254,7 @@ En el artículo publicado por He et al. \cite{resnet} se presentan las conexione
 
 Las conexiones residuales están motivadas por la idea de que dada una red con una profundidad óptima para una tarea, en teoría, por muchas capas que se incluyesen, el descenso del gradiente sería capaz de hacer que las capas adicionales convergiesen en una función identidad y no perjudicasen los resultados. No obstante, empíricamente se ha comprobado que con las redes neuronales llega un punto en el que añadir más profundidad hace que los resultados empeoren. Aquí es donde entran las conexiones residuales, ya que al pasar hacia adelante la entrada de un bloque de capas y sumarlo a su salida (Figura \ref{fig:residual}), se facilita que el descenso del gradiente reste importancia a la señal que ha atravesado dicho bloque ($F(x)$) en caso de que no mejore la salida final de la red.
 
-Además, para reducir el uso de recursos computacionales al incrementar el número de capas, las ResNet utilizan conexiones residuales con cuellos de botella (\textit{bottleneck}) para reducir el tiempo de ejecución. Este sistema, en vez de usar como $F(x)$ (Figura \ref{fig:residual}) dos capas convolucionales, emplea tres, siendo la primera y la tercera convoluciones de filtros $1\times1$ (Sección TODO) que se encargan de reducir el número de canales y posteriormente incrementarlo para que se pueda sumar con la entrada. De esta forma, se reducen en gran medida el número de operaciones a realizar en la capa convolucional central, con filtros de tamaño $3\times3$. 
+Además, para reducir el uso de recursos computacionales al incrementar el número de capas, las ResNet utilizan conexiones residuales con cuellos de botella (\textit{bottleneck}) para reducir el tiempo de ejecución. Este sistema, en vez de usar como $F(x)$ (Figura \ref{fig:residual}) dos capas convolucionales, emplea tres, siendo la primera y la tercera convoluciones de filtros $1\times1$ que se encargan de reducir el número de canales y posteriormente incrementarlo para que se pueda sumar con la entrada. De esta forma, se reducen en gran medida el número de operaciones a realizar en la capa convolucional central, con filtros de tamaño $3\times3$. 
 
 % Aunque se supone que es resnetv2, https://github.com/rwightman/pytorch-image-models/blob/b669f4a5881d17fe3875656ec40138c1ef50c4c9/timm/models/resnetv2.py#L194 en ViT no se usa el bloque con preactivación.
 
@@ -272,8 +272,6 @@ La segunda, es uno de los bloques principales de la \textbf{SENet} \cite{senet} 
 La arquitectura inicial del \textit{transformer} (Figura \ref{fig:arquitectura-transformer}), propuesta en \textit{Attention is All You Need} \cite{NIPS2017_3f5ee243}, se basa en una estructura \textit{encoder-decoder}. Es decir, un conjunto de capas (\textit{encoder}) que codifica la entrada en una representación latente, que después es tomada como entrada del \textit{decoder}, otro conjunto de capas que decodifica esta representación latente en una salida útil. En la propuesta inicial, destinada a procesamiento de lenguaje natural, el \textit{encoder} se encarga de trasladar una secuencia de entrada $(x_1, ..., x_n)$ - una frase - en una secuencia de representación $(z_1, ..., z_n)$. Esta secuencia $z$, es la entrada del \textit{decoder}, que la convierte en una secuencia de salida $(y_1, ..., y_m)$ - otra frase -. 
 
 Una de las principales diferencias frente a los modelos \textit{encoder-decoder} basados en redes recurrentes, es que mientras que en las redes recurrentes la entrada tiene que procesarse de forma secuencial para poder obtener los estados ocultos de las entradas anteriores, en los \textit{transformers} la secuencia de entrada no está alineada temporalmente con la ejecución del modelo, ya que se procesa toda la entrada simultáneamente. De esta forma, se acelera muy significativamente el entrenamiento y la inferencia del modelo.
-
-% TODO: Hablar de como gracias al mecanismo de atención se puede atender a cualquier parte de la secuencia y no se olvida como en las redes recurrentes.
 
 \subsubsection{Arquitectura}
 
@@ -293,7 +291,6 @@ Por otro lado, en el \textbf{decoder} (parte derecha de la Figura \ref{fig:arqui
 
 % \paragraph{Mecanismos de atención}\mbox{}\\
 \subsubsection{Mecanismos de atención}
-% \todo[inline]{Hablar de los mecanismos de atención, y aunque se mencionen sus comienzos y sus aplicaciones en redes recurrentes y convolucionales, centrarse en que son la principal baza de los transformers y su "novedad", ya que solo funcionan con esto básicamente, si queda muy pegado aquí se puede sacar como subapartado de Redes Neuronales y distintas topologías.}
 
 \vspace{2mm}
 Los mecanismos de atención, presentados por primera vez en \cite{neuralmachinetranslationalignandtranslate}, buscan simular la atención cognitiva y han sido previamente empleados en redes recurrentes \cite{pmlr-v37-xuc15} y convolucionales \cite{7298685, 7410695} para aprender qué partes de la entrada son más relevantes en la tarea a completar. Sin embargo, en \cite{NIPS2017_3f5ee243}, con los \textit{transformers}, se propone por primera vez una arquitectura basada solamente en estos mecanismos. 
@@ -330,27 +327,26 @@ No obstante, estos mecanismos de atención son considerablemente costosos, ya qu
 
 Para reducir los requisitos de memoria y el coste computacional de los \textit{transformers}, que tal y como se ha mencionado anteriormente, obtienen sus resultados gracias a los mecanismos de atención, pero que sin embargo son muy costosos computacionalmente, surgen distintas técnicas que buscan aproximar el resultado de la multiplicación de matrices que se lleva a cabo en los bloques de atención. Siguiendo el esquema propuesto en \cite{2020arXiv200906732T}, estas modificaciones de las capas de atención pueden agruparse en:
 
-\todo[inline]{Que los tipos (quitando el performer) no estén al mismo nivel que está sección}
-
-\subsubsection{Patrones fijos - Fixed Patterns (FP)}
+\paragraph{Patrones fijos - Fixed Patterns (FP)}:
 En los patrones fijos, la longitud de la secuencia de entrada a los mecanismos de atención se reduce, por ejemplo: accediendo a ella en bloques de un tamaño determinado, en esto se basan \textbfit{Blockwise Attention} \cite{qiu-etal-2020-blockwise} y \textbfit{Local Attention} \cite{localattention}; accediendo a la secuencia en intervalos previamente definidos, como en \textbfit{Sparse Transformer} \cite{sparse-transformers} o \textbfit{Longformer} \cite{beltagy2020longformer} donde se emplean ventanas dilatadas o con un determinado \textit{stride} (zancada); o también empleando operaciones de \textit{pooling} para reducir la longitud de la entrada, en \textbfit{Compressed Attention} \cite{j.2018generating}.
 
-\subsubsection{Combinación de patrones - Combination of Patterns (CP)}
+\paragraph{Combinación de patrones - Combination of Patterns (CP)}:
 Este grupo de métodos, se basa principalmente en la combinación de diferentes patrones de acceso a los elementos que componen la secuencia de entrada y aparece en \textbfit{Sparse Transformer} \cite{sparse-transformers} donde se combinan \textit{Local Attention} y \textit{strided attention} asignando la mitad de las cabezas del bloque de \textit{multi-head attention} a cada uno de los métodos. También aparece en \textbfit{Axial Transformer} \cite{ho2019axial}, donde la atención se aplica de forma independiente en cada uno de los ejes de la entrada (en este caso, el tensor de entrada debería ser multidimensional).
 
-\subsubsection{Aprendizaje de patrones - Learnable Patterns (LP)}
+\paragraph{Aprendizaje de patrones - Learnable Patterns (LP)}:
 Pese a ser similar a los dos casos anteriores ya que siguen basándose en diferentes formas de acceder a la secuencia de entrada para hacerla más dispersa, estos métodos son capaces de aprender en la etapa de entrenamiento del modelo qué patrones de acceso son más adecuados. Algunas de las propuestas que emplean este tipo de patrones son \textbfit{Reformer} \cite{Kitaev2020Reformer:}, que agrupa los elementos de la secuencia de entrada (\textit{tokens}) empleando una medida de similitud en grupos de elementos (para posteriormente aplicar el mecanismo de atención de forma independiente en cada grupo) o \textbfit{Routing Transformer} \cite{routingtransformer} que emplea k-medias para agrupar los \textit{tokens}, ambos modelos, reducen la complejidad a $O(n \log n)$. Dentro de estos modelos también destaca \textbfit{ResT} \cite{zhql2021ResT}, que está enfocado a imágenes y emplea convoluciones separables para reducir las dimensiones de las entradas al mecanismo de atención.
 
 % \subsubsection{Memoria}
 % Las técnicas que emplean elementos de memoria, reservan un modulo que puede acceder a todos los \textit{tokens} de la secuencia. De esta forma, este modulo puede recoger y almacenar información relevante del conjunto general de entrada. En \textbfit{Set Transformers} \cite{set-transformer} se introduce como un elemento de contexto temporal sobre toda la secuencia, también empleado en \textbfit{ETC} \cite{ainslie-etal-2020-etc} y \textbfit{Longformer} \cite{beltagy2020longformer}.
 
-\subsubsection{Disminución de rango}
+\paragraph{Disminución de rango}:
 Este conjunto de arquitecturas, incluyen una proyección para conseguir una aproximación de la matriz resultante del cálculo de la atención, esta aproximación, pese a tener el mismo número de elementos (filas), obtiene una representación de los vectores menor (columnas), por lo que la dimensión de la matriz pasa de ser $n \times n$ a ser $n \times k$, con la consecuente disminución de coste computacional. El principal ejemplo de este tipo de arquitectura es \textbfit{Linformer}, \cite{wang2020linformer} que presenta una complejidad $O(n)$
 
-\subsubsection{Kernels}
-Por último, y aunque podrían entrar dentro del grupo de disminución de rango, existen enfoques que emplean kernelización en los mecanismos de atención para evitar el cálculo explicito de la matriz $n \times n$. Un ejemplo de este tipo de enfoques es el propuesto en \cite{kernel-transformer}, que de nuevo reduce la complejidad a $O(n)$.
+%\paragraph{Kernels}:
+%Por último, y aunque podrían entrar dentro del grupo de disminución de rango, existen enfoques que emplean kernelización en los mecanismos de atención para evitar el cálculo explicito de la matriz $n \times n$. Un ejemplo de este tipo de enfoques es el propuesto en \cite{kernel-transformer}, que de nuevo reduce la complejidad a $O(n)$.
 
-%% La primera aparición de las depthwise separable convolutions parece ser en MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications pero no lo tengo nada claro.
+% TODO: Ver si performer se puede mencionar también en el grupo de kernels y ya hilarlo en el parrafo donde se hable de el.
+
 \subsubsection{Performer}
 Este trabajo se centra en el mecanismo propuesto por .., el performer, para...
 
@@ -378,7 +374,6 @@ En esta publicación, además, se presenta una variante del \textit{Vision Trans
 \end{figure}
 
 \subsection{Estimación de profundidades}
-\todo[inline]{Repasar estos tres parrafo}
 Otra de las bases fundamentales de este trabajo es la estimación de profundidades. Esta tarea, tanto cuando es llevada a cabo por humanos como por máquinas, consiste en detectar la distancia relativa entre todo aquello que se ve. Tal y como se ha mencionado en el capítulo de Introducción TODO, el cerebro humano se apoya principalmente en la disparidad existente entra las imágenes que capturan cada uno de los ojos (estereovisión), ya que las cosas que están más lejanas ven su posición menos alterada entre la vista de un ojo y de otro que las cosas cercanas. Sin embargo, también capaz de estimar la profundidad en una sola imagen a partir de nuestro conocimiento previo del mundo y del entorno (pistas monoculares). 
 
 Las técnicas de visión artificial tradicional (basadas en dos cámaras - visión estereoscópica) no pueden lidiar con este problema, por lo que la estimación monocular (con una sola cámara) es prácticamente imposible empleando técnicas tradicionales. Para este tipo de estimación (monocular), entran en juego los modelos de aprendizaje automático, que han demostrado una gran capacidad para explotar el conocimiento sobre el entorno en todo tipo de tareas, no siendo la estimación de profundidades diferente. 
@@ -386,8 +381,6 @@ Las técnicas de visión artificial tradicional (basadas en dos cámaras - visi�
 A continuación, aunque haciendo especial hincapié en aquellos basados en aprendizaje automático, se enumeran los distintos enfoques existentes, incluyendo aquellos propios de la visión artificial tradicional, las soluciones \textit{hardware}, y las técnicas de aprendizaje profundo.
 
 \subsubsection{Técnicas de estimación de profundidades} \label{estimacion-profundidades-sota}
-
-\todo[inline]{Hablar en detalle de estos métodos}
 
 La estimación de profundidades se ha intentado resolver de múltiples maneras \cite{Zhao_2020}. Dentro de estas metodologías, existen tres enfoques principales en función del tipo de \textit{software} o \textit{hardware} que se emplea.
 \begin{itemize}
@@ -429,13 +422,21 @@ El primero de estos dos modelos, al ser la arquitectura que se modifica a lo lar
 \subsubsection{DPT}
 Tal y como se ha mencionado previamente, la gran mayoría de arquitecturas de estimación de profundidades se basan en redes convolucionales, normalmente de tipo \textit{encoder-decoder}. Las líneas de investigación se centran en el \textit{decoder} y sus estrategias de agregación de información. DPT (\textit{Dense Prediction Transformer}) \cite{visiontransformersDPT} también se estructura como un \textit{encoder-decoder}, pero centra su estudio en la modificación del \textit{encoder} debido a la gran influencia que tiene este en la información que llega a la segunda parte de la red, sustituyendolo por una arquitectura basada en mecanismos de atención (\textit{transformer}). De esta forma, gracias a las características propias de estos modelos ya comentadas, la arquitectura se beneficia de un campo receptivo que permite atender a la información de toda la imagen en las etapas de atención. Es decir, se pasa de un campo receptivo local mucho más limitado (en las redes convolucionales) a un campo receptivo global.
 
-En la publicación que presenta este modelo se utilizan tres variantes del \textit{Vision Transformer} como \textbfit{encoder} para llevar a cabo los experimentos: ViT-Base, con \textit{embedding} de las imágenes a partir de fragmentos y $12$ bloques de atención; ViT-Large, con el mismo método de \textit{embedding} (esta vez con vectores de mayor dimensión para representar cada uno de los fragmentos codificados) y $24$ bloques de atención, y por último, ViT-Hybrid, con el mecanismo de \textit{embedding} de las entradas basados en una red convolucional (ResNet50) tal como se indica en la Figura \ref{fig:hybrid-vit} seguido de $12$ bloques de atención.
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{imagenes/DPT-general.png} 
+\captionsetup{width=.7\linewidth}
+\caption{Esquema de la arquitectura de DPT-Hybrid.}
+\label{fig:dpt-hybrid}
+\end{figure}
 
-Por otro lado, el \textbfit{decoder} de la arquitectura está compuesto por una serie de capas convolucionales que transforman representaciones extraídas de distintas etapas del \textit{encoder}. En el caso del ViT-Base, las representaciones a la salida de los bloques de atención $\{3, 6, 9, 12\}$, del ViT-Large, las correspondientes a las salidas de los bloques de atención $\{5, 12, 18, 24\}$, por último, en el caso del ViT-Hybrid, son las representaciones obtenidas de los bloques de atención $\{9, 12\}$ junto con las representaciones a la salida del primer y segundo bloque de la ResNet50 empleada en la etapa encargada del \textit{embedding}.
+En la publicación que presenta este modelo se utilizan tres variantes del \textit{Vision Transformer} como \textbfit{encoder} para llevar a cabo los experimentos: ViT-Base, con \textit{embedding} de las imágenes a partir de fragmentos y $12$ bloques de atención; ViT-Large, con el mismo método de \textit{embedding} (esta vez con vectores de mayor dimensión para representar cada uno de los fragmentos codificados) y $24$ bloques de atención, y por último, ViT-Hybrid, con el mecanismo de \textit{embedding} de las entradas basados en una red convolucional (ResNet50) tal como se indica en la Figura \ref{fig:dpt-hybrid} seguido de $12$ bloques de atención.
+
+Por otro lado, el \textbfit{decoder} de la arquitectura está compuesto por una serie de capas convolucionales que transforman representaciones extraídas de distintas etapas del \textit{encoder}. En el caso del ViT-Base, las representaciones a la salida de los bloques de atención $\{3, 6, 9, 12\}$, del ViT-Large, las correspondientes a las salidas de los bloques de atención $\{5, 12, 18, 24\}$, por último, en el caso del ViT-Hybrid, son las representaciones obtenidas de los bloques de atención $\{9, 12\}$ junto con las representaciones a la salida de la primera y segunda etapa de la ResNet50 encargada del \textit{embedding}.
 
 Estas representaciones, como están en forma de \textit{tokens} en el caso de los bloques de atención, o en forma de mapas de características cuando se extraen de la ResNet50, atraviesan un bloque \textit{Reassemble} donde la información se concatena para reconstruir la estructura de imagen (Figura \ref{fig:reassemble-fusion}), se proyecta en el número de canales deseado, y se escala a una resolución determinada en función de la altura del \textit{encoder} de la cual provienen (cuanto antes se extraen las características, menos se reduce su tamaño, haciendo una especie de pirámide de resolución).
 
-Una vez se dispone de los datos en un formato similar a imágenes (a la salida de los bloques de \textit{Reassemble}), pasan a una etapa similar a la arquitectura RefineNet \cite{refinenet}, que duplica el tamaño de cada una de las representaciones y las suma de forma escalonada (Figuras \ref{fig:reassemble-fusion} y \ref{fig:dpt-hybrid}).
+Una vez se dispone de los datos en un formato similar a imágenes (a la salida de los bloques de \textit{Reassemble}), pasan a una etapa similar a la arquitectura RefineNet \cite{refinenet}, que duplica el tamaño de cada una de las representaciones y las suma de forma escalonada (Figuras \ref{fig:reassemble-fusion} y \ref{fig:dpt-hybrid}) para fusionar su información.
 
 \begin{figure}[H]
 \centering
@@ -447,13 +448,11 @@ Una vez se dispone de los datos en un formato similar a imágenes (a la salida d
 
 El resultado de este último bloque (una imagen con la mitad de la resolución de la entrada), pasa a una última etapa (cabeza especializada\footnote{En la publicación original, se adapta la red para segmentación semántica y para estimación de profundidades monocular. Dado que escapa del alcance de este proyecto, no se discuten en este documento las capacidades de DPT para segmentar objetos.}) para proporcionar la predicción final.
 
-TODO: Figura con la estructura general de dpthybrid
-
 Antes de pasar a la metodología empleada en el trabajo original de DPT para entrenar los modelos, cabe mencionar que la red, tal y como se comenta a continuación, se entrena con una función de pérdida invariante a la escala y al desplazamiento. Esto significa que la profundidad obtenida del modelo es relativa y no un valor métrico medible. No obstante, los autores extraen valores de desviación y escala (ajustando por mínimos cuadrados las predicciones y las anotaciones en el conjunto de entrenamiento) con los que es posible transformar las profundidades relativas obtenidas en entradas nuevas a profundidades métricas (siempre y cuando la naturaleza de las entradas sea la misma que la de los ejemplos utilizados para obtener los valores de desplazamiento y escala).
 
 \textbf{Entrenamiento}
 
-Los modelos proporcionados junto a la publicación, y en concreto, el que se emplea como base de este trabajo (Sección TODO), fueron preentrenados en MIX6 (Seccion TODO) y después ajustados a otros \textit{datasets} para su evaluación. El entrenamiento en MIX6 se lleva a cabo empleando Adam como optimizador con un \textit{learning rate} de $1e-5$ para el \textit{encoder} y de $1e-4$ para el \textit{decoder} y se parte de parámetros preentrenados en Imagenet (\textit{encoder}) y inicializados aleatoriamente (\textit{decoder}). En cuanto a la duración del entrenamiento, el modelo se entrena durante 60 épocas, cada una con 72000 pasos y un \textit{batch size} de 16 imágenes. Además, se voltean horizontalmente las imágenes de manera aleatoria como forma de \textit{data augmentation}. Como función de coste, se utiliza una función de pérdida \cite{midas-intel} invariante a la escala (relativa) y al desplazamiento de la salida junto con otra función de pérdida que compara los gradientes\footnote{A la hora de entrenar en otros \textit{datasets}, desactivan esta función de pérdida si la anotación no es profundidad densa, es decir, si hay píxeles sin anotar como ocurre por ejemplo en KITTI.} en los valores de profundidad de la salida y la anotación \cite{la 22 de dpt}.
+Los modelos proporcionados junto a la publicación, y en concreto, el que se emplea como base de este trabajo (Sección TODO), fueron preentrenados en MIX6 (Seccion TODO) y después ajustados a otros \textit{datasets} para su evaluación. El entrenamiento en MIX6 se lleva a cabo empleando Adam como optimizador con un \textit{learning rate} de $1e-5$ para el \textit{encoder} y de $1e-4$ para el \textit{decoder} y se parte de parámetros preentrenados en Imagenet (\textit{encoder}) y inicializados aleatoriamente (\textit{decoder}). En cuanto a la duración del entrenamiento, el modelo se entrena durante 60 épocas, cada una con 72000 pasos y un \textit{batch size} de 16 imágenes. Además, se voltean horizontalmente las imágenes de manera aleatoria como forma de \textit{data augmentation}. Como función de coste, se utiliza una función de pérdida \cite{midas-intel} invariante a la escala (relativa) y al desplazamiento de la salida junto a otra función de pérdida que compara los gradientes\footnote{A la hora de entrenar en otros \textit{datasets}, desactivan esta función de pérdida si la anotación no es profundidad densa, es decir, si hay píxeles sin anotar como ocurre por ejemplo en KITTI.} \cite{MegaDepthLi18} en los valores de profundidad de la salida y la anotación.
 
 \subsection{Optimización de modelos}
 % \todo[inline]{https://heartbeat.fritz.ai/the-5-algorithms-for-efficient-deep-learning-inference-on-small-devices-bcc2d18aa806}
