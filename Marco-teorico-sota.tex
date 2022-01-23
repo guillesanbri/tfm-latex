@@ -226,7 +226,7 @@ En las redes convolucionales, es común encontrar otras operaciones como son:
 
 \begin{enumerate}
 \item Una convolución por profundidad donde los \textit{kernels} solamente tienen un canal y se aplican de forma individual en solo uno de los canales (el número de \textit{kernels} tiene que ser igual al número de canales en la entrada) para luego agrupar los resultados (Figura \ref{fig:convolucion-depthwise}).
-\item Una convolución con un solo \textit{kernel} de tamaño $1\times1$, fusionando los canales individuales resultantes de la operación anterior en uno solo. De esta forma, la operación se asemeja a una convolución corriente en la que el \textit{kernel} tendría tantos canales como la entrada, pero reduciendo muy considerablemente el número de operaciones\footnote{TODO poner un ejemplo del cambio de número de operaciones}.
+\item Una convolución con un solo \textit{kernel} de tamaño $1\times1$, fusionando los canales individuales resultantes de la operación anterior en uno solo. De esta forma, la operación se asemeja a una convolución corriente en la que el \textit{kernel} tendría tantos canales como la entrada, pero reduciendo muy considerablemente el número de operaciones.
 \end{enumerate}
 
 \begin{figure}[H]
@@ -348,7 +348,24 @@ Este conjunto de arquitecturas, incluyen una proyección para conseguir una apro
 % TODO: Ver si performer se puede mencionar también en el grupo de kernels y ya hilarlo en el parrafo donde se hable de el.
 
 \subsubsection{Performer}
-Este trabajo se centra en el mecanismo propuesto por .., el performer, para...
+En este trabajo, se estudia la influencia de un mecanismo de atención eficiente en concreto al sustituir la atención estándar de DPT. El mecanismo elegido, y por tanto, el que se explica con mayor profundidad en esta sección es el propuesto por Choromanski et al. en el artículo \textit{Rethinking Attention with Performers}. Este mecanismo de atención eficiente, reduce la complejidad de la atención de $O(n^2)$ a $O(n)$ aproximando la multiplicación de matrices empleando \textit{kernelización} y por lo tanto podría entrar en el grupo ya mencionado de \textbf{Disminución de rango}.
+
+Al multiplicar primero K x V y después Q x Ans, se pasa de $2 L^2 d$ multiplicaciones a $2 d^2 L$ multiplicaciones, por lo que si $d <<< L$ la complejidad pasa a ser lineal.
+
+\todo[inline]{Figura similar a la del paper}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\linewidth]{imagenes/performer.png} 
+\captionsetup{width=.8\linewidth}
+\caption{Temp TODO}
+\label{fig:performer}
+\end{figure}
+
+\todo[inline]{Paper performer: \url{https://arxiv.org/pdf/2009.14794.pdf}}
+\todo[inline]{Video Kernels: \url{https://www.youtube.com/watch?v=y_RjsDHl5Y4}}
+\todo[inline]{Random Fourier Features}
+\todo[inline]{Video Performer: \url{https://www.youtube.com/watch?v=xJrKIPwVwGM&t=2s}}
 
 \subsection{Transformers para visión artificial - ViT}
 A la hora de aplicar la arquitectura de los \textit{transformers} a procesamiento de imágenes, surge un problema importante. La complejidad del mecanismo original de atención es $O(n^{2})$, siendo n el número de elementos en la secuencia de entrada, por lo que para una imagen de dimensiones $lado \times lado$, el número de píxeles que conformarían la secuencia de entrada al mecanismo de atención es $n = l^2$, disparando la complejidad de la atención a $O(l^{4})$. Para lidiar con este problema, se han propuesto distintas soluciones como limitar el mecanismo de atención al entorno de cada píxel (presentado en \textit{Image Transformers} \cite{image_transformer}) o aplicar convoluciones para reducir el tamaño de la secuencia de entrada \cite{detrfacebookdetectiontransformers}. 
