@@ -427,28 +427,29 @@ El primero de estos dos modelos, al ser la arquitectura que se modifica a lo lar
 
 
 \subsubsection{DPT}
-\todo[inline]{Añadir citas aquí}
-Tal y como se ha mencionado previamente, la gran mayoría de arquitecturas de estimación de profundidades se basan en redes convolucionales, normalmente de tipo \textit{encoder-decoder}. donde las líneas de investigación se centran en el \textit{decoder} y sus estrategias de agregación de información. Sin embargo, DPT (\textit{Dense Prediction Transformer}) \cite{visiontransformersDPT} centra su estudio en la modificación del \textit{encoder} debido a la gran influencia que tiene este en la información que llega a la segunda parte de la red y lo sustituye por una arquitectura basada en mecanismos de atención (\textit{transformer}). De esta forma, gracias a las características propias de estos modelos ya comentadas, la arquitectura se beneficia de un campo receptivo que permite atender a la información de toda la imagen en las etapas de atención. Es decir, se pasa de un campo receptivo local mucho más limitado (en las redes convolucionales) a un campo receptivo global.
+Tal y como se ha mencionado previamente, la gran mayoría de arquitecturas de estimación de profundidades se basan en redes convolucionales, normalmente de tipo \textit{encoder-decoder}. Las líneas de investigación se centran en el \textit{decoder} y sus estrategias de agregación de información. DPT (\textit{Dense Prediction Transformer}) \cite{visiontransformersDPT} también se estructura como un \textit{encoder-decoder}, pero centra su estudio en la modificación del \textit{encoder} debido a la gran influencia que tiene este en la información que llega a la segunda parte de la red, sustituyendolo por una arquitectura basada en mecanismos de atención (\textit{transformer}). De esta forma, gracias a las características propias de estos modelos ya comentadas, la arquitectura se beneficia de un campo receptivo que permite atender a la información de toda la imagen en las etapas de atención. Es decir, se pasa de un campo receptivo local mucho más limitado (en las redes convolucionales) a un campo receptivo global.
 
-\textbf{Arquitectura}
+En la publicación que presenta este modelo se utilizan tres variantes del \textit{Vision Transformer} como \textbfit{encoder} para llevar a cabo los experimentos: ViT-Base, con \textit{embedding} de las imágenes a partir de fragmentos y $12$ bloques de atención; ViT-Large, con el mismo método de \textit{embedding} (esta vez con vectores de mayor dimensión para representar cada uno de los fragmentos codificados) y $24$ bloques de atención, y por último, ViT-Hybrid, con el mecanismo de \textit{embedding} de las entradas basados en una red convolucional (ResNet50) tal como se indica en la Figura \ref{fig:hybrid-vit} seguido de $12$ bloques de atención.
 
-Como ya se ha comentado, DPT 
+Por otro lado, el \textbfit{decoder} de la arquitectura está compuesto por una serie de capas convolucionales que transforman representaciones extraídas de distintas etapas del \textit{encoder}. En el caso del ViT-Base, las representaciones a la salida de los bloques de atención $\{3, 6, 9, 12\}$, del ViT-Large, las correspondientes a las salidas de los bloques de atención $\{5, 12, 18, 24\}$, por último, en el caso del ViT-Hybrid, son las representaciones obtenidas de los bloques de atención $\{9, 12\}$ junto con las representaciones a la salida del primer y segundo bloque de la ResNet50 empleada en la etapa encargada del \textit{embedding}.
 
-tiene por \textit{backbone} un vision transformer (ViT), es decir, fragmenta la imagen original en parches, extrae un \textit{embedding} de cada parche, y pasa este conjunto de vectores como entrada al transformer, de forma similar a como se pasarían los \textit{embeddings} de palabras cuando se aplican estas arquitecturas a texto. El artículo proporciona dos versiones de DPT en función del vision transformer que emplean. La primera tiene por \textit{backbone} una arquitectura ViT large (proyección lineal, x capas,,,) \todo[inline]{hablar del número de capas de vit large}; y la segunda emplea un ViT Hybrid (que emplea una ResNet50 para extraer el \textit{embedding} de los parches iniciales).
+Estas representaciones, como están en forma de \textit{tokens} en el caso de los bloques de atención, o en forma de mapas de características cuando se extraen de la ResNet50, atraviesan un bloque \textit{Reassemble} donde la información se concatena para reconstruir la estructura de imagen (Figura \ref{fig:reassemble-fusion}), se proyecta en el número de canales deseado, y se escala a una resolución determinada en función de la altura del \textit{encoder} de la cual provienen (cuanto antes se extraen las características, menos se reduce su tamaño, haciendo una especie de pirámide de resolución).
 
-En la parte del \textit{decoder}, se forman representaciones de distintas resoluciones en forma de imagen a partir de los tokens que se encuentran en ciertas capas del transformer. Estas representaciones, se combinan de forma progresiva para obtener la predicción final de la red (la estimación de profundidad para cada píxel).
+Una vez se dispone de los datos en un formato similar a imágenes (a la salida de los bloques de \textit{Reassemble}), pasan a una etapa similar a la arquitectura RefineNet \cite{refinenet}, que duplica el tamaño de cada una de las representaciones y las suma de forma escalonada (Figuras \ref{fig:reassemble-fusion} y \ref{fig:dpt-hybrid}).
 
-La operación que convierte los \textit{tokens} de capas intermedias del \textit{transformer} en imágenes se define de la siguiente manera:
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\linewidth]{imagenes/reassemble-fusion.png} 
+\captionsetup{width=.7\linewidth}
+\caption{Bloques base del \textit{decoder} de DPT. Izquierda: Bloque de \textit{Reassemble}. Derecha: Bloque de fusión. Figura adaptada de \cite{visiontransformersDPT}.}
+\label{fig:reassemble-fusion}
+\end{figure}
 
-\todo[inline]{Ecuación y probablemente imagen en algún sitio del decoder}
+El resultado de este último bloque (una imagen con la mitad de la resolución de la entrada), pasa a una última etapa (cabeza especializada\footnote{En la publicación original, se adapta la red para segmentación semántica y para estimación de profundidades monocular. Dado que escapa del alcance de este proyecto, no se discuten en este documento las capacidades de DPT para segmentar objetos.}) para proporcionar la predicción final.
 
-\begin{enumerate}
-\item{Read: Integración del readout token: ...}
-\item{Concatenate: ...}
-\item{Resample: ...}
-\end{enumerate}
+TODO: Figura con la estructura general de dpthybrid
 
-Una vez se han extraido estas representaciones intermedias a diferentes resoluciones, se fusionan empleando una arquitectura de tipo RefineNet \todo[inline]{citar y explicar la arquitectura}. El resultado de este último bloque, es una imagen con la mitad de resolución que la imagen de entrada que pasa por una cabeza entrenada para proporcionar la predicción final. 
+Antes de pasar a la metodología empleada en el trabajo original de DPT para entrenar los modelos, cabe mencionar que la red, tal y como se comenta a continuación, se entrena con una función de pérdida invariante a la escala y al desplazamiento. Esto significa que la profundidad obtenida del modelo es relativa y no un valor métrico medible. No obstante, los autores extraen valores de desviación y escala (ajustando por mínimos cuadrados las predicciones y las anotaciones en el conjunto de entrenamiento) con los que es posible transformar las profundidades relativas obtenidas en entradas nuevas a profundidades métricas (siempre y cuando la naturaleza de las entradas sea la misma que la de los ejemplos utilizados para obtener los valores de desplazamiento y escala).
 
 \textbf{Entrenamiento}
 
