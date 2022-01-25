@@ -29,10 +29,12 @@ Hablar de la arquitectura en concreto que se ha utilizado (DPT) apoyándose en t
 Apuntar como se hace para estimar la profundidad métrica en un dataset concreto (aquí o \textbf{en el apartado de arquitectura}).
 
 \subsection{Warmstart}
-Hablar de que se ha hecho finetuning en vez de entrenar desde cero por las limitaciones de computo y de disponibilidad de datos. Aunque no todas las capas coincidiesen, se han empleado los pesos entrenados en general, NO los finetuneados ya en sus respectivos datasets (Esto en realidad estaría bien probarlo a ver si no hace mucho overfitting).
+Para acelerar lo máximo posible la convergencia del modelo durante el entrenamiento, se aprovechan en la medida de lo posible parámetros con sesgos inductivos ya aprendidos, es decir, parámetros de modelos ya entrenados. Más concretamente, los parámetros de los modelos a entrenar se inicializan con los valores de los parámetros del modelo DPT-Hybrid entrenado en MIX6, publicados en el artículo original de \textit{Dense Prediction Transformers} \cite{visiontransformersDPT}. 
 
-\subsection{Función de pérdida}
-Hablar de la función de pérdida empleada para entrenar, hay que ver como se puede hilar esto con una sección en el fundamento teórico donde se expliquen más funciones de pérdida para estimación de profundidades.
+Además, ya que en este trabajo se estudian diferentes modificaciones de dicho modelo, se emplea el método \texttt{load\_state\_dict()} de la clase \texttt{torch.nn.Module} con el parámetro \texttt{strict=False} para cargar los parámetros, evitando así que la carga falle si no coinciden una a una las capas en el modelo y las definidas en el archivo que se trata de cargar. En cuanto a las capas/conjuntos de capas que se han modificado y/o añadido, al no disponer del conjunto de datos MIX6 para preentrenarlas, se han inicializado con sus parámetros correspondientes tras ser entrenadas en ImageNet1K.
+
+\todo[inline]{Comprobar esto entrenando el modelo de ResNet con los pesos de imagenet.}
+Esta forma de proceder, sin embargo, origina un problema que se comentará más adelante en detalle, y es que como era de esperar, los modelos con menor porcentaje de su arquitectura modificada parten de una situación inicial ventajosa para la tarea de estimación de profundidad monocular (al estar preentrenados en MIX6).
 
 \subsection{Data augmentation}
 Hablar de data augmentation si se lleva a cabo, exponer las operaciones y justificarlas con regularización y generalización a casos nuevos, evitar que siempre se itere sobre las mismas imágenes.
@@ -49,7 +51,7 @@ En cuanto al \textit{script} de entrenamiento\footnote{URL de train.py y train\_
 
 \item \textbf{\texttt{pin\_memory}}: También en el constructor del \texttt{Dataloader}, es posible activar \texttt{pin\_memory}, parámetro desactivado por defecto. Este parámetro, acelera la transferencia a la memoria de la GPU de los datos cargados en memoria (RAM) por la CPU \cite{harris2012}. De forma resumida, lo que habilita este parámetro es que la carga de datos se haga en memoria no paginable (\textit{pinned}) a la que la GPU accede directamente, evitando así cargar los datos en una zona de memoria paginable y transferir estos a una \textit{pinned memory} temporal cada vez que la GPU quiere leerlos para transferirlos a su propia memoria.
 
-\item \textbf{\texttt{torch.backends.cudnn.enabled y \texttt{torch.backends.cudnn.benchmark}}}: Estas dos opciones, se activan para asegurar, respectivamente, que se use CuDNN en la ejecución del modelo, y que se ejecuten al comienzo del \textit{script} distintas implementaciones de algoritmos de convolución para emplear el más rápido en el sistema actual.
+\item \textbf{\texttt{torch.backends.cudnn.enabled y \texttt{torch.backends.cudnn.benchmark}}}: Estas dos opciones, se activan para asegurar, respectivamente, que se use CuDNN en la ejecución del modelo y que se ejecuten al comienzo del \textit{script} distintas implementaciones de algoritmos de convolución para emplear el más rápido en el sistema actual.
 
 \item \textbf{\textit{Mixed precision}}: Ya mencionado en el apartado TODO, pese a que finalmente se ha descartado su uso en el entrenamiento debido a la inestabilidad numérica que introducía y los fallos que ocasionaba, el \textit{script} de entrenamiento incluye la opción de activar el uso de precisión mixta con el escalado pertinente.
 \end{itemize}
