@@ -24,10 +24,6 @@ El flujo de trabajo que se ha seguido ha sido el siguiente (\ref{fig:cloud-diagr
 \label{fig:cloud-diagram}
 \end{figure}
 
-\subsection{Arquitectura y capas}
-Hablar de la arquitectura en concreto que se ha utilizado (DPT) apoyándose en todo lo que se haya explicado en el fundamento teórico. Explicar también las capas de atención que se han empleado en más detalle.
-Apuntar como se hace para estimar la profundidad métrica en un dataset concreto (aquí o \textbf{en el apartado de arquitectura}).
-
 \subsection{Warmstart}
 Para acelerar lo máximo posible la convergencia del modelo durante el entrenamiento, se aprovechan en la medida de lo posible parámetros con sesgos inductivos ya aprendidos, es decir, parámetros de modelos ya entrenados. Más concretamente, los parámetros de los modelos a entrenar se inicializan con los valores de los parámetros del modelo DPT-Hybrid entrenado en MIX6, publicados en el artículo original de \textit{Dense Prediction Transformers} \cite{visiontransformersDPT}. 
 
@@ -36,13 +32,12 @@ Además, ya que en este trabajo se estudian diferentes modificaciones de dicho m
 \todo[inline]{Comprobar esto entrenando el modelo de ResNet con los pesos de imagenet.}
 Esta forma de proceder, sin embargo, origina un problema que se comentará más adelante en detalle, y es que como era de esperar, los modelos con menor porcentaje de su arquitectura modificada parten de una situación inicial ventajosa para la tarea de estimación de profundidad monocular (al estar preentrenados en MIX6).
 
-\subsection{Data augmentation}
-Hablar de data augmentation si se lleva a cabo, exponer las operaciones y justificarlas con regularización y generalización a casos nuevos, evitar que siempre se itere sobre las mismas imágenes.
-
 \subsection{Entrenamiento}
-Pese a que los autores del artículo de DPT \cite{} han publicado el código del modelo y sus pesos preentrenados en MIX6 y ajustados a NYUDepthv2 y KITTI, a día de hoy no han hecho público el \textit{script} de entrenamiento empleado. Por esto, ha sido necesario escribir el proceso de entrenamiento así como el \texttt{Dataset} de PyTorch con el que leer los datos de KITTI.
+Pese a que los autores del artículo de DPT \cite{visiontransformersDPT} han publicado el código del modelo y sus pesos preentrenados en MIX6 y KITTI, a día de hoy no han hecho público los \textit{scripts} de entrenamiento empleados. Por esto, ha sido necesario escribir el proceso de entrenamiento así como el \texttt{Dataset} de PyTorch con el que leer los datos de KITTI.
 
 Para el \texttt{Dataset}, se crea una clase \texttt{KITTIDataset}\footnote{URL al repo?} que hereda de la clase abstracta base para conjuntos de datos que ofrece PyTorch, \texttt{torch.utils.data.Dataset}, y sobreescribe los métodos \texttt{\_\_len\_\_()} y \texttt{\_\_getitem\_\_()} de forma que estos se adapten a la estructura de directorios y nombres de las imágenes de sus anotaciones. Al sobreescribir estos métodos, es posible crear un \texttt{torch.utils.data.Dataloader} de forma directa, pasando las imágenes y las etiquetas a los modelos aprovechando las herramientas de PyTorch. En el método \texttt{\_\_getitem\_\_()}, además, se aplican las transformaciones necesarias a los datos, así como el \textit{Data Augmentation}.
+
+Por \textit{Data Augmentation} se entiende el conjunto de operaciones y transformaciones que se pueden aplicar a los datos para modificar su apariencia. Esto, normalmente favorece el aprendizaje y la capacidad de generalización de la red (tiene efecto regularizador y evita el sobreajuste al aumentar el número de ejemplos y la variedad entre ellos). En el entrenamiento llevado a cabo, siguiendo una vez más la metodología de DPT, se ha incluido un \textbf{reflejado horizontal aleatorio}, es decir, cada una de las imágenes (junto con las anotaciones) tiene un $50\%$ de posibilidades de ser reflejada horizontalmente antes de atravesar la red como ejemplo de entrenamiento.
 
 En cuanto al \textit{script} de entrenamiento\footnote{URL de train.py y train\_ utils.py?}, se tienen en cuenta una serie de factores para acelerar el proceso lo máximo posible:
 \begin{itemize}
@@ -58,27 +53,33 @@ En cuanto al \textit{script} de entrenamiento\footnote{URL de train.py y train\_
 
 \todo[inline]{Medir y hacer una gráfica de la influencia de cada uno de estos en un trozo de epoch}
 
-El entrenamiento en sí, se ha llevado a cabo empleando como optimizador \texttt{AdamW} con $lr = 1e-5$, $\beta_1 = 0.9$, $\beta_2 = 0.999$, $\epsilon = 1e-8$ y $\textit{weight decay} = 0.01$ con un número de épocas fijado a 20 (el entrenamiento se detiene en caso de que la función de pérdida se desestabilice y se vuelva $\pm \infty$). Como se ha mencionado en el apartado TODO, el tamaño de lote es uno, pero el \textit{script} de entrenamiento implementa la posibilidad de usar acumulación de gradientes para simular tamaños de lote mayores. La función de pérdida, ha sido TODO, (citar y Ecuación X). Por último, durante el entrenamiento se ha empleado la función \texttt{torch.nn.utils.clip\_grad\_value\_} con un \texttt{clip\_value} de 0.5, que se encarga de limitar los valores de los gradientes en función de su valor, para limitar considerablemente las posibilidades de que explotasen los gradientes del modelo haciendo que se desestabilizase su entrenamiento.
+Para ajustar los parámetros de los modelos, se ha empleando como optimizador \texttt{AdamW} con una tasa de aprendizaje $lr = 1e-5$ y parámetros: $\beta_1 = 0.9$, $\beta_2 = 0.999$, $\epsilon = 1e-8$ y $\textit{weight decay} = 0.01$. El número de épocas se ha fijado en $20$ tras analizar el comportamiento de la pérdida en distintas ejecuciones. En cuanto al tamaño de lote usado, se ha utilizado solamente una imagen para cada actualización de parámetros. Esta elección viene motivada por dos razones, la primera, la falta de recursos computaciones para entrenar algunas de las variaciones de los modelos con lotes de más imágenes, y la segunda y más importante, que tras implementar en el \textit{script} de entrenamiento la posibilidad de acumular gradientes\footnote{La acumulación de gradientes (\textit{gradient accumulation}) es una técnica que promedia las pérdidas en distintos lotes para, aún sin poder aprovechar la mejora de rendimiento de un tamaño de lote mayor, conseguir que la actualización de los parámetros sea matemáticamente equivalente (con alguna limitación como la imposibilidad de usar \textit{batch normalization}) a usar un tamaño de lote mayor.}, se comprobó que se obtenían mejores resultados con lotes de una sola imagen, probablemente por el efecto regularizador característico de un tamaño de lote tan reducido.
+
+Además, se ha empleado la función \texttt{torch.nn.utils.clip\_grad\_value\_}, que se encarga de limitar los valores de los gradientes en función de su valor, con un \texttt{clip\_value} de 0.5, limitando considerablemente las posibilidades de que explotasen los gradientes del modelo y se desestabilice su entrenamiento. No obstante, como precaución y para evitar el desperdicio de recursos, el entrenamiento se detiene en caso de que el valor de la función de pérdida se vuelva $\pm \infty$.
 
 
-%\todo[inline]{Pseudocódigo del script de entrenamiento}
-%\begin{algorithm}
-%\floatname{algorithm}{Pseudocódigo}
-%\caption{My algorithm}\label{euclid}
-%\begin{algorithmic}[1]
-%
-%\For{\texttt{época = 1 a 20}}
-%\State \texttt{train()}
-%\State \texttt{val()}
-%\If {\texttt{época mod 5 == 0}}
-%\State {\texttt{guardaModelo()}}
-%\EndIf
-%\EndFor
-%\end{algorithmic}
-%\end{algorithm}
+\subsubsection{Función de pérdida}
+La función de pérdida usada durante el proyecto, y por lo tanto implementada en el script de entrenamiento, es la función empleada en la publicación de DPT \cite{visiontransformersDPT} para ajustar los modelos preentrenados en MIX6 a \textit{datasets} más pequeños. Tal y como indica esta publicación, su función de pérdida se compone de la función de pérdida propuesta por Eigen et al. \cite{eigen-multi-scale} y de otra función que calcula los gradientes de la profundidad obtenida para penalizar la falta de suavidad en píxeles contiguos, propuesta en el trabajo de Li et al. \cite{MegaDepthLi18}. No obstante, como el \textit{dataset} empleado en este trabajo es KITTI y sus anotaciones son dispersas, no es posible calcular dichos gradientes en las etiquetas y por lo tanto se elimina esa parte de la función. 
 
+De esta forma, la función de pérdida resultante es la definida por la Ecuación \ref{eqn:perdida-midas}, donde $\hat{d_p}$ es la profundidad obtenida de la red para cada píxel $p$, $d_p$ es la etiqueta con los valores de profundidad, $n$ es el número de píxeles que tienen un dato de profundidad en la etiqueta correspondiente (es decir, una vez aplicada la máscara mencionada en la Sección TODO) y $\lambda$ es un hiperparámetro cuyo valor puede estar en el rango $[0, 1]$ y controla la influencia de la escala, ya que con $\lambda=0$ el segundo término se anula (quedando la distancia de cuadrados en espacio logarítmico), y con $\lambda=1$ la función de pérdida es invariante a la escala. La demostración de la invariancia a la escala es equivalente a la de la métrica \textit{SIlog} (Sección TODO), ya que dicha métrica es la raíz cuadrada de esta función de pérdida.
 
-\todo[inline]{En la tabla de resultados generales sumar las horas de entrenamiento y ya de paso mencionar el total de horas atribuyendolas a otros entrenamientos y pruebas/experimentos (en la sección de resultados)}
+% di = torch.log(masked_output) - torch.log(masked_target)
+% n = masked_output.shape[0]
+% di2 = torch.pow(di, 2)
+% fisrt_term = torch.sum(di2) / n
+% second_term = 0.5 * torch.pow(torch.sum(di), 2) / (n ** 2)  0.5 is lambda
+% loss = fisrt_term - second_term
+% return loss.mean()
+\begin{equation}
+\label{eqn:perdida-midas}
+L(\hat{d}, d) = \frac{1}{n}\sum_{p} (\log{\hat{d_p}} - \log{d_p})^2 - \frac{\lambda}{n^2} \left( \sum_{p} (\log{\hat{d_p}} - \log{d_p}) \right)^2
+\end{equation}
+
+\subsection{Arquitectura y capas}
+Hablar de la arquitectura en concreto que se ha utilizado (DPT) apoyándose en todo lo que se haya explicado en el fundamento teórico. Explicar también las capas de atención que se han empleado en más detalle.
+Apuntar como se hace para estimar la profundidad métrica en un dataset concreto (aquí o \textbf{en el apartado de arquitectura}).
+
+\todo[inline]{Puede que esto vaya mejor en el cap3}
 
 \subsection{Reducción de tamaño de la entrada}
 Para acelerar DPT, lo primero que se modificó fue el tamaño de la entrada. Los resultados de la publicación original calculan la profundidad en el conjunto de evaluación de KITTI con las imágenes en su tamaño original, 1216x352, para reducir el consumo de memoria del modelo durante su entrenamiento, así como acelerar entrenamiento e inferencia, se han añadido dos operaciones de cambio de tamaño: una al principio de la red que reduce el tamaño de las imágenes a 640x192 píxeles, y otra al final de la red que reescala la salida al tamaño original. La primera operación emplea como método de interpolación el algorítmo \texttt{INTER{\_}AREA} de OpenCV, que TODO y está recomendado para reducir el tamaño de imágenes ya que proporciona resultados sin efecto Moire; la operación que amplia la salida al tamaño de la imagen original, por otro lado, emplea interpolación bicúbica, que ofrece los mejores resultados pese a ser más lenta, ya que el tiempo empleado en las operaciones de reescalado es despreciable en comparación con el tiempo de inferencia de la red.
