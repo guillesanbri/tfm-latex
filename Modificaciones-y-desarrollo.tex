@@ -91,14 +91,15 @@ Para acelerar DPT, lo primero que se modificó fue el tamaño de la entrada. Los
 
 % https://medium.com/@wenrudong/what-is-opencvs-inter-area-actually-doing-282a626a09b3
 
-\subsection{Número de cabezas}
-Hablar del cambio en el número de cabezas
-\todo[inline]{Citar y justificar esta dirección de búsqueda con el paper de are 16 heads better than 1}
-
 \subsection{Capas de atención eficiente}
 Cambio de las capas, hacer una gráfica midiendo en función del tamaño de la cadena la velocidad en la que pasa por una de estas capas? Puede ser interesante. (Sería para imágenes mayores)
 
 \todo[inline]{Hacer un estudio del incremento de velocidad en función del tamaño de los tokens, es posible que haga falta usar una máquina de Google Cloud para esto, se puede coger una gorda con mucha mucha memoria, habría que incluirla en el apartado de hardware, también se podría usar para el cálculo de el flujo máximo de imagenes (una A100/P100). Se podría usar la misma imagen en teoría, si sale bien mencionarlo también en el apartado de Docker o en el de Google Cloud}
+
+\subsection{Número de cabezas}
+En la publicación \textit{Are Sixteen Heads Really Better than One?} \cite{are16headsbetterthan1}, se plantea y prueba la idea de que el número de cabezas en los bloques de atención está sobredimensionado, siendo posible eliminar un gran porcentaje de las cabezas sin afectar al rendimiento de forma significativa. Esta influencia en el rendimiento, se reduce aún más cuando se reentrena el modelo después de reducir el número de cabezas.  Además, los autores señalan que reducir el número de cabezas degrada el rendimiento de forma más significativa en los bloques de \textit{Cross-Attention} (Sección TODO) con elementos del \textit{encoder} y \textit{decoder} que en los bloques de \textit{Self-Attention}. 
+
+En el caso de DPT, al emplear como \textit{encoder} un ViT, no existen bloques de \textit{Cross-Attention}, si no que son todos de \textit{Self-Attention} (recordemos que el ViT solo se compone de la parte del \textit{encoder} del \textit{transformer} original). Por lo tanto, se plantea también como una de las modificaciones del proyecto estudiar la influencia del número de cabezas en la velocidad de inferencia y los resultados, adaptando el código del modelo para que sea posible cambiar la cantidad de cabezas en los bloques de atención (tanto atención estándar como atención eficiente). Los valores con los que se experimenta para este hiperparámetro son $1$, $12$ (el número de cabezas que tiene DPT por defecto) y $24$.
 
 \subsection{Cambio en los hooks del transformer y eliminación de las capas de atención posteriores}
 
