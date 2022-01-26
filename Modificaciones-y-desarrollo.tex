@@ -103,20 +103,18 @@ En el caso de DPT, al emplear como \textit{encoder} un ViT, no existen bloques d
 
 \subsection{Cambio en los hooks del transformer y eliminación de las capas de atención posteriores}
 
-Hablar del cambio en los hooks, en el paper original se valora el cambio de hooks en la etapa convolucional, pero no en el transformer, se estudian 0,1; 2,5; 8,11
+En la arquitectura de DPT (sección TODO), la transferencia de información desde el \textit{encoder} al \textit{decoder} tiene lugar a través de cuatro ganchos o \textit{hooks} que toman las salidas de ciertas capas para que pasen a ser las entradas que se fusionan en el \textit{decoder}. En la publicación original, si bien es cierto que se valoran diferentes tamaños de \textit{Vision Transformers}, no se presenta ningún experimento modificando los bloques de atención de los cuales se cogen las salidas. Más concretamente, el modelo DPT-Hybrid coloca dos de estos \textit{hooks} en el \textit{backbone} convolucional y los otros dos en los bloques de atención número 8 y número 11 (empezando en cero). Por lo tanto, la imagen de entrada tiene que atravesar todos los bloques de atención del ViT-Hybrid para conseguir la salida del último bloque de atención.
 
-Al modificar las capas del transformer de las que se cogen las activaciones para pasarlas a la etapa de fusión convolucional, se abre la posibilidad de eliminar aquellos bloques de atención que ya no se usan. Esta modificación, además de acelerar el entrenamiento e inferencia del modelo, reduce su tamaño considerablemente, tanto a la hora de almacenar sus parámetros como a la hora de cargarlo en memoria para desplegarlo en una aplicación real. En la Figura \ref{fig:attention_block_num}, se puede apreciar la modificación del ViT empleado en DPT: a la izquierda está el encoder tal y como se encuentra en el trabajo de DPT, con los \textit{hooks} en los bloques 8 y 11, sin eliminar ninguno de los parámetros del transformer, y con la inferencia recorriendo los 12 bloques de atención; a la derecha, por otro lado, está una de las opciones valoradas para este hiperparámetro de la arquitectura, donde los hooks se sitúan en la salida de los bloques 0 y 1 del ViT. De esta forma, en el ejemplo, los parámetros a partir del segundo bloque de atención pueden eliminarse ya que la inferencia del modelo solo llega hasta este segundo bloque.
+Los valores que se han probado en este trabajo para estos \textit{hooks} del ViT, es decir, los bloques de atención cuya salida se ha seleccionado como entrada del \textit{decoder}, son: bloques número 0 y 1, bloques número 2 y 5, y por último, bloques número 8 y 11 (siendo estos últimos los de la publicación original).
 
-\todo[inline]{Hacer una comparación del tamaño del modelo cuando se eliminan los pesos}
-\todo[inline]{Hacer una comparación de los resultados en validación en función de los hooks}
-\todo[inline]{Hacer una comparación de la velocidad de inferencia en función de los hooks empleados}
-\todo[inline]{Mencionar en la discusión que esto está muy bien porque no están reduciendo la complejidad de la atención, te la estás cargando directamente}
-\todo[inline]{Meter el código aquí o una referencia a las partes del código donde se encuentra este cambio?}
+Al modificar las capas del transformer de las que se cogen las activaciones para pasarlas a la etapa de fusión convolucional, se abre la posibilidad de eliminar aquellos bloques de atención que ya no se usan. Por lo tanto, se ha modificado el código de la arquitectura para incluir dos cambios en el momento de instanciar el modelo: el primero, capar la inferencia para que la ejecución del ViT se detenga cuando llega al bloque de atención más alto requerido por los \textit{hooks}, y el segundo, eliminar las capas superiores no empleadas. De esta forma, además de acelerar el entrenamiento e inferencia del modelo, se reduce su tamaño considerablemente, tanto a la hora de almacenar sus parámetros como a la hora de cargarlo en memoria para desplegarlo en una aplicación real. 
+
+En la Figura \ref{fig:attention_block_num}, se puede apreciar la modificación del ViT empleado en DPT: a la izquierda está el \textit{encoder} tal y como se encuentra en el trabajo de DPT, con los \textit{hooks} en los bloques 8 y 11, sin eliminar ninguno de los parámetros del \textit{transformer}, y con la inferencia recorriendo los 12 bloques de atención; a la derecha, por otro lado, está una de las opciones valoradas para este hiperparámetro de la arquitectura, donde los \textit{hooks} se sitúan en la salida de los bloques 0 y 1 del ViT. De esta forma, en el ejemplo, los parámetros a partir del segundo bloque de atención se eliminarían ya que la inferencia del modelo solo llega hasta este segundo bloque.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{imagenes/DPT-cambio-bloques-transformer.png}
-\caption{Cambio en el número de bloques de atención.}
+\caption{Cambio en los \textit{hooks} y en el número de bloques de atención.}
 \label{fig:attention_block_num}
 \end{figure}
 
