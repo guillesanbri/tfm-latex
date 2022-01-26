@@ -27,7 +27,7 @@ El flujo de trabajo que se ha seguido ha sido el siguiente (\ref{fig:cloud-diagr
 \subsection{Warmstart}
 Para acelerar lo máximo posible la convergencia del modelo durante el entrenamiento, se aprovechan en la medida de lo posible parámetros con sesgos inductivos ya aprendidos, es decir, parámetros de modelos ya entrenados. Más concretamente, los parámetros de los modelos a entrenar se inicializan con los valores de los parámetros del modelo DPT-Hybrid entrenado en MIX6, publicados en el artículo original de \textit{Dense Prediction Transformers} \cite{visiontransformersDPT}. 
 
-Además, ya que en este trabajo se estudian diferentes modificaciones de dicho modelo, se emplea el método \texttt{load\_state\_dict()} de la clase \texttt{torch.nn.Module} con el parámetro \texttt{strict=False} para cargar los parámetros, evitando así que la carga falle si no coinciden una a una las capas en el modelo y las definidas en el archivo que se trata de cargar. En cuanto a las capas/conjuntos de capas que se han modificado y/o añadido, al no disponer del conjunto de datos MIX6 para preentrenarlas, se han inicializado con sus parámetros correspondientes tras ser entrenadas en ImageNet1K.
+Además, ya que en este trabajo se estudian diferentes modificaciones de dicho modelo, se emplea el método \texttt{load\_state\_dict()} de la clase \texttt{torch.nn.Module} con el parámetro \texttt{strict=False} para cargar los parámetros, evitando así que la carga falle si no coinciden una a una las capas en el modelo y las definidas en el archivo que se trata de cargar. En cuanto a las capas/conjuntos de capas que se han modificado y/o añadido, al no disponer del conjunto de datos MIX6 para preentrenarlas, se han inicializado con sus parámetros correspondientes tras ser entrenadas en ImageNet21K.
 
 \todo[inline]{Comprobar esto entrenando el modelo de ResNet con los pesos de imagenet.}
 Esta forma de proceder, sin embargo, origina un problema que se comentará más adelante en detalle, y es que como era de esperar, los modelos con menor porcentaje de su arquitectura modificada parten de una situación inicial ventajosa para la tarea de estimación de profundidad monocular (al estar preentrenados en MIX6).
@@ -72,7 +72,7 @@ De esta forma, la función de pérdida resultante es la definida por la Ecuació
 % return loss.mean()
 \begin{equation}
 \label{eqn:perdida-midas}
-L(\hat{d}, d) = \frac{1}{n}\sum_{p} (\log{\hat{d_p}} - \log{d_p})^2 - \frac{\lambda}{n^2} \left( \sum_{p} (\log{\hat{d_p}} - \log{d_p}) \right)^2
+L(\hat{d}, d) = \frac{1}{n}\sum_{p} (\ln{\hat{d_p}} - \ln{d_p})^2 - \frac{\lambda}{n^2} \left( \sum_{p} (\ln{\hat{d_p}} - \ln{d_p}) \right)^2
 \end{equation}
 
 \subsection{Arquitectura y capas}
