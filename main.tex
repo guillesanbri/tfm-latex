@@ -39,6 +39,8 @@
 \usepackage{parskip}
 \restoreparindent
 
+\setlength{\parindent}{0pt}
+
 % Definición de un nuevo comando
 \newcommand{\textbfit}[1]{\textbf{\textit{#1}}}
 
@@ -50,14 +52,13 @@
 %% Paquetes de la AMS
 \usepackage{amsmath, amsthm, amsfonts}
 %% Para añadir archivos con extensión pdf, jpg, png or tif
-\usepackage{graphicx}
+\usepackage{graphicx} % [draft]
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 %% Simbolo de grado
 \usepackage{gensymb}
 %% Imágenes en vertical
 \usepackage{subfig}
-\usepackage{graphicx}
 %% Algoritmos y pseudocódigo
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
@@ -84,17 +85,9 @@
 
 \begin{titlepage}
 \centering
-\begin{figure}[t]
-	\centering
-	\includegraphics[scale=0.35]{imagenes/gsi.png}
-    \vspace{0.5cm}
-\end{figure}%
-	{\LARGE Memoria del trabajo realizado durante la estancia en el Grupo de Sistemas Inteligentes\par}
-	\vspace{3cm}
+	\vspace{6cm}
 	{\huge\bfseries Estimación de Profundidad Monocular Online con Transformers Eficientes\par}
-	\vspace{0.5cm}
-    {\LARGE Contexto y estado del arte\par}
-    \vspace{3cm}
+    \vspace{15cm}
 	{\Large\itshape Guillermo Sánchez Brizuela\par}
 	\vspace{0.5cm}
 	{\Large Universidad de Valladolid, curso 2020-2021\par}
@@ -217,19 +210,3 @@
 %
 %Para tener una estimación de cuánto tardan en realizar inferencia los modelos de estimación de profundidad monocular no eficientes que emplean \textit{transformers} y aprendizaje supervisado (expuestos en la sección \hyperref[aprendizaje-supervisado]{Aprendizaje supervisado}), se llevan a cabo una serie de pruebas en GPU y CPU. Siguiendo la metodología expuesta en \cite{visiontransformersDPT}, se mide el tiempo de inferencia media en 400 imágenes de 384x384 píxeles. Estas pruebas, se llevan a cabo tanto como para \textit{Dense Prediction Transformers} como para \textit{AdaBins} (Tabla \ref{tab:resultados-inferencia}). Además de estas pruebas de velocidad, también se han realizado pruebas sobre imágenes propias, algunas de las cuales están disponibles en el \hyperref[anexo1]{Anexo 1}. 
 %% \todo{Incluir imágenes}.
-%%Se obtienen resultados bastante razonables considerando que se emplean gráficas diferentes.\\
-%
-%\begin{table}[H]
-%\centering
-%\begin{tabular}{cccccc}
-%\toprule
-%             & \multicolumn{2}{c}{Inferencia (ms)} & \multicolumn{2}{c}{FPS} &           \\ 
-%Prueba       & DPT  & AdaBins                      & DPT  & AdaBins          & Hardware  \\ \midrule
-%Paper DPT    & 38   & -                            & 26.3 & -                & RTX 2080 (GPU) \\
-%Propia   & 41   & 105                          & 24.5 & 9.52             & RTX 3070 (GPU) \\
-%Propia (Colab) & 60   & 164                            & 16.7 & 6.08                & Tesla T4 (GPU)\\
-%Propia    & 1675 & 2008                         & 0.60 & 0.50             & AMD\textsuperscript{\textregistered} Ryzen 7 3800x (CPU) \\ \bottomrule
-%\end{tabular}
-%\caption{Resultados de tiempos de inferencia con DPT y AdaBins}
-%\label{tab:resultados-inferencia}
-%\end{table}
