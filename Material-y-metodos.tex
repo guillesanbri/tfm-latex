@@ -20,7 +20,7 @@ En el párrafo anterior, se ha mencionado que Pytorch acelera por hardware el en
 
 \textbf{Gestión y seguimiento de experimentos}
 
-Dada la naturaleza del proyecto, era de esperar que el número de experimentos y de variaciones de modelos a entrenar fuese numeroso, por esta razón, se elige \textbfit{Weights and Biases (wandb)} \cite{wandb} para gestionar y monitorizar dichas pruebas, es decir, visualizar y controlar su evolución, registrando métricas y resultados para su posterior utilización. \textit{Weight and Biases} es un servicio de seguimiento de experimentos, gratuito para uso académico y personal, que se ejecuta en la nube, dispone de una interfaz gráfica web (Figura \ref{fig:wandb-ui}) y permite registrar de forma sencilla variables y métricas durante las distintas ejecuciones que se lleven a cabo. Además, ofrece también un gestor de búsqueda de hiperparámetros, donde es posible configurar los valores que se quieren probar para que wandb se encarge de inicializar los scripts de entrenamiento con las configuraciones correspondientes de forma automática y coordinada en todas las máquinas en las que se ejecute su cliente. Ya que para el entrenamiento se han empleado varios equipos en paralelo, esta última característica se ha valorado muy positivamente al compararlo con otro \textit{software} de monitorización como por ejemplo Tensorboard.
+Dada la naturaleza del proyecto, era de esperar que el número de experimentos y de variaciones de modelos a entrenar fuese numeroso, por esta razón, se elige \textbfit{Weights and Biases (wandb)} \cite{wandb} para gestionar y monitorizar dichas pruebas, es decir, visualizar y controlar su evolución, registrando métricas y resultados para su posterior utilización. \textit{Weight and Biases} es un servicio de seguimiento de experimentos, gratuito para uso académico y personal, que se ejecuta en la nube, dispone de una interfaz gráfica web (\Cref{fig:wandb-ui}) y permite registrar de forma sencilla variables y métricas durante las distintas ejecuciones que se lleven a cabo. Además, ofrece también un gestor de búsqueda de hiperparámetros, donde es posible configurar los valores que se quieren probar para que wandb se encarge de inicializar los scripts de entrenamiento con las configuraciones correspondientes de forma automática y coordinada en todas las máquinas en las que se ejecute su cliente. Ya que para el entrenamiento se han empleado varios equipos en paralelo, esta última característica se ha valorado muy positivamente al compararlo con otro \textit{software} de monitorización como por ejemplo Tensorboard.
 
 \begin{figure}[H]
 \centering
@@ -35,7 +35,7 @@ Para gestionar la instalación y ejecución de este conjunto de \textit{software
 
 Si bien es cierto, existen otras opciones para conseguir entornos de desarrollo funcionalmente similares: Conda, por ejemplo, también gestiona las dependencias de CUDA de las librerías de aprendizaje profundo, pero puede entrar en conflicto con las librerías instaladas usando pip (el instalador de paquetes de Python) en su mismo entorno virtual, ya que no todas las librerías están disponibles en los repositorios de conda; otra opción que nos permite usar pip sin riesgo de dañar otras instalaciones en el equipo es el uso de entornos virtuales como venv, pero estos no gestionan correctamente el software y las dependencias de los paquetes relacionados con CUDA. 
 
-No obstante, Docker ofrece una ventaja más que es decisiva, la portabilidad que ofrece entre sistemas. En caso de querer ejecutar los scripts en cloud (tal y como se explicará en la sección TODO) o en dispositivos embebidos (p.e. los dispositivos Jetson de NVIDIA, que incluyen el NVIDIA Container Toolkit) sería suficiente con usar la misma imagen para tener un entorno idéntico. 
+No obstante, Docker ofrece una ventaja más que es decisiva, la portabilidad que ofrece entre sistemas. En caso de querer ejecutar los scripts en cloud (\ref{cloud}) o en dispositivos embebidos (p.e. los dispositivos Jetson de NVIDIA, que incluyen el NVIDIA Container Toolkit) sería suficiente con usar la misma imagen para tener un entorno idéntico. 
 
 Los ficheros necesarios para crear el entorno empleado en el proyecto están disponibles tanto en el repositorio del proyecto como en el Anexo TODO.
 
@@ -48,7 +48,7 @@ Por último, para la redacción de este documento se ha empleado \textbf{LaTeX} 
 
 
 \subsection{Hardware}
-Para el desarrollo de este proyecto, se ha utilizado principalmente el Equipo 1 de la Tabla \ref{tab:computer-specs}. No obstante, para el entrenamiento y la evaluación de los distintos modelos de aprendizaje profundo, se han empleado también instancias en la nube con la configuración del Equipo 2 en la Tabla \ref{tab:computer-specs}.
+Para el desarrollo de este proyecto, se ha utilizado principalmente el Equipo 1 de la \Cref{tab:computer-specs}. No obstante, para el entrenamiento y la evaluación de los distintos modelos de aprendizaje profundo, se han empleado también instancias en la nube con la configuración del Equipo 2 en la \Cref{tab:computer-specs}.
 
 \begin{table}[H]
 \centering
@@ -77,7 +77,7 @@ ImageNet \cite{imagenet_cvpr09, ILSVRC15} es un \textit{dataset} que proporciona
 
 Dentro del proyecto de Imagenet, existen dos conjuntos: ImageNet21K e ImageNet1K (este último, normalmente llamado ImageNet). La principal diferencia entre estos dos conjuntos es que el primero, ImageNet21K suma más de 14 millones de imágenes clasificadas en más de 21 mil clases diferentes. Por otro lado, ImageNet1K es un subconjunto de ImageNet21K compuesto por cerca de 1.2 millones de imágenes clasificadas en 1000 categorías diferentes. Además de esto, también cuenta con anotaciones de localización de objetos (\textit{bounding boxes}) en más de medio millón de imágenes. Debido a la gran cantidad de imágenes y la variedad de elementos que abarcan, ImageNet es normalmente empleado para entrenar las arquitecturas de aprendizaje automático profundo. De esta forma, los modelos preentrenados en ImageNet pueden ajustarse de una manera mucho más rápida y efectiva a tareas e imágenes nuevas con otros \textit{datasets}, ya que al haber sido entrenados previamente los modelos han aprendido a extraer características generales (normalmente reutilizables) de las imágenes.
 
-Una muestra de imágenes que conforman ImageNet está disponible en la Figura \ref{fig:imagenet}.
+Una muestra de imágenes que conforman ImageNet está disponible en la \Cref{fig:imagenet}.
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{imagenes/imagenet.png}
@@ -85,11 +85,11 @@ Una muestra de imágenes que conforman ImageNet está disponible en la Figura \r
 \label{fig:imagenet}
 \end{figure}
 
-\subsubsection{MIX6}
+\subsubsection{MIX6}\label[seccion]{mix6}
 %TODO Poner una nota al pie con los links de hacer los datasets piratas.
 MIX6 \cite{visiontransformersDPT}, una ampliación de MIX5 \cite{midas-intel}, es en realidad una agrupación de otros \textit{datasets} que proporcionan anotaciones de profundidad de sus imágenes. Estas agrupaciones, consiguen dos características importantes: Primero, suman una cantidad de imágenes considerablemente alta; segundo, al tener datos de naturalezas tan distintas, existe una enorme variedad entre las imágenes, lo que permite entrenar modelos de estimación de profundidades generales, es decir, que no estén especializados en ningún entorno concreto. 
 
-Estas dos características, hacen que MIX6 sea una muy buena opción para entrenar arquitecturas basadas en \textit{transformers} pero también dificultan el entrenamiento de modelos debido a la falta de homogeneidad entre los formatos de las imágenes, sus anotaciones, etc. Un desglose resumido de los \textit{datasets} que componen MIX6 está disponible en la Tabla \ref{tab:mix6-datasets}.
+Estas dos características, hacen que MIX6 sea una muy buena opción para entrenar arquitecturas basadas en \textit{transformers} pero también dificultan el entrenamiento de modelos debido a la falta de homogeneidad entre los formatos de las imágenes, sus anotaciones, etc. Un desglose resumido de los \textit{datasets} que componen MIX6 está disponible en la \Cref{tab:mix6-datasets}.
 
 % https://www.sascha-frank.com/Faq/tables_one.html
 \begin{table}[H]
@@ -163,7 +163,7 @@ Medida inercial (x1) & OXTS RT3003           & \begin{tabular}[c]{@{}r@{}}Posici
 
 \todo{Esta tabla puede que sea un poco demasiado}
 
-Los datos disponibles en KITTI fueron capturados empleando un vehículo equipado con diferentes sensores (Tabla \ref{tab:sensores-kitti}) para realizar diferentes recorridos en distintas zonas urbanas e interurbanas. De esta forma, se capturaron escenarios variados en múltiples condiciones de luz, hora, presencia de vehículos y peatones, etc. Dentro de los sensores equipados, son de especial interés para este trabajo las dos parejas de cámaras para estereovisón (un montaje con dos cámaras en escala de grises y otro montaje con dos cámaras en color) y el escáner láser rotatorio de $360\degree$. Además de estos sensores, el automóvil también equipaba un sensor de medida inercial con sistema de navegación GPS para registrar información relacionada con la odometría que no se ha empleado durante el desarrollo del trabajo.
+Los datos disponibles en KITTI fueron capturados empleando un vehículo equipado con diferentes sensores (\Cref{tab:sensores-kitti}) para realizar diferentes recorridos en distintas zonas urbanas e interurbanas. De esta forma, se capturaron escenarios variados en múltiples condiciones de luz, hora, presencia de vehículos y peatones, etc. Dentro de los sensores equipados, son de especial interés para este trabajo las dos parejas de cámaras para estereovisón (un montaje con dos cámaras en escala de grises y otro montaje con dos cámaras en color) y el escáner láser rotatorio de $360\degree$. Además de estos sensores, el automóvil también equipaba un sensor de medida inercial con sistema de navegación GPS para registrar información relacionada con la odometría que no se ha empleado durante el desarrollo del trabajo.
 
 % (\textit{2x PointGray Flea2 grayscale cameras, FL2-14S3M-C, 1.4 Megapixels, 1/2” Sony ICX267 CCD, global shutter}) 
  
@@ -176,7 +176,7 @@ Si nos centramos en la información relevante para la estimación de profundidad
 
 \textbf{Datos en bruto}
 
-El \textit{dataset} está compuesto por fotogramas muestreados y sincronizados a 10 Hz de los vídeos capturados por las cámaras en diferentes recorridos. Debido a las características del sistema óptico, para cada instante se disponen de cuatro imágenes, derecha e izquierda en escala de grises, y derecha e izquierda en color. Una muestra de estas imágenes puede observarse en la Figura \ref{fig:kitti-raw}.
+El \textit{dataset} está compuesto por fotogramas muestreados y sincronizados a 10 Hz de los vídeos capturados por las cámaras en diferentes recorridos. Debido a las características del sistema óptico, para cada instante se disponen de cuatro imágenes, derecha e izquierda en escala de grises, y derecha e izquierda en color. Una muestra de estas imágenes puede observarse en la \Cref{fig:kitti-raw}.
 
 \begin{figure}[H]
 \centering
@@ -197,7 +197,7 @@ En total, se disponen de 192760 imágenes ($\sim$ 196 GB) de tamaño 1242x375 p�
 % Son metros * 256, es decir, un píxel que vale 640 en la imágen son 640/256=2.5 metros. 
 \textbf{Anotaciones}
 
-Por otro lado, KITTI proporciona también los valores numéricos de la profundidad para cada uno de los píxeles (de las imágenes presentadas previamente) almacenados como imágenes en formato PNG con un solo canal y 16 bits para cada valor (UINT16). Estos valores son los obtenidos por el escaner láser equipado en el vehículo y pueden considerarse una medida fiable de la profundidad en cada imagen. Por lo tanto serán los datos que se emplearan como anotaciones para entrenar los modelos y evaluar sus capacidades de estimación de profundidades. Un punto importante a considerar sobre las medidas de estas anotaciones es que debido a la naturaleza del sensor con el que fueron tomadas, son anotaciones \textbf{dispersas} (\textit{sparse}), no densas. Esto significa que no todos los píxeles de una imagen tienen anotación, y por lo tanto aquellos píxeles no anotados deberán ser ignorados tanto durante el entrenamiento como durante la evaluación. Una muestra de estas etiquetas y de las anotaciones dispersas puede observarse en la Figura \ref{fig:kitti_depth}. Estas anotaciones están disponibles tanto como para las imágenes capturadas con las cámaras derechas como para las capturadas con las cámaras izquierdas.
+Por otro lado, KITTI proporciona también los valores numéricos de la profundidad para cada uno de los píxeles (de las imágenes presentadas previamente) almacenados como imágenes en formato PNG con un solo canal y 16 bits para cada valor (UINT16). Estos valores son los obtenidos por el escaner láser equipado en el vehículo y pueden considerarse una medida fiable de la profundidad en cada imagen. Por lo tanto serán los datos que se emplearan como anotaciones para entrenar los modelos y evaluar sus capacidades de estimación de profundidades. Un punto importante a considerar sobre las medidas de estas anotaciones es que debido a la naturaleza del sensor con el que fueron tomadas, son anotaciones \textbf{dispersas} (\textit{sparse}), no densas. Esto significa que no todos los píxeles de una imagen tienen anotación, y por lo tanto aquellos píxeles no anotados deberán ser ignorados tanto durante el entrenamiento como durante la evaluación. Una muestra de estas etiquetas y de las anotaciones dispersas puede observarse en la \Cref{fig:kitti_depth}. Estas anotaciones están disponibles tanto como para las imágenes capturadas con las cámaras derechas como para las capturadas con las cámaras izquierdas.
 
 \begin{figure}[H]
 \centering
@@ -207,13 +207,12 @@ Por otro lado, KITTI proporciona también los valores numéricos de la profundid
 
 \end{figure}
 
-\textbf{Conjuntos de entrenamiento, validación y evaluación}
-
+\paragraph{Conjuntos de entrenamiento, validación y evaluación}\label[seccion]{conjuntos-kitti}\mbox{}\\
 Para el desarrollo de este trabajo es necesario disponer de un conjunto de entrenamiento con el que ajustar los parámetros de los modelos, un conjunto de validación con el que comprobar que no se está sobre ajustando el modelo al primer conjunto y para elegir la combinación de hiperparámetros óptima, y por último, un conjunto de evaluación (\textit{test}) en el que calcular una serie de métricas que nos aportarán información del rendimiento real de los modelos finales.
 
 El \textit{dataset} de KITTI ya está dividido en entrenamiento y validación, e incluye una descarga adicional con el conjunto de test para el cual no están disponibles públicamente las anotaciones. No obstante, en las publicaciones sobre estimación de profundidad monocular \cite{visiontransformersDPT, monodepth,midas-intel, bts} es común encontrar los conjuntos de entrenamiento, validación y evaluación definidos por Eigen et al. \cite{eigen-multi-scale} (conocidos como el \textit{Eigen split}) que no respetan las particiones originales del \textit{dataset} de KITTI. 
 
-Las listas con los archivos que pertenecen a cada uno de las particiones se han descargado desde el repositorio\footnote{\url{https://github.com/nianticlabs/monodepth2/tree/master/splits} - (\textit{Eigen full})} del trabajo de Godard et al. \cite{monodepth}. En estas listas, hay nombres de archivos que no tienen ninguna anotación asociada, por lo que se eliminan de sus respectivas particiones. La distribución del número de imágenes, así como el número de imágenes eliminadas de cada conjunto se muestran en la Tabla \ref{tab:kitti-splits}.
+Las listas con los archivos que pertenecen a cada uno de las particiones se han descargado desde el repositorio\footnote{\url{https://github.com/nianticlabs/monodepth2/tree/master/splits} - (\textit{Eigen full})} del trabajo de Godard et al. \cite{monodepth}. En estas listas, hay nombres de archivos que no tienen ninguna anotación asociada, por lo que se eliminan de sus respectivas particiones. La distribución del número de imágenes, así como el número de imágenes eliminadas de cada conjunto se muestran en la \Cref{tab:kitti-splits}.
 
 \todo{Adjuntar el código usado para estas cosillas?}
 
@@ -260,7 +259,7 @@ En las siguientes ecuaciones, $d_p$ representa el valor del mapa de profundidad 
 
 
 \paragraph{\textit{Accuracy under a threshold}}\mbox{}\\
-La primera de estas métricas, el \textit{accuracy under a threshold}, viene dada por la Ecuación \ref{eqn:accuracy_under_thr} y cuantifica el porcentaje de píxeles a los que el modelo ha asignado una profundidad cuya relación de escala respecto de su valor real es menor que un determinado umbral. Los valores que se emplean para este umbral son $1.25$, $1.25^2$ y $1.25^3$.
+La primera de estas métricas, el \textit{accuracy under a threshold}, viene dada por la \Cref{eqn:accuracy_under_thr} y cuantifica el porcentaje de píxeles a los que el modelo ha asignado una profundidad cuya relación de escala respecto de su valor real es menor que un determinado umbral. Los valores que se emplean para este umbral son $1.25$, $1.25^2$ y $1.25^3$.
 
 \begin{equation}
 \label{eqn:accuracy_under_thr}
@@ -268,7 +267,7 @@ La primera de estas métricas, el \textit{accuracy under a threshold}, viene dad
 \end{equation}
 
 \paragraph{\textit{Mean Absolute Value of the Relative Error (Abs Rel)}}\mbox{}\\
-Otra métrica usada habitualmente es el promedio del error relativo en todos los píxeles que disponen de valor de profundidad anotada. Para conseguir este error relativo, se calcula el error absoluto y se divide entre el valor real de la profundidad (Ecuación \ref{eqn:abs_rel}).
+Otra métrica usada habitualmente es el promedio del error relativo en todos los píxeles que disponen de valor de profundidad anotada. Para conseguir este error relativo, se calcula el error absoluto y se divide entre el valor real de la profundidad (\Cref{eqn:abs_rel}).
 
 % np.mean(np.abs(gt - pred) / gt)
 \begin{equation}
@@ -277,7 +276,7 @@ Otra métrica usada habitualmente es el promedio del error relativo en todos los
 \end{equation}
 
 \paragraph{\textit{Mean Squared Relative Error (Sq Rel)}}\mbox{}\\
-Similar a la métrica anterior, en este caso el error absoluto se eleva al cuadrado antes de ser dividido entre el valor a estimar y de promediarlo con el resto de píxeles (Ecuación \ref{eqn:sq_rel}). De esta forma, por la naturaleza cuadrática de la fórmula, se le da una mayor importancia a los errores mayores que a los menores.
+Similar a la métrica anterior, en este caso el error absoluto se eleva al cuadrado antes de ser dividido entre el valor a estimar y de promediarlo con el resto de píxeles (\Cref{eqn:sq_rel}). De esta forma, por la naturaleza cuadrática de la fórmula, se le da una mayor importancia a los errores mayores que a los menores.
 
 % np.mean(((gt - pred)**2) / gt)
 \begin{equation}
@@ -286,7 +285,7 @@ Similar a la métrica anterior, en este caso el error absoluto se eleva al cuadr
 \end{equation}
 
 \paragraph{\textit{Linear Root Mean Squared Error (RMSE)}}\mbox{}\\
-El valor del error cuadrático medio proporciona una medida del promedio de la magnitud de la diferencia entre la profundidad predicha para cada uno de los píxeles y su profundidad real (Ecuación \ref{eqn:rmse}). Una característica interesante de esta métrica es que sus unidades coinciden con las de la variable predicha, lo que facilita su interpretación. Como los errores se elevan al cuadrado antes de promediarse, estos tienen una importancia relativa directamente relacionada con su magnitud, es decir, cuanto mayor sea el error, más peso tendrá en el promedio. Es por esto por lo que es especialmente útil si se busca penalizar más los errores más grandes en las predicciones.
+El valor del error cuadrático medio proporciona una medida del promedio de la magnitud de la diferencia entre la profundidad predicha para cada uno de los píxeles y su profundidad real (\Cref{eqn:rmse}). Una característica interesante de esta métrica es que sus unidades coinciden con las de la variable predicha, lo que facilita su interpretación. Como los errores se elevan al cuadrado antes de promediarse, estos tienen una importancia relativa directamente relacionada con su magnitud, es decir, cuanto mayor sea el error, más peso tendrá en el promedio. Es por esto por lo que es especialmente útil si se busca penalizar más los errores más grandes en las predicciones.
 
 \begin{equation}
 \label{eqn:rmse}
@@ -294,7 +293,7 @@ El valor del error cuadrático medio proporciona una medida del promedio de la m
 \end{equation}
 
 \paragraph{\textit{Logarithmic Root Mean Squared Error (RMSElog)}}\mbox{}\\
-Similar a la métrica anterior, en este caso el error cuadrático medio se calcula sobre los logaritmos naturales de las medidas a comparar (Ecuación \ref{eqn:rmselog}). Al realizar la resta de los logaritmos, la operación es equivalente a calcular el logaritmo de la división del valor de profundidad estimado y el valor de profundidad anotado, restando de esta forma importancia a la escala del error y obteniendo una aproximación al error relativo de las medidas (frente al \textit{RMSE}, que sería una medida del error absoluto). Además, debido al escalado que realizan los logaritmos, los \textit{outliers} pierden importancia, por lo que es una métrica más robusta frente a este tipo de errores puntuales.
+Similar a la métrica anterior, en este caso el error cuadrático medio se calcula sobre los logaritmos naturales de las medidas a comparar (\Cref{eqn:rmselog}). Al realizar la resta de los logaritmos, la operación es equivalente a calcular el logaritmo de la división del valor de profundidad estimado y el valor de profundidad anotado, restando de esta forma importancia a la escala del error y obteniendo una aproximación al error relativo de las medidas (frente al \textit{RMSE}, que sería una medida del error absoluto). Además, debido al escalado que realizan los logaritmos, los \textit{outliers} pierden importancia, por lo que es una métrica más robusta frente a este tipo de errores puntuales.
 
 Otra característica a destacar de esta métrica es que está sesgada para penalizar aquellos casos en los que el valor predicho es menor que el valor real (subestimación). De esta forma, el error en dicha situación será mayor que si el valor predicho es mayor que el valor real (sobreestimación) aún cuando la diferencia entre ambos valores sea la misma.
 
@@ -305,7 +304,7 @@ Otra característica a destacar de esta métrica es que está sesgada para penal
 \end{equation}
 
 \paragraph{\textit{Scale Invariant Logarithmic Error (SIlog)}}\mbox{}\\
-Esta métrica, es la raíz cuadrada de la función de pérdida propuesta por Eigen et al. \cite{eigen-multi-scale} con $\lambda = 1$ (Ecuación \ref{eqn:silog}). Al fijar el valor de $\lambda$ en la unidad, se obtiene una medida totalmente independiente de la escala de la salida. De esta forma, se obtiene una medida de la calidad de los resultados de los modelos ignorando completamente la escala en la que se han producido las predicciones, que como ya se ha comentado es uno de los problemas fundamentales de la estimación de profundidades en imagen monocular.
+Esta métrica, es la raíz cuadrada de la función de pérdida propuesta por Eigen et al. \cite{eigen-multi-scale} con $\lambda = 1$ (\Cref{eqn:silog}). Al fijar el valor de $\lambda$ en la unidad, se obtiene una medida totalmente independiente de la escala de la salida. De esta forma, se obtiene una medida de la calidad de los resultados de los modelos ignorando completamente la escala en la que se han producido las predicciones, que como ya se ha comentado es uno de los problemas fundamentales de la estimación de profundidades en imagen monocular.
 
 \todo[inline]{Aquí no sé que hacer, he hecho la demostración matemática de que es invariante a la escala pero es un churro de ecuaciones, no sé si merece la pena poner un anexo solo para eso. La función de pérdida es esta misma así que más abajo cuando hablo de ella vuelvo a tener el mismo dilema}
 
@@ -320,7 +319,7 @@ Esta métrica, es la raíz cuadrada de la función de pérdida propuesta por Eig
 \end{equation}
 
 \paragraph{\textit{Mean Logarithmic Error (Log10)}}\mbox{}\\
-Por último, se calculará también el promedio del error (en escala logarítmica) de las profundidades predichas respecto de las profundidades reales siguiendo la Ecuación \ref{eqn:log10}.
+Por último, se calculará también el promedio del error (en escala logarítmica) de las profundidades predichas respecto de las profundidades reales siguiendo la \Cref{eqn:log10}.
 
 % np.mean(np.abs(np.log10(pred) - np.log10(gt)))
 \begin{equation}
