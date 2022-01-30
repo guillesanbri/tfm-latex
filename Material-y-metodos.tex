@@ -247,16 +247,16 @@ Para definir tantos modelos como combinaciones sean posibles, se toman los conju
 
 
 \subsection{Evaluación}
-Para la evaluación de los modelos presentados en este trabajo y sus modificaciones, se ha seguido la metodología propuesta en la publicación de Lee et al. \cite{bts}, que también es la empleada para evaluar los resultados del \textit{Dense Prediction Transformer} \cite{visiontransformersDPT}. De esta forma, se satisfacen dos objetivos: reproducir los resultados presentados en dicho artículo con sus modelos, y evaluar las modificaciones introducidas de forma que se puedan comparar con los resultados originales de forma justa. 
+Para la evaluación de los modelos presentados en este trabajo y sus modificaciones, se ha seguido la metodología propuesta en la publicación de Lee et al. \cite{bts} para evaluar los resultados en KITTI que consiste en recortar un pequeño marco alrededor de la imagen de salida y crear una máscara para los píxeles que no tienen una profundidad definida en la anotación. En la publicación de DPT \cite{visiontransformersDPT}, también se emplea el mismo procedimiento.
 
-Ya que, como se mencionará más adelante, una de las modificaciones introducidas en este trabajo reduce el tamaño de la imagen en la entrada de las arquitecturas, el resultado se escala a su tamaño original antes de llevar a cabo la evaluación. De esta forma, se asegura que la magnitud de las métricas se ajuste a la del modelo original con entradas de mayor resolución. 
+Al usar esta misma metodología se satisfacen dos objetivos: poder reproducir los resultados presentados en dicho artículo con el modelo original, y evaluar las modificaciones introducidas para comparar sus resultados con los del modelo sin modificar. 
 
-Cabe mencionar también que al ser las anotaciones de KITTI dispersas (como ya se ha visto en la Figura \ref{fig:kitti_depth}, no todos los valores tienen anotación), es necesario aplicar una máscara a la salida del modelo de forma que los píxeles sin anotación correspondiente no influyan en las métricas.
+Como se mencionará más adelante, una de las modificaciones introducidas en este trabajo reduce el tamaño de la imagen en la entrada de las arquitecturas. El resultado de estos modelos, no obstante, se escala a su tamaño original antes de llevar a cabo la evaluación para asegurar que la magnitud de las métricas se ajuste a la del modelo original (con entradas de mayor resolución).
 
 \subsubsection{Métricas}
-Una vez escaladas y enmascaradas las predicciones y las anotaciones, se calculan una serie de valores cuantitativos que permiten comparar y evaluar el rendimiento de los modelos. Las funciones que nos proporcionan estos valores son conocidas como métricas. Dentro del gran número de funciones que permiten evaluar los resultados de los modelos, se han elegido aquellas comúnmente empleadas en los modelos de aprendizaje profundo dedicados a la estimación de profundidad en imágenes monoculares \cite{visiontransformersDPT,midas-intel,eigen-multi-scale,bts,DORN,bhat2020adabins,evaluation-cnn-depth-estimation, depth-estimation-metrics}.
+Una vez escaladas y enmascaradas las predicciones y las anotaciones, se calculan una serie de valores cuantitativos que permiten comparar y evaluar el rendimiento de los modelos. Las funciones que nos proporcionan estos valores son conocidas como métricas. Dentro del gran número de funciones que permiten evaluar los resultados de los modelos, se han elegido aquellas comúnmente empleadas en los modelos de aprendizaje profundo dedicados a la estimación de profundidad en imágenes monoculares \cite{visiontransformersDPT,bhat2020adabins,eigen-multi-scale,midas-intel,bts,DORN,evaluation-cnn-depth-estimation, depth-estimation-metrics}.
 
-En las siguientes ecuaciones, $d_p$ representa el valor del mapa de profundidad original (anotación) para cada pixel $p$, mientras que $\hat{d}_p$ representa el valor de la profundidad estimada por el modelo para cada pixel $p$. Por otro lado, $T$ denota el número de píxeles con información de profundidad disponibles en la anotación, ya que como se ha comentado previamente, no todas las anotaciones tienen información disponible para todos los píxeles de la imagen (anotaciones dispersas).
+En las siguientes ecuaciones, $d_p$ representa el valor del mapa de profundidad original (anotación) para cada pixel $p$, mientras que $\hat{d}_p$ representa el valor de la profundidad estimada por el modelo para cada pixel $p$. Por otro lado, $T$ denota el número de píxeles con información de profundidad disponibles en la anotación (al ser anotaciones dispersas, las imágenes no tienen información sobre la profundidad en todos los píxeles).
 
 
 \paragraph{\textit{Accuracy under a threshold}}\mbox{}\\
@@ -286,7 +286,7 @@ Similar a la métrica anterior, en este caso el error absoluto se eleva al cuadr
 \end{equation}
 
 \paragraph{\textit{Linear Root Mean Squared Error (RMSE)}}\mbox{}\\
-El valor del error cuadrático medio proporciona una medida del promedio de la magnitud de la diferencia entre la profundidad predicha para cada uno de los píxeles y su profundidad real (Ecuación \ref{eqn:rmse}). Dos características interesantes de esta métrica son que su valor se puede interpretar \todo{revisar esto} como la desviación estándar de la varianza residual y que sus unidades coinciden con las de la variable predicha, lo que facilita su interpretación. Como los errores se elevan al cuadrado antes de promediarse, estos tienen una importancia relativa directamente relacionada con su magnitud, es decir, cuanto mayor sea el error, más peso tendrá en el promedio. Es por esto por lo que es especialmente útil si se busca penalizar más los errores más grandes en las predicciones.
+El valor del error cuadrático medio proporciona una medida del promedio de la magnitud de la diferencia entre la profundidad predicha para cada uno de los píxeles y su profundidad real (Ecuación \ref{eqn:rmse}). Una característica interesante de esta métrica es que sus unidades coinciden con las de la variable predicha, lo que facilita su interpretación. Como los errores se elevan al cuadrado antes de promediarse, estos tienen una importancia relativa directamente relacionada con su magnitud, es decir, cuanto mayor sea el error, más peso tendrá en el promedio. Es por esto por lo que es especialmente útil si se busca penalizar más los errores más grandes en las predicciones.
 
 \begin{equation}
 \label{eqn:rmse}
@@ -294,9 +294,9 @@ El valor del error cuadrático medio proporciona una medida del promedio de la m
 \end{equation}
 
 \paragraph{\textit{Logarithmic Root Mean Squared Error (RMSElog)}}\mbox{}\\
-Similar a la métrica anterior, en este caso el error cuadrático medio se calcula sobre los logaritmos naturales de las medidas a comparar (Ecuación \ref{eqn:rmselog}). Al realizar la resta de los logaritmos, la operación es equivalente a calcular el logaritmo de la división del valor de profundidad estimado y el valor de profundidad anotado, restando de esta forma importancia a la escala del error y obteniendo una aproximación al error relativo de las medidas (frente al \textit{RMSE}, que sería una medida del error absoluto). Además, debido al escalado que realizan los logaritmos, los \textit{outliers} pierden importancia, obteniendo así una métrica más robusta frente a este tipo de errores puntuales.
+Similar a la métrica anterior, en este caso el error cuadrático medio se calcula sobre los logaritmos naturales de las medidas a comparar (Ecuación \ref{eqn:rmselog}). Al realizar la resta de los logaritmos, la operación es equivalente a calcular el logaritmo de la división del valor de profundidad estimado y el valor de profundidad anotado, restando de esta forma importancia a la escala del error y obteniendo una aproximación al error relativo de las medidas (frente al \textit{RMSE}, que sería una medida del error absoluto). Además, debido al escalado que realizan los logaritmos, los \textit{outliers} pierden importancia, por lo que es una métrica más robusta frente a este tipo de errores puntuales.
 
-Otra característica a destacar de esta métrica es que está sesgada para penalizar aquellos casos en los que el valor predicho es menor que el valor real (subestimación). De esta forma, el error en dicha situación será mayor que si el valor predicho es mayor que el valor real (sobreestimación), aún cuando la diferencia entre ambos valores sea la misma.
+Otra característica a destacar de esta métrica es que está sesgada para penalizar aquellos casos en los que el valor predicho es menor que el valor real (subestimación). De esta forma, el error en dicha situación será mayor que si el valor predicho es mayor que el valor real (sobreestimación) aún cuando la diferencia entre ambos valores sea la misma.
 
 %RMSElog es una medida del error relativo, RMSE es una medida del error absoluto
 \begin{equation}
@@ -305,7 +305,9 @@ Otra característica a destacar de esta métrica es que está sesgada para penal
 \end{equation}
 
 \paragraph{\textit{Scale Invariant Logarithmic Error (SIlog)}}\mbox{}\\
-Esta métrica, es una versión modificada de la función de pérdida propuesta por Eigen et al. obtenida fijando el valor de $\lambda = 1$, calculando su raíz cuadrada, y multiplicando finalmente por 100 (Ecuación \ref{eqn:silog}). Al fija el valor de $\lambda$ en la unidad, se obtiene una medida totalmente independiente de la escala de la salida\todo{citar a eigen y hacer una referencia al apartado de funciones de pérdida cuando esté hecho. o justificar por qué es invariante a la escala o referenciar la explicación de la función de pérdidas donde se explque por qué es invariante a la escala}. De esta forma, se obtiene una medida de la calidad de los resultados de los modelos ignorando completamente la escala en la que se han producido las predicciones, que como se ha comentado anteriormente, es uno de los problemas fundamentales de la estimación de profundidades en imagen monocular.
+Esta métrica, es la raíz cuadrada de la función de pérdida propuesta por Eigen et al. \cite{eigen-multi-scale} con $\lambda = 1$ (Ecuación \ref{eqn:silog}). Al fijar el valor de $\lambda$ en la unidad, se obtiene una medida totalmente independiente de la escala de la salida. De esta forma, se obtiene una medida de la calidad de los resultados de los modelos ignorando completamente la escala en la que se han producido las predicciones, que como ya se ha comentado es uno de los problemas fundamentales de la estimación de profundidades en imagen monocular.
+
+\todo[inline]{Aquí no sé que hacer, he hecho la demostración matemática de que es invariante a la escala pero es un churro de ecuaciones, no sé si merece la pena poner un anexo solo para eso. La función de pérdida es esta misma así que más abajo cuando hablo de ella vuelvo a tener el mismo dilema}
 
 % np.sqrt(np.mean((np.log(pred) - np.log(gt)) ** 2) - np.mean(np.log(pred) - np.log(gt)) ** 2) * 100
 \begin{equation}
@@ -327,7 +329,7 @@ Por último, se calculará también el promedio del error (en escala logarítmic
 \end{equation}
 
 \paragraph{Velocidad de procesamiento}\mbox{}\\
-Además de la calidad de los resultados, es de especial interés en este trabajo obtener medidas relacionadas con la velocidad de procesamiento que pueden alcanzar los modelos. Dentro de las medidas empleadas en este trabajo, hay dos grupos, aquellas condicionadas por el \textit{hardware} en el que se realizan las pruebas (Tiempo de inferencia y Tasa de transferencia efectiva) y aquellas independientes de este (Número de operaciones en coma flotante).
+Además de la calidad de los resultados, es de especial interés en este trabajo obtener medidas relacionadas con la velocidad de procesamiento que pueden alcanzar los modelos. Dentro de las medidas empleadas hay dos grupos: condicionadas por el \textit{hardware} utilizado (Tiempo de inferencia y Tasa de transferencia efectiva) e independientes del \textit{hardware} (Número de operaciones en coma flotante).
 
 \subparagraph{Tiempo de inferencia}\mbox{}\\
 Esta medida corresponderá al tiempo que tarda el modelo en procesar \textbf{una sola} imagen. Si suponemos que la aplicación de estos modelos es el procesamiento de vídeo de forma online, donde los fotogramas no pueden procesarse en lotes, esta medida es la inversa de los fotogramas por segundo (\textit{FPS}). 
@@ -338,9 +340,9 @@ Por otro lado, en caso de que el procesamiento de imágenes se haga de forma off
 De nuevo, como se ha mencionado en el párrafo introductorio, este valor está ligado al equipo en el que se lleve a cabo la inferencia.
 
 \subparagraph{Número de operaciones en coma flotante \textit{(FLOPs)}}\mbox{}\\
-Número de FLOPs que el modelo tiene que llevar a cabo para procesar una sola entrada.
-\todo[inline]{O desarrollar más esto o hablar de MACs, o hablar de ambas}
-\todo[inline]{Si quantizamos los modelos a int8 dejamos de tener operaciones en coma flotante y esta métrica no servirá de nada. Explorar la opción de usar MACs (\url{https://en.wikipedia.org/wiki/Multiply\%E2\%80\%93accumulate_operation}). En el paper de FastDepth es lo que hacen.}
+Por último, esta vez independiente del \textit{hardware} en el que se ejecuta el modelo, se empleará el número de operaciones en coma flotante (en inglés, FLOPs) que se requieren para procesar una sola entrada de la red como medida de la complejidad y coste computacional de los modelos.
+
+% \todo[inline]{Si quantizamos los modelos a int8 dejamos de tener operaciones en coma flotante y esta métrica no servirá de nada. Explorar la opción de usar MACs (\url{https://en.wikipedia.org/wiki/Multiply\%E2\%80\%93accumulate_operation}). En el paper de FastDepth es lo que hacen.}
 
 %% Mencionar que las pruebas se llevaran a cabo en distintos entornos y que esto se señalará en los resultados.
 
