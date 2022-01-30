@@ -70,14 +70,14 @@ Memoria    & 32 GB DDR4                                                         
 \end{table}
 
 \subsection{Datasets}
-Durante este trabajo, de forma directa o indirecta, se emplean ciertos conjuntos de datos. Más concretamente, ImageNet \cite{imagenet_cvpr09, ILSVRC15} y MIX6 \cite{visiontransformersDPT} han sido empleados (no durante el desarrollo de este trabajo) para preentrenar los distintos modelos usados, mientras que KITTI \cite{KITTI-dataset, KITTI-benchmarks, KITTI-road-benchmark, KITTI-sceneflow-benchmark} se elige como conjunto de datos con el que comparar y evaluar las distintas modificaciones, y por lo tanto se emplea para entrenar los modelos. En esta sección, se resumen las características de estos tres \textit{datasets}.
+Durante este trabajo, de forma directa o indirecta, se emplean ciertos conjuntos de datos. Más concretamente, ImageNet \cite{imagenet_cvpr09, ILSVRC15} y MIX6 \cite{visiontransformersDPT} han sido empleados (no durante el desarrollo de este trabajo) para preentrenar los distintos modelos usados, mientras que KITTI \cite{KITTI-dataset, KITTI-benchmarks, KITTI-road-benchmark, KITTI-sceneflow-benchmark} se elige como conjunto de datos con el que comparar y evaluar las distintas modificaciones, implementadas y por lo tanto se utiliza para entrenar los modelos. A continuación se resumen las características de estos tres \textit{datasets}.
 
 \subsubsection{ImageNet}
 ImageNet \cite{imagenet_cvpr09, ILSVRC15} es un \textit{dataset} que proporciona un gran número de imágenes etiquetadas en función de la presencia o ausencia de una serie de conceptos definidos como \textit{synsets}. Estos conceptos siguen la jerarquía propuesta por WordNet \cite{wordnet}, donde se agrupan palabras y categorías en función de sus relaciones semánticas. Para construir ImageNet, partiendo de una fracción de la ya mencionada estructura de WordNet, se buscaron imágenes de Internet para poblar cada una de las categorías. Estas imágenes, se filtraron y posteriormente fueron manualmente etiquetadas por humanos. 
 
-Dentro del proyecto de Imagenet, existen dos conjuntos: ImageNet21K e ImageNet1K (este último, normalmente llamado ImageNet). La principal diferencia entre estos dos conjuntos es que el primero, ImageNet21K suma más de 14 millones de imágenes clasificadas en más de 21 mil clases diferentes. Por otro lado, ImageNet1K es un subconjunto de ImageNet21K compuesto por cerca de 1.2 millones de imágenes clasificadas en 1000 categorías diferentes. Además de esto, también cuenta con anotaciones de localización de objetos (\textit{bounding boxes}) en más de medio millón de imágenes. Debido a la gran cantidad de imágenes y la variedad de elementos que abarcan, ImageNet es normalmente empleado para entrenar las arquitecturas de aprendizaje automático profundo. De esta forma, los modelos preentrenados en ImageNet pueden ajustarse de una manera mucho más rápida y efectiva a tareas e imágenes nuevas con otros \textit{datasets} ya que al haber sido entrenados previamente, los modelos han aprendido a extraer características generales (normalmente reutilizables) de las imágenes.
+Dentro del proyecto de Imagenet, existen dos conjuntos: ImageNet21K e ImageNet1K (este último, normalmente llamado ImageNet). La principal diferencia entre estos dos conjuntos es que el primero, ImageNet21K suma más de 14 millones de imágenes clasificadas en más de 21 mil clases diferentes. Por otro lado, ImageNet1K es un subconjunto de ImageNet21K compuesto por cerca de 1.2 millones de imágenes clasificadas en 1000 categorías diferentes. Además de esto, también cuenta con anotaciones de localización de objetos (\textit{bounding boxes}) en más de medio millón de imágenes. Debido a la gran cantidad de imágenes y la variedad de elementos que abarcan, ImageNet es normalmente empleado para entrenar las arquitecturas de aprendizaje automático profundo. De esta forma, los modelos preentrenados en ImageNet pueden ajustarse de una manera mucho más rápida y efectiva a tareas e imágenes nuevas con otros \textit{datasets}, ya que al haber sido entrenados previamente los modelos han aprendido a extraer características generales (normalmente reutilizables) de las imágenes.
 
-Una muestra de las imágenes que conforman ImageNet está disponible en la Figura \ref{fig:imagenet}.
+Una muestra de imágenes que conforman ImageNet está disponible en la Figura \ref{fig:imagenet}.
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{imagenes/imagenet.png}
@@ -87,7 +87,9 @@ Una muestra de las imágenes que conforman ImageNet está disponible en la Figur
 
 \subsubsection{MIX6}
 %TODO Poner una nota al pie con los links de hacer los datasets piratas.
-MIX6 \cite{visiontransformersDPT}, es una ampliación de MIX5 \cite{midas-intel}. Estos dos \textit{datasets}, son en realidad agrupaciones de otros \textit{datasets} que proporcionan anotaciones de profundidad de sus imágenes. Estas agrupaciones consiguen dos puntos importantes: Primero, suman una cantidad de imágenes considerablemente alta; segundo, al tener los datos naturalezas tan distintas, existe una enorme variedad entre las imágenes, lo que permite entrenar modelos de estimación de profundidades generales, es decir, que no estén especializados en ninguna tarea. Estas dos características, hacen que MIX6 sea una muy buena opción especialmente para entrenar arquitecturas basadas en \textit{transformers}, pero también dificultan el entrenamiento de modelos debido a la falta de homogeneidad entre los formatos de las imágenes, sus anotaciones, etc. Un desglose resumido de estos \textit{datasets} está disponible en la Tabla \ref{tab:mix6-datasets}.
+MIX6 \cite{visiontransformersDPT}, una ampliación de MIX5 \cite{midas-intel}, es en realidad una agrupación de otros \textit{datasets} que proporcionan anotaciones de profundidad de sus imágenes. Estas agrupaciones, consiguen dos características importantes: Primero, suman una cantidad de imágenes considerablemente alta; segundo, al tener datos de naturalezas tan distintas, existe una enorme variedad entre las imágenes, lo que permite entrenar modelos de estimación de profundidades generales, es decir, que no estén especializados en ningún entorno concreto. 
+
+Estas dos características, hacen que MIX6 sea una muy buena opción para entrenar arquitecturas basadas en \textit{transformers} pero también dificultan el entrenamiento de modelos debido a la falta de homogeneidad entre los formatos de las imágenes, sus anotaciones, etc. Un desglose resumido de los \textit{datasets} que componen MIX6 está disponible en la Tabla \ref{tab:mix6-datasets}.
 
 % https://www.sascha-frank.com/Faq/tables_one.html
 \begin{table}[H]
@@ -138,6 +140,7 @@ TUM \cite{sturm12iros}                             & \cellcolor[HTML]{FFFFFF}Im�
 \label{tab:mix6-datasets}
 \end{table}
 
+\todo{Esta tabla no me convence mucho pero tampoco se me ocurre como resumirlo mejor}
 
 \subsubsection{KITTI}
 KITTI \cite{KITTI-dataset, KITTI-benchmarks, KITTI-road-benchmark, KITTI-sceneflow-benchmark} es un proyecto desarrollado por el \textit{Karlsruhe Institute of Technology} y el \textit{Toyota Technological Institute} que engloba un \textit{dataset} y un conjunto de \textit{becnhmarks} enfocados a diferentes tareas relacionadas con la conducción autónoma. Los \textit{benchamrks} que incluye este proyecto evalúan: estereovisión, flujo óptico (\textit{optical flow}), flujo de la escena, \textbf{estimación de profundidades monocular}, \textit{depth completion}, odometría visual/SLAM, localización de objetos (2D, 3D y cenital), seguimiento de objetos, segmentación de carreteras, y por último, segmentación de objetos general, tanto semántica como a nivel de instancia. Debido a la naturaleza de este trabajo, este apartado se centrará en la parte referente a la predicción de profundidad monocular.
@@ -158,7 +161,9 @@ Medida inercial (x1) & OXTS RT3003           & \begin{tabular}[c]{@{}r@{}}Posici
 \label{tab:sensores-kitti}
 \end{table}
 
-Los datos disponibles en KITTI fueron capturados empleando un vehículo equipado con diferentes sensores (Tabla \ref{tab:sensores-kitti}) para realizar diferentes recorridos en distintas zonas urbanas e interurbanas. Capturando, de esta forma, escenarios variados en múltiples condiciones de luz, hora, presencia de vehículos y peatones, etc. Dentro de los sensores equipados, son de especial interés para este trabajo son las dos parejas de cámaras para estereovisón (un montaje con dos cámaras en escala de grises y otro montaje con dos cámaras en color) y el escáner láser rotatorio de $360\degree$. Además de estos sensores, el automóvil también equipaba un sensor de medida inercial con sistema de navegación GPS para registrar información relacionada con la odometría, pero esta información no se ha empleado durante el desarrollo del trabajo.
+\todo{Esta tabla puede que sea un poco demasiado}
+
+Los datos disponibles en KITTI fueron capturados empleando un vehículo equipado con diferentes sensores (Tabla \ref{tab:sensores-kitti}) para realizar diferentes recorridos en distintas zonas urbanas e interurbanas. De esta forma, se capturaron escenarios variados en múltiples condiciones de luz, hora, presencia de vehículos y peatones, etc. Dentro de los sensores equipados, son de especial interés para este trabajo las dos parejas de cámaras para estereovisón (un montaje con dos cámaras en escala de grises y otro montaje con dos cámaras en color) y el escáner láser rotatorio de $360\degree$. Además de estos sensores, el automóvil también equipaba un sensor de medida inercial con sistema de navegación GPS para registrar información relacionada con la odometría que no se ha empleado durante el desarrollo del trabajo.
 
 % (\textit{2x PointGray Flea2 grayscale cameras, FL2-14S3M-C, 1.4 Megapixels, 1/2” Sony ICX267 CCD, global shutter}) 
  
@@ -167,10 +172,11 @@ Los datos disponibles en KITTI fueron capturados empleando un vehículo equipado
 % \textit{Velodyne HDL-64E rotating 3D laser scanner, 10 Hz, 64 beams, 0.09 degree angular resolution, 2 cm distance accuracy, collecting $\sim$ 1.3 million points/second, field of view: $360\degree$ horizontal, $26.8\degree$ vertical, range: 120 m}. 
 
 \paragraph{Datos}\mbox{}\\
-Si nos centramos en los datos relevantes para la estimación de profundidades monocular, KITTI ofrece los siguientes datos:
+Si nos centramos en la información relevante para la estimación de profundidades monocular, KITTI ofrece los siguientes datos:
 
-\subparagraph{Datos en bruto}:
-El \textit{dataset} está compuesto de fotogramas muestreados y sincronizados a 10 Hz de los vídeos capturados por las cámaras previamente descritas en diferentes recorridos. Debido a la naturaleza del sistema óptico, para cada instante se disponen de cuatro imágenes, derecha e izquierda en escala de grises, y derecha e izquierda en color. Una muestra de estas imágenes puede observarse en la Figura \ref{fig:kitti-raw}.
+\textbf{Datos en bruto}
+
+El \textit{dataset} está compuesto por fotogramas muestreados y sincronizados a 10 Hz de los vídeos capturados por las cámaras en diferentes recorridos. Debido a las características del sistema óptico, para cada instante se disponen de cuatro imágenes, derecha e izquierda en escala de grises, y derecha e izquierda en color. Una muestra de estas imágenes puede observarse en la Figura \ref{fig:kitti-raw}.
 
 \begin{figure}[H]
 \centering
@@ -189,8 +195,9 @@ El \textit{dataset} está compuesto de fotogramas muestreados y sincronizados a 
 En total, se disponen de 192760 imágenes ($\sim$ 196 GB) de tamaño 1242x375 píxeles, de las cuales 96430 (la mitad) corresponden a las cámaras a color. Como el objetivo es la estimación de profundidades monocular, solo se emplea una de las imágenes de cada pareja de imágenes producido por el sistema de estereovisión, por lo que realmente se emplean 48215 imágenes de los datos en bruto (una cuarta parte de la cantidad original).
 
 % Son metros * 256, es decir, un píxel que vale 640 en la imágen son 640/256=2.5 metros. 
-\subparagraph{Anotaciones}:
-Por otro lado, KITTI proporciona también los valores numéricos de la profundidad para cada uno de los píxeles (de las imágenes presentadas previamente) almacenados como imágenes en formato PNG con un solo canal y 16 bits para cada valor (UINT16). Estos valores son los obtenidos por el escaner láser equipado en el vehículo, que pueden considerarse una medida fiable de la profundidad en cada imagen y por lo tanto serán los datos que se emplearan como anotaciones. Es decir, son los valores que se emplearan para entrenar el modelo y evaluar su capacidad de predicción. Un punto importante a considerar sobre las medidas de estas anotaciones es que debido a la naturaleza del sensor con el que fueron tomadas, son anotaciones \textbf{dispersas} (\textit{sparse}) y no densas. Esto significa que no todos los píxeles de una imagen dada tienen anotación, y por lo tanto, aquellos píxeles no anotados deberán ser ignorados tanto durante el entrenamiento como durante la evaluación. Una muestra de estas etiquetas y de las anotaciones dispersas puede observarse en la Figura \ref{fig:kitti_depth}. Estas anotaciones están disponibles tanto como para las imágenes capturadas con las cámaras derechas como para las capturadas con las cámaras izquierdas, es decir, hay dos anotaciones para cada instante.
+\textbf{Anotaciones}
+
+Por otro lado, KITTI proporciona también los valores numéricos de la profundidad para cada uno de los píxeles (de las imágenes presentadas previamente) almacenados como imágenes en formato PNG con un solo canal y 16 bits para cada valor (UINT16). Estos valores son los obtenidos por el escaner láser equipado en el vehículo y pueden considerarse una medida fiable de la profundidad en cada imagen. Por lo tanto serán los datos que se emplearan como anotaciones para entrenar los modelos y evaluar sus capacidades de estimación de profundidades. Un punto importante a considerar sobre las medidas de estas anotaciones es que debido a la naturaleza del sensor con el que fueron tomadas, son anotaciones \textbf{dispersas} (\textit{sparse}), no densas. Esto significa que no todos los píxeles de una imagen tienen anotación, y por lo tanto aquellos píxeles no anotados deberán ser ignorados tanto durante el entrenamiento como durante la evaluación. Una muestra de estas etiquetas y de las anotaciones dispersas puede observarse en la Figura \ref{fig:kitti_depth}. Estas anotaciones están disponibles tanto como para las imágenes capturadas con las cámaras derechas como para las capturadas con las cámaras izquierdas.
 
 \begin{figure}[H]
 \centering
@@ -200,9 +207,15 @@ Por otro lado, KITTI proporciona también los valores numéricos de la profundid
 
 \end{figure}
 
-\subparagraph{Conjuntos de entrenamiento, validación y evaluación}:
-Para el desarrollo de este trabajo es necesario disponer de un conjunto de entrenamiento con el que ajustar los parámetros de los modelos, un conjunto de validación con el que comprobar que no se está sobre ajustando el modelo al primer conjunto y para elegir la combinación de hiperparámetros óptima, y por último, un conjunto de evaluación (\textit{test}) en el que calcular una serie de métricas que nos aportarán información del rendimiento real de cada uno de los modelos finales.
-El \textit{dataset} de KITTI ya está dividido en entrenamiento y validación e incluye una descarga adicional con el conjunto de test, para el cual no están disponibles públicamente las anotaciones. No obstante, en las publicaciones científicas sobre estimación de profundidad monocular \cite{,,,} es común encontrar que se emplean los conjuntos de entrenamiento/validación/evaluación definidos por Eigen et al. \cite{eigen-multi-scale} (conocido como el \textit{Eigen split}) que no respeta las particiones originales del \textit{dataset} de KITTI. Las listas con los archivos que pertenecen a cada uno de las particiones se han descargado desde el repositorio\footnote{\url{https://github.com/nianticlabs/monodepth2/tree/master/splits} - (\textit{Eigen full})} del trabajo de Godard et al. \cite{monodepth}. En estas listas, hay nombres de archivos que no tienen ninguna anotación asociada, por lo que se eliminan de sus respectivas particiones. La distribución del número de imágenes, así como el número de imágenes eliminadas de cada conjunto se muestran en la Tabla \ref{tab:kitti-splits}.
+\textbf{Conjuntos de entrenamiento, validación y evaluación}
+
+Para el desarrollo de este trabajo es necesario disponer de un conjunto de entrenamiento con el que ajustar los parámetros de los modelos, un conjunto de validación con el que comprobar que no se está sobre ajustando el modelo al primer conjunto y para elegir la combinación de hiperparámetros óptima, y por último, un conjunto de evaluación (\textit{test}) en el que calcular una serie de métricas que nos aportarán información del rendimiento real de los modelos finales.
+
+El \textit{dataset} de KITTI ya está dividido en entrenamiento y validación, e incluye una descarga adicional con el conjunto de test para el cual no están disponibles públicamente las anotaciones. No obstante, en las publicaciones sobre estimación de profundidad monocular \cite{visiontransformersDPT, monodepth,midas-intel, bts} es común encontrar los conjuntos de entrenamiento, validación y evaluación definidos por Eigen et al. \cite{eigen-multi-scale} (conocidos como el \textit{Eigen split}) que no respetan las particiones originales del \textit{dataset} de KITTI. 
+
+Las listas con los archivos que pertenecen a cada uno de las particiones se han descargado desde el repositorio\footnote{\url{https://github.com/nianticlabs/monodepth2/tree/master/splits} - (\textit{Eigen full})} del trabajo de Godard et al. \cite{monodepth}. En estas listas, hay nombres de archivos que no tienen ninguna anotación asociada, por lo que se eliminan de sus respectivas particiones. La distribución del número de imágenes, así como el número de imágenes eliminadas de cada conjunto se muestran en la Tabla \ref{tab:kitti-splits}.
+
+\todo{Adjuntar el código usado para estas cosillas?}
 
 \begin{table}[H]
 \centering
@@ -225,7 +238,7 @@ Num. imágenes útiles    & 44570         & 1746       & 652        \\ \bottomru
 \end{table}
 
 Como comprobación adicional, se han cruzado las listas de archivos descargadas para asegurar que ninguno de los elementos de los conjuntos de entrenamiento y validación se encuentras en el conjunto de evaluación.
-\todo[inline]{Adjuntar el código usado para estas cosillas?}
+
 
 
 
