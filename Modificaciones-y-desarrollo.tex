@@ -118,37 +118,27 @@ En la Figura \ref{fig:attention_block_num}, se puede apreciar la modificación d
 \label{fig:attention_block_num}
 \end{figure}
 
-
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{imagenes/DPT-general.png}
-\caption{Arquitectura general DPT.}
-\label{fig:dpt-general}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{imagenes/DPT-modificado-general.png}
-\caption{Arquitectura general DPT tras las modificaciones.}
-\label{fig:dpt-mod-general}
-\end{figure}
-
 \subsection{Cambio del backbone convolucional}
-El último cambio estudiado en este proyecto es el del backbone convolucional del Hybrid ViT. En el modulo propuesto en la publicación original, se elige como backbone una ResNet50v2, de la que se extraen las activaciones en los bloques 0 y 1, que tienen un tamaño TODO de 256 y 512, quedando así TODO de tamaños [256, 512, 768, 768]. Por otro lado, la salida de la última capa de la ResNet50v2, es decir, la entrada de los bloques de atención, tiene forma [n, c, h, w], donde n es el número de imágenes en el batch (batch size), c el número de canales (en este caso mapas de características), que son 1024 por como está diseñada la arquitectura, y por último, h y w, que son la altura y anchura de los mapas de características y son iguales a las dimensiones de la imagen de entrada divididas 4 veces entre 2. Después de la ResNet, hay una capa de proyección que no es más que una capa convolucional con kernels de tamaño 1x1 y stride 1x1, con 1024 canales de entrada y 768 canales de salida. Este tipo de capas, realmente son 786 kernels de 1x1x1024, por lo que al convolucionar cada uno de ellos la entrada, se obtienen 768 mapas de características del mismo tamaño que los de la entrada. Los 768 mapas de características resultantes, se aplanan en tensores de forma [n, 768, h/8 * w/8] y se transponen de forma que la entrada sea de tipo [n, t, 768], donde 768 es el tamaño de los tokens de los bloques de atención y t el número de tokens extraidos de la imagen. De esta forma, a mayor tamaño de imagen mayor será el número de tokens, pero la dimensión de estos permanece constante.
+La última modificación de la arquitectura de DPT estudiada en este proyecto es la del \textit{backbone} convolucional del Hybrid ViT, encargado de extraer los mapas de características empleados para obtener los \textit{tokens} que pasan a los bloques de atención. 
 
-\todo[inline]{Hablar de las convoluciones con kernels 1x1 arriba en vez de aquí?}
+En el modulo propuesto en la publicación original, se elige como \textit{backbone} una ResNet50. De esta red, se extraen las activaciones en los bloques 0 y 1 para pasarlas al \textit{decoder}. Por otro lado, la salida de la última capa de la ResNet50, es decir, la entrada de los bloques de atención, tiene forma [n, c, h, w], donde: n es el número de imágenes en el lote (\textit{batch size}), c es el número de canales (en este caso mapas de características), y h y w la altura y anchura de los mapas de características. En el caso de este \textit{backbone}, la salida está compuesta por $c=1024$ mapas de características de dimensiones iguales a las de la imagen de entrada divididas 4 veces entre 2.
 
-A modo de ejemplo, supongamos una entrada de una sola imagen de tamaño 384x384: la salida de la ResNet50v2 tendrá la forma [1, 1024, 24, 24]. Esta salida atraviesa la capa de proyección y pasa a tener forma [1, 768, 24, 24]. Estos mapas de características se aplanan en un tensor [1, 768, 576] que se traspone para obtener la forma [1, 576, 768], que equivale a 576 tokens de dimensión 768. Una vez llegados a este punto, el tensor está listo para pasar a los bloques de atención del transformer.
+Después de la ResNet, hay una capa de proyección que no es más que una capa convolucional con \textit{kernels} de tamaño $1\times1$ y zancada $1\times1$, con $1024$ canales de entrada y $768$ canales de salida. Este tipo de convoluciones $1\times1$, realmente se componen de $786$ kernels de $1\times1\times1024$, por lo que al convolucionar cada uno de ellos la entrada, se obtienen $768$ mapas de características del mismo tamaño que los de la entrada. Después, los $768$ mapas de características resultantes se aplanan en tensores de forma [$n$, $768$, $\frac{h}{8} \times \frac{w}{8}$] y se transponen de forma que la entrada sea de tipo [$n$, $t$, $768$], donde $768$ es el tamaño de los \textit{tokens} de los bloques de atención y t el número de \textit{tokens} extraidos de la imagen. De esta forma, a mayor tamaño de imagen mayor será el número de \textit{tokens} (secuencia más larga, aumenta el coste de los bloques de atención), pero la dimensión de estos permanece constante.
 
-Por otro lado, la arquitectura EfficientNet-B0, alternativa usada en las pruebas de este trabajo, proporciona una salida (antes de la capa de global pooling) de forma [n, c, h, w] donde n vuelve a ser el número de imágenes procesadas en paralelo, el número de mapas de características es en este caso 1280, y la altura y anchura se corresponden con las de las imágenes de entrada divididas 5 veces entre 2. Es decir: [n, 1280, h/16, w/16]. Para poder sustituir el backbone convolucional del Hybrid ViT sin tener que cambiar el tamaño de todas las capas de atención (para poder aprovechar los pesos preentrenados), se sustituye la capa de proyección mencionada en el párrafo superior, que recordemos era una capa convolucional con kernels de tamaño 1x1 por una capa de convolución transpuesta. Esta capa de convolución transpuesta, cumple dos funciones fundamentales: la primera, transforma los 1280 mapas de características en 768; y la segunda, al tener un kernel de tamaño 2x2 y un stride también de 2x2, consigue que las dimensiones de estos mapas de características se multiplen exactamente por 2 en ambas dimensiones, convirtiendo la entrada [n, 1280, h/16, w/16] en [n, 1280, h/8, w/8], que es lo que espera la etapa que aplana los mapas de características y transpone el tensor para obtener de nuevo la entrada preparada para los bloques de atención de forma [n, t, 768] donde t vuelve a ser el número de tokens que pasan al transformer, cada uno de dimensión 768.
+A modo de ejemplo, supongamos una entrada de una sola imagen de tamaño $384\times384$: la salida de la ResNet50 tendrá la forma [$1$, $1024$, $24$, $24$]. Esta salida atraviesa la convolución $1\times1$ de proyección y pasa a tener forma [$1$, $768$, $24$, $24$]. Estos mapas de características se aplanan en un tensor [$1$, $768$, $576$] que se traspone para obtener la forma [$1$, $576$, $768$], que equivale a $576$ \textit{tokens} de dimensión $768$. Una vez llegados a este punto, el tensor está listo para pasar a los bloques de atención del \textit{transformer}.
 
-\todo[inline]{Explicar bien y añadir en el parrafo de efficientnet el tamaño que tienen los hooks de la red convolucional}
-\todo[inline]{Meter alguna imagen para explicar todo este apartado}
-\todo[inline]{Decir lo de que se ha modificado la carga de pesos del modelo}
-\todo[inline]{Decir (y luego repetir) que efficientnet no está preentrenada en mix y que esto evidentemente afectará a los resultados}
+Buscando una alternativa que ofrezca resultados similares con un menor coste computacional, se adapta e incluye en las pruebas la arquitectura EfficientNet-B0 como \textit{backbone} convolucional de DPT. Esta arquitectura, proporciona una salida de forma [n, c, h, w] (manteniendo la nomenclatura anterior) donde el número de mapas de características es ahora $1280$ y la altura y anchura se corresponden con las de las imágenes de entrada divididas 5 veces entre 2. Es decir: [$n$, $1280$, $\frac{h}{16}$, $\frac{w}{16}$]. Para sustituir el \textit{backbone} convolucional del Hybrid ViT sin tener que cambiar el tamaño de todas las capas de atención (y así aprovechar los pesos preentrenados), se sustituye la capa de proyección mencionada en el párrafo superior, que recordemos era una capa convolucional con kernels de tamaño $1\times1$ por una capa de convolución transpuesta. Esta capa de convolución transpuesta, cumple dos funciones fundamentales: la primera, proyectar los $1280$ mapas de características en $768$ gracias al número de \textit{kernels} empleados; y la segunda, al tener \textit{kernels} de tamaño $2\times2$ y una zancada también de $2\times2$, conseguir que las dimensiones de los mapas de características se multipliquen exactamente por $2$ en ambas dimensiones, convirtiendo la entrada [$n$, $1280$, $\frac{h}{16}$, $\frac{w}{16}$] en [$n$, $768$, $\frac{h}{8}$, $\frac{w}{8}$]. Estas dimensiones, son las que espera la etapa de \textit{embedding} que aplana los mapas de características y transpone el tensor para obtener la entrada de los bloques de atención, quedando a su salida un tensor con forma [$n$, $t$, $768$] donde $t$ vuelve a ser el número de \textit{tokens} que pasan al \textit{transformer}, cada uno de dimensión $768$.
+
+Dado que no se disponen de los parámetros ajustados en MIX6 para EfficientNet-B0, se ha modificado también el \textit{script} del modelo para cargar en su inicialización los parámetros ajustados en ImageNet21K (proporcionados por la librería Pytorch Image Models \cite{timm}, de donde también se ha utilizado la implementación de EfficientNet-B0) correspondientes a este nuevo módulo. 
 
 
 % En los resultados hablar de la distribución de los pesos antes y después de convertir el modelo si es pertinente, hacer una especie de estudio de ablación si se puede entrenar modelos, etc. Puede estar interesante quitar cabezas de atención, quitar bloques de atención, ver como afecta al tamaño dle modelo, su rendimiento (velocidad y métricas)...
+
+%\begin{figure}[H]
+%\centering
+%\includegraphics[width=\textwidth]{imagenes/DPT-modificado-general.png}
+%\caption{Arquitectura general DPT tras las modificaciones.}
+%\label{fig:dpt-mod-general}
+%\end{figure}
 
 \clearpage
