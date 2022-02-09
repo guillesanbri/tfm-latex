@@ -32,7 +32,7 @@
 \usepackage[nottoc,notlot,notlof]{tocbibind}
 % Tablas
 \usepackage{booktabs}
-\usepackage[table,xcdraw]{xcolor}
+\usepackage[table,xcdraw,dvipsnames]{xcolor}
 
 %\setlength{\parskip}{\baselineskip}
 \edef\restoreparindent{\parindent=\the\parindent\relax}
@@ -63,7 +63,6 @@
 %% Imágenes en vertical
 \usepackage{subfig}
 \usepackage{stackengine}
-\usepackage{xcolor}
 \def\stackalignment{l}
 %% Algoritmos y pseudocódigo
 \usepackage{algorithm}
@@ -114,15 +113,7 @@
 
 \newpage
 
-%% Hay que decirle que incluya el título en el documento
-% \maketitle
 
-%% Aquí podemos añadir un resumen del trabajo (o del artículo en su caso) 
-% \begin{abstract}
-% Lorem ipsum.
-% \end{abstract}
-
-% \todo[inline]{Hacer portada y buscar normas del tfm. (TFM)}
 %% Iniciamos "secciones" que servirán como subtítulos
 \include{Introduccion}
 \include{Marco-teorico-sota}
@@ -132,13 +123,10 @@
 \include{Discusion}
 \include{Conclusiones-lineas-futuras}
 
-% \bibliographystyle{abbrv}
 \bibliographystyle{ieeetr}
 \clearpage
 \bibliography{referencias}
-% \todo[inline]{Ver orden de referencias.}
-% \todo[inline]{Ver si se pueden citar los de arXiv.}
-% \todo[inline]{Ver si hay que poner notas en los preprints. https://tex.stackexchange.com/questions/219189/how-to-cite-an-unpublished-preprint-with-bibtex}
+
 \clearpage
 
 \end{document}
