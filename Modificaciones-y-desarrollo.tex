@@ -122,6 +122,13 @@ Buscando una alternativa que ofrezca resultados similares con un menor coste com
 
 Dado que no se disponen de los parámetros ajustados en MIX6 para EfficientNet-B0, se ha modificado también el \textit{script} del modelo para cargar en su inicialización los parámetros ajustados en ImageNet21K (proporcionados por la librería PyTorch Image Models \cite{timm}, de donde también se ha utilizado la implementación de EfficientNet-B0) correspondientes a este nuevo módulo. 
 
+\subsection{Pruebas de cuantificación}
+Además de las modificaciones comentadas, se han probado exhaustivamente distintos \textit{frameworks} de optimización y cuantificación. Más concretamente, se han probado los frameworks de optimización TensorRT (TRT) de NVIDIA y TF Lite, de TensorFlow. Para estas pruebas, se han utilizado tanto los modelos originales de PyTorch (en TensorRT) como los modelos convertidos a ONNX (ecosistema que permite la interoperabilidad entre \textit{frameworks} de aprendizaje profundo). Además de con TRT y TF Lite, se ha tratado de cuantificar el modelo tanto estática como dinámicamente empleando el cuantificador de PyTorch.
+
+En el caso de los dos primeros \textit{frameworks} de optimización, no se ha conseguido ejecutar de forma exitosa la optimización de los modelos. La razón de los fallos obtenidos es que algunas de las capas de la arquitectura de DPT-Hybrid no están soportadas por la conversión de modelos, es decir, sería necesario ampliar las capacidades de las herramientas para implementar la optimización de dichas capas. Por otro lado, con el cuantificador de PyTorch tampoco se han conseguido resultados satisfactorios, en este caso, debido principalmente a la extracción de salidas intermedias del \textit{encoder} para pasarlas al \textit{decoder}, que ocasiona inconsistencias entre las operaciones que se llevan a cabo como enteros de 8 bits y como números en coma flotante de 32 bits.
+
+Las dificultades encontradas al usar estos paquetes de \textit{software} son solucionables ampliando las funcionalidades de las herramientas. No obstante, este desarrollo no es trivial y excede el alcance de este Trabajo Fin de Máster. Por lo tanto, se propone su desarrollo como una posible línea de trabajo futuro.
+
 
 % En los resultados hablar de la distribución de los pesos antes y después de convertir el modelo si es pertinente, hacer una especie de estudio de ablación si se puede entrenar modelos, etc. Puede estar interesante quitar cabezas de atención, quitar bloques de atención, ver como afecta al tamaño dle modelo, su rendimiento (velocidad y métricas)...
 
