@@ -20,7 +20,7 @@ En el párrafo anterior, se ha mencionado que PyTorch acelera por hardware el en
 
 \textbf{Gestión y seguimiento de experimentos}
 
-Dada la naturaleza del proyecto, era de esperar que el número de experimentos y de variaciones de modelos a entrenar fuese numeroso, por esta razón, se elige \textbfit{Weights and Biases (wandb)} \cite{wandb} para gestionar y monitorizar dichas pruebas, es decir, visualizar y controlar su evolución, registrando métricas y resultados para su posterior utilización. \textit{Weight and Biases} es un servicio de seguimiento de experimentos, gratuito para uso académico y personal, que se ejecuta en la nube, dispone de una interfaz gráfica web (\Cref{fig:wandb-ui}) y permite registrar de forma sencilla variables y métricas durante las distintas ejecuciones que se lleven a cabo. Además, ofrece también un gestor de búsqueda de hiperparámetros, donde es posible configurar los valores que se quieren probar para que wandb se encarge de inicializar los scripts de entrenamiento con las configuraciones correspondientes de forma automática y coordinada en todas las máquinas en las que se ejecute su cliente. Ya que para el entrenamiento se han empleado varios equipos en paralelo, esta última característica se ha valorado muy positivamente al compararlo con otro \textit{software} de monitorización como por ejemplo Tensorboard.
+Dada la naturaleza del proyecto, era de esperar que el número de experimentos y de variaciones de modelos a entrenar fuese grande, por esta razón, se elige \textbfit{Weights and Biases (wandb)} \cite{wandb} para gestionar y monitorizar dichas pruebas, es decir, visualizar y controlar su evolución, registrando métricas y resultados para su posterior utilización. \textit{Weight and Biases} es un servicio de seguimiento de experimentos, gratuito para uso académico y personal, que se ejecuta en la nube, dispone de una interfaz gráfica web (\Cref{fig:wandb-ui}) y permite registrar de forma sencilla variables y métricas durante las distintas ejecuciones que se lleven a cabo. Además, ofrece también un gestor de búsqueda de hiperparámetros, donde es posible configurar los valores que se quieren probar para que wandb se encarge de inicializar los scripts de entrenamiento con las configuraciones correspondientes de forma automática y coordinada en todas las máquinas en las que se ejecute su cliente. Ya que para el entrenamiento se han empleado varios equipos en paralelo, esta última característica se ha valorado muy positivamente al compararlo con otro \textit{software} de monitorización como por ejemplo Tensorboard.
 
 \begin{figure}[H]
 \centering
@@ -48,7 +48,7 @@ Por último, para la redacción de este documento se ha empleado \textbf{LaTeX} 
 
 
 \subsection{Hardware}
-Para el desarrollo de este proyecto, se ha utilizado principalmente el Equipo 1 de la \Cref{tab:computer-specs}. No obstante, para el entrenamiento y la evaluación de los distintos modelos de aprendizaje profundo, se han empleado también instancias en la nube con la configuración del Equipo 2 en la \Cref{tab:computer-specs}.
+Para el desarrollo de este proyecto, se ha utilizado principalmente el Equipo 1 de la \Cref{tab:computer-specs}. No obstante, para el entrenamiento de los distintos modelos de aprendizaje profundo, se han empleado también instancias en la nube con la configuración del Equipo 2 en la \Cref{tab:computer-specs}.
 
 \begin{table}[H]
 \centering
@@ -328,15 +328,17 @@ Por último, se calculará también el promedio del error (en escala logarítmic
 \end{equation}
 
 \paragraph{Velocidad de procesamiento}\mbox{}\\
-Además de la calidad de los resultados, es de especial interés en este trabajo obtener medidas relacionadas con la velocidad de procesamiento que pueden alcanzar los modelos. Dentro de las medidas empleadas hay dos grupos: condicionadas por el \textit{hardware} utilizado (Tiempo de inferencia y Tasa de transferencia efectiva) e independientes del \textit{hardware} (Número de operaciones en coma flotante).
+Además de la calidad de los resultados, es de especial interés en este trabajo obtener medidas relacionadas con la velocidad de procesamiento que pueden alcanzar los modelos. Dentro de las medidas empleadas hay dos tipos: condicionadas por el \textit{hardware} utilizado (Tiempo de inferencia) e independientes del \textit{hardware} (Número de operaciones en coma flotante).
+
+% y Tasa de transferencia efectiva
 
 \subparagraph{Tiempo de inferencia}\mbox{}\\
 Esta medida corresponderá al tiempo que tarda el modelo en procesar \textbf{una sola} imagen. Si suponemos que la aplicación de estos modelos es el procesamiento de vídeo de forma online, donde los fotogramas no pueden procesarse en lotes, esta medida es la inversa de los fotogramas por segundo (\textit{FPS}). 
 Como se ha mencionado antes, esta métrica estará sujeta al \textit{hardware} en el que se ejecute, y por lo tanto variará de un equipo a otro.
 
-\subparagraph{Tasa de transferencia efectiva \textit{(Throughput)}}\mbox{}\\
-Por otro lado, en caso de que el procesamiento de imágenes se haga de forma offline y se disponga de todas las imágenes antes de comenzar el procesamiento, estas se podrían agrupar en lotes (\textit{batches}) para paralelizar su inferencia. Al paralelizar el procesamiento de las entradas, aumenta el número de imágenes que se puede procesar por unidad de tiempo, que es lo que medirá esta métrica. Es decir, la tasa de transferencia efectiva es el número máximo de imágenes que puede procesar un modelo por unidad de tiempo.
-De nuevo, como se ha mencionado en el párrafo introductorio, este valor está ligado al equipo en el que se lleve a cabo la inferencia.
+% \subparagraph{Tasa de transferencia efectiva \textit{(Throughput)}}\mbox{}\\
+% Por otro lado, en caso de que el procesamiento de imágenes se haga de forma offline y se disponga de todas las imágenes antes de comenzar el procesamiento, estas se podrían agrupar en lotes (\textit{batches}) para paralelizar su inferencia. Al paralelizar el procesamiento de las entradas, aumenta el número de imágenes que se puede procesar por unidad de tiempo, que es lo que medirá esta métrica. Es decir, la tasa de transferencia efectiva es el número máximo de imágenes que puede procesar un modelo por unidad de tiempo.
+% De nuevo, como se ha mencionado en el párrafo introductorio, este valor está ligado al equipo en el que se lleve a cabo la inferencia.
 
 \subparagraph{Número de operaciones en coma flotante \textit{(FLOPs)}}\mbox{}\\
 Por último, esta vez independiente del \textit{hardware} en el que se ejecuta el modelo, se empleará el número de operaciones en coma flotante (en inglés, FLOPs) que se requieren para procesar una sola entrada de la red como medida de la complejidad y coste computacional de los modelos.
