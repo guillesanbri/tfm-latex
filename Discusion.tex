@@ -1,10 +1,73 @@
 \section{Discusión}
 
-Hablar y comentar los resultados obtenidos con otros resultados (convolucionales? y transformers), si los resultados en la jetson son lentos y no se puede acceder a otra más potente, buscar referencias para ver el incremento de rendimiento que presentan con otros algoritmos para poder dar una estimación de cuanto más rápido podría ir en otro hardware embebido más potente.
+En este capítulo, se comentan una serie de observaciones extraídas a partir de los resultados presentados en la sección anterior. Después, se valoran los modelos obtenidos realizando una comparación con otras arquitecturas del estado del arte.
 
-Mencionar que las capas eficientes no afectan muchisimo debido a que el tamaño de las cadenas de tokens no son demasiado grandes (estamos trabajando con imágenes pequeñas y no con larguisimas cadenas de texto para las que fueron diseñadas).
+El cambio del \textit{backbone} original (ResNet50) por una red EfficientNet-B0 conlleva una reducción del tamaño del modelo (\Cref{fig:resultados-mb}) y del número de GFLOPs (\Cref{fig:resultados-gflops}), acelerando este último factor el procesamiento del modelo considerablemente. No obstante, en los distintos experimentos llevados a cabo, se ha podido detectar un claro \textit{overfitting} del modelo al conjunto de datos empleado durante el entrenamiento. Esto nos indica que la EfficientNet-B0, pese a tener un menor número de parámetros, tiene una mayor capacidad que la ResNet50. No obstante, esta mayor capacidad no se está utilizando para extraer características útiles de las imágenes, si no que está memorizando los ejemplos vistos durante el entrenamiento. Por esta razón, el uso de este nuevo \textit{backbone} queda totalmente desaconsejado hasta que se disponga de los resultados tras repetir el entrenamiento de estos modelos aplicando técnicas de regularización mayores para reducir el \textit{overfitting}.
+
+En cuanto al número de cabezas de atención en cada capa, los resultados obtenidos refuerzan la idea presentada en la publicación de Michel et al. \cite{are16headsbetterthan1}, ya que es posible observar cómo la modificación del número de cabezas apenas influye en las métricas sobre el conjunto de validación (\Cref{fig:SIlog-val-split}), especialmente cuando se usa el mecanismo de atención estándar. Por otro lado, la influencia en la velocidad de procesamiento de este cambio tampoco es especialmente grande (\Cref{fig:resultados-inf-num-cabezas}), pero aún así se considera beneficiosa para el objetivo de acelerar la arquitectura inicial.
+
+Por otro lado, el mecanismo de atención del \textit{Performer} se ha probado inadecuado para este tipo de modelo, ya que al haber reducido el tamaño de la entrada, la cadena de \textit{tokens} extraídos no es lo suficientemente grande para que el \textit{overhead} de esta operación sea despreciable frente a la complejidad de la atención estándar (\Cref{fig:resultados-complejidad-mec-atencion}). Esto, en cierta medida, era de esperar, ya que este tipo de mecanismos han sido diseñados para trabajar con largas cadenas de texto con miles y miles de \textit{tokens}. No obstante, también se ha podido comprobar en los experimentos llevados a cabo como la disminución de la calidad de los resultados es bastante reducida (\Cref{fig:SIlog-val-split}), por lo que este tipo de mecanismos siguen siendo prometedores para su uso con imágenes de muy alta resolución donde reducir o trocear la entrada para su procesamiento no sea una opción.
+
+La última de las modificaciones, el cambio de los \textit{hooks} que extraen las activaciones de los bloques intermedios para pasarlos al \textit{decoder}, ha sido la más éxitosa, ya que cumple una triple función con muy buenos resultados: no reducir drásticamente las métricas de los resultados (en especial en el conjunto de evaluación final, como se comentará más adelante), aumentar sustancialmente el número de imágenes que puede procesar el modelo en un segundo (FPS) (\Cref{fig:resultados-inf-hooks}), y por último, reducir el tamaño del modelo (\Cref{fig:resultados-mb}) al eliminar los bloques de atención posteriores.
+
+En vista de estas observaciones, \textbf{se propone como un buen equilibrio entre calidad de los resultados y rendimiento modificar la arquitectura original con las siguientes modificaciones: reducción del tamaño de entrada; cambio de los bloques de atención para solo usar el primero y segundo (\textit{hooks} en [$0$, $1$]), y reducción del número de cabezas a solamente $1$}. Es decir, se descartan el cambio de \textit{backbone} por su evidente sobreajuste al conjunto de entrenamiento (por lo menos mientras no se repita el estudio regularizando en mayor medida el entrenamiento) y el cambio de mecanismo de atención, ya que las entradas son demasiado pequeñas para poder aprovechar la reducción de complejidad computacional que lleva asociada.
+
+El modelo obtenido con dichas modificaciones, no obstante, es importante compararlo con los modelos del estado del arte actuales, tanto convolucionales como basados en \textit{transformers}. En la \Cref{tab:metricas-evaluacion}, se puede encontrar esta comparación. En concreto, se presentan los resultados de los modelos: GLPDepth (GLP) \cite{glpdepth}, Adabins (ADA) \cite{bhat2020adabins}, Big To Small (BTS) \cite{bts} y DPT-Hybrid (DPT-H) \cite{visiontransformersDPT}. Además, se presentan las métricas de dos modelos de los entrenados durante este trabajo: el modelo equivalente a DPT-Hybrid con solamente la entrada reducida (DPT-H-r) y el modelo con la entrada reducida, los \textit{hooks} en los bloques [$0$, $1$] y solamente una cabeza de atención en cada bloque (A). 
+
+En esta Tabla, hay dos modelos, Adabins y GLPDepth, cuyos resultados no coinciden exactamente con los publicados en la evaluación de KITTI por sus respectivos autores. Esto se debe a que se ha usado para calcular las métricas el mismo \textit{script} en todos los modelos para poder comparar los resultados de forma justa. Para elegir los modelos mostrados en esta Tabla, se han tomado $4$ de los $5$ modelos con mejores resultados ordenados por su AbsRel en el \textit{benchmark} del \textit{Eigen Split} de KITTI disponible en \textit{Papers With Code}\footnote{Disponible en \url{https://paperswithcode.com/sota/monocular-depth-estimation-on-kitti-eigen}}.
+
+\todo{Añadir totalmente por encima GLP y BTS al estado del arte, solo mencionarlos.}
+
+\newcommand{\Red}[1]{\textcolor{Red}{#1}}
+\newcommand{\Green}[1]{\textcolor{ForestGreen}{#1}}
+
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+Modelo	& $\delta_1$ (↑)			& AbsRel (↓)       			& SILog (↓)     				& FPS (↑) 							& MB (↓) \\ 
+\midrule
+\rowcolor[HTML]{EFEFEF} 
+GLP		& \textbf{0.960} 		& \textbf{0.061} 			& {8.60} 					& 20.3    							& 282    \\
+ADA		& {0.957} 				& {0.062} 					& {8.72} 					& 10.9    							& 897    \\
+\rowcolor[HTML]{EFEFEF} 		
+BTS		& {0.954} 				& \textbf{0.061} 			& {9.03} 					& 33.6    							& 595    \\
+DPT-H	& {0.959} 				& {0.062}		 			& \textbf{8.29} 				& 13.0    							& 492    \\
+\midrule
+\rowcolor[HTML]{EFEFEF} 
+DPT-H-r	& 0.937 (\Red{↓ 2.3 \%})	& 0.074 (\Red{↑ 19.3 \%}) 	& 10.20 (\Red{↑ 23.0 \%}) 	& 43.4 (\Green{↑ 232.8 \%})          & 492 (\Green{↓ 0.0 \%})           \\
+A		& 0.938 (\Red{↓ 2.2 \%})	& 0.074 (\Red{↑ 19.3 \%}) 	& 10.19 (\Red{↑ 22.9 \%}) 	& \textbf{61.1 (\Green{↑ 368.8 \%})} & \textbf{209 (\Green{↓ 57.5 \%})} \\ 
+\bottomrule
+\end{tabular}%
+}
+\caption{Comparación de distintos modelos del estado del arte. Resultados medidos en el conjunto de evaluación (test) del \textit{Eigen Split} de KITTI. Tiempos de inferencia calculados con precisión mixta en el Equipo 1 de la \Cref{tab:computer-specs}. Se muestran porcentajes del incremento/decremento de las métricas de las modificaciones de DPT-Hybrid respecto de la arquitectura original.}
+\label{tab:metricas-evaluacion}
+\end{table}
+
+\todo{Quitar DPT-H-r?}
+
+Al comparar estos resultados, es posible observar varias cosas. Existe una diferencia notable en las métricas de Error Absoluto Relativo (AbsRel) y Error Logarítmico invariante a la escala (SILog) entre DPT-Hybrid y las modificaciones introducidas (DPT-H-r y A). Aunque porcentualmente las diferencias no son pequeñas ($19.3\%$ y $22.9\%$, respectivamente), hay que tener en cuenta que los modelos resultantes ocuparían el octavo puesto en el \textit{benchmark} antes citado de \textit{Papers With Code}, es decir, siguen siendo modelos muy competitivos en el campo de la estimación de profundidades monocular. Además de esto, el incremento y el decremento en la velocidad de inferencia y en el tamaño del modelo, respectivamente, es mucho mayor que la pérdida de calidad en los resultados, haciendo que el modelo (A) duplique la velocidad de inferencia del segundo modelo más rápido de la \Cref{tab:metricas-evaluacion} y multiplique casi por cinco la velocidad de inferencia del DPT-Hybrid original. 
+
+Por otro lado, cabe destacar que el modelo DPT-H-r (es decir, el modelo equivalente a DPT-Hybrid con solo el tamaño de la entrada reducido) y el modelo A, que modifica los \textit{hooks} y el número de cabezas de atención, han pasado de tener una cierta diferencia en las métricas en el conjunto de validación (donde la salida no se aumentaba al tamaño original de la entrada) a ofrecer resultados prácticamente idénticos. Aquí se puede apreciar también que la mayoría del error introducido en las modificaciones viene dado por la reducción del tamaño de entrada, por lo que sería interesante estudiar el comportamiento de DPT-Hybrid \textbf{sin reducir} el tamaño de entrada, pero sí cambiando los \textit{hooks} y el número de cabezas de atención.
+
+Por último, si bien es cierto que la velocidad de inferencia ha aumentado muy considerablemente, no hay que olvidar que aún existe la posibilidad de cuantificar el modelo si se solucionan los problemas planteados en dicha adaptación. Es decir, aún existe la posibilidad de multiplicar el número de imágenes procesadas por segundo sin apenas afectar al rendimiento del modelo. 
+
+Este último punto, sin embargo, tiene una doble lectura, y es que los problemas que han surgido durante la cuantificación se han debido principalmente al uso de los \textit{hooks} para trasladar información de las salidas intermedias del \textit{encoder} al \textit{decoder}. Por lo tanto, a pesar de que se puede ampliar el software de cuantificación para soportar este tipo de operaciones, un modelo más sencillo con operaciones más empleadas como puede ser un modelo convolucional, probablemente conlleve menos trabajo para ser cuantificado y por lo tanto acelerado.
+
 
 \clearpage
 
-% Así como la estimación de profundidades es un campo con un gran número de propuestas, estas se reducen cuando se acota a imágenes monoculares, y se reduce más aún en el caso de la estimación de profundidades monocular eficiente, que es un campo poco explorado pese a que la gran mayoría de aplicaciones de este tipo de tecnologías se plantean para dispositivos embebidos o dispositivos móviles. Además, las pocas propuestas existentes basan su funcionamiento en convoluciones, mientras que los modelos con mejores resultados (sin tener en cuenta la eficiencia) están basados en \textit{transformers}. Por lo tanto, quedaría como trabajo futuro el desarrollo de un método monocular eficiente basado en \textit{transformers} para estudiar el equilibrio entre rendimiento y calidad de los resultados de dicho modelo.
-% En cuanto a la sección de evaluación, se ha conseguido una estimación del tiempo de inferencia de los modelos basados en \textit{transformers} en distintas plataformas. Las velocidades que se han obtenido, pese a estar relativamente cerca, no llegan a alcanzar el procesamiento online de vídeo (30 FPS), abriendo la posibilidad de mejorar la eficiencia de sus mecanismos de atención con los métodos vistos en este mismo documento.
+% Original
+%     d1,      d2,      d3,  AbsRel,   SqRel,    RMSE, RMSElog,   SILog,   log10
+%  0.959,   0.995,   0.999,   0.062,   0.222,   2.573,   0.092,   8.290,   0.027
+  
+% Imágenes reducidas (rdcufuen_021) -> A
+%     d1,      d2,      d3,  AbsRel,   SqRel,    RMSE, RMSElog,   SILog,   log10
+%  0.937,   0.988,   0.998,   0.074,   0.350,   3.293,   0.114,  10.199,   0.033
+  
+
+
+% Imágenes reducidas sin hooks y 1 cabeza (xhxbeoev_021)
+%     d1,      d2,      d3,  AbsRel,   SqRel,    RMSE, RMSElog,   SILog,   log10
+%  0.938,   0.988,   0.997,   0.074,   0.341,   3.272,   0.114,  10.189,   0.033
