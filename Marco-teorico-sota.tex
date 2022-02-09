@@ -340,24 +340,25 @@ Este conjunto de arquitecturas, incluyen una proyección para conseguir una apro
 % TODO: Ver si performer se puede mencionar también en el grupo de kernels y ya hilarlo en el parrafo donde se hable de el.
 
 \subsubsection{Performer}
-En este trabajo, se estudia la influencia de un mecanismo de atención eficiente en concreto al sustituir la atención estándar de DPT. El mecanismo elegido, y por tanto, el que se explica con mayor profundidad en esta sección es el propuesto por Choromanski et al. en el artículo \textit{Rethinking Attention with Performers}. Este mecanismo de atención eficiente, reduce la complejidad de la atención de $O(n^2)$ a $O(n)$ aproximando la multiplicación de matrices empleando \textit{kernelización} y por lo tanto podría entrar en el grupo ya mencionado de \textbf{Disminución de rango}.
+En este trabajo se estudia la influencia de un mecanismo de atención eficiente concreto para sustituir la atención estándar de DPT. Este mecanismo es el propuesto por Choromanski et al. en \textit{Rethinking Attention with Performers}\cite{performers}, que reduce la complejidad de la atención de $O(n^2)$ a $O(n)$.
 
-Al multiplicar primero K x V y después Q x Ans, se pasa de $2 L^2 d$ multiplicaciones a $2 d^2 L$ multiplicaciones, por lo que si $d <<< L$ la complejidad pasa a ser lineal.
+Para conseguir esta reducción de la complejidad, el método modifica el orden de multiplicación de las matrices $Q$ (\textit{Queries}), $K$ (\textit{Keys}) y $V$ (\textit{Values}) del mecanismo de atención estándar. Siendo $n$ el número de \textit{tokens} de dimensión $d$ de la cadena de entrada, si en vez de multiplicar $(Q \times K^T) \times V$ se multiplica $Q \times (K^T \times V)$, las dimensiones multiplicadas serían $(n \times d) \times ((d \times n) \times (n \times d))$ en vez de $((n \times d) \times (d \times n)) \times (n \times d)$. Es decir, el número de operaciones en la multiplicación pasaría de ser $2 n^2 d$ (atención estándar) a ser $2 d^2 n$ (\textit{performer}), haciendo que el coste crezca de manera lineal con el número de \textit{tokens} si $n >>>> d$.
 
-\todo[inline]{Figura similar a la del paper}
+No obstante, hay un problema importante, y es que antes de multiplicar la matriz de atención ($Q \times K^T$) por la matriz $V$, se le aplica una función \textit{softmax} que al ser no lineal, impide la reasociación de la multiplicación de matrices. Para solucionar esto, los autores presentan un método basado en \textit{kernelización} y \textit{random Fourier features} que permite aproximar el resultado de aplicar la función \textit{softmax} a matriz de atención con dos matrices $Q'$ y $K'$ (de dimensiones $n \times r$) sin necesidad de calcular $Q \times K^T$ para así poder modificar el orden de las operaciones (\Cref{fig:performer}). 
+
+\todo{Sustituir figura}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=1\linewidth]{imagenes/performer.png} 
-\captionsetup{width=.8\linewidth}
-\caption{Temp TODO}
+\captionsetup{width=1\linewidth}
+\caption{Aproximación y reasociación del orden de multiplicación en el mecanismo de atención del \textit{Performer}. Figura inspirada en \cite{performers}.}
 \label{fig:performer}
 \end{figure}
 
-\todo[inline]{Paper performer: \url{https://arxiv.org/pdf/2009.14794.pdf}}
-\todo[inline]{Video Kernels: \url{https://www.youtube.com/watch?v=y_RjsDHl5Y4}}
-\todo[inline]{Random Fourier Features}
-\todo[inline]{Video Performer: \url{https://www.youtube.com/watch?v=xJrKIPwVwGM&t=2s}}
+% \todo[inline]{Video Kernels: \url{https://www.youtube.com/watch?v=y_RjsDHl5Y4}}
+% \todo[inline]{Random Fourier Features}
+% \todo[inline]{Video Performer: \url{https://www.youtube.com/watch?v=xJrKIPwVwGM&t=2s}}
 
 \subsection{Transformers para visión artificial - ViT}
 A la hora de aplicar la arquitectura de los \textit{transformers} a procesamiento de imágenes, surge un problema importante. La complejidad del mecanismo original de atención es $O(n^{2})$, siendo n el número de elementos en la secuencia de entrada, por lo que para una imagen de dimensiones $lado \times lado$, el número de píxeles que conformarían la secuencia de entrada al mecanismo de atención es $n = l^2$, disparando la complejidad de la atención a $O(l^{4})$. Para lidiar con este problema, se han propuesto distintas soluciones como limitar el mecanismo de atención al entorno de cada píxel (presentado en \textit{Image Transformers} \cite{image_transformer}) o aplicar convoluciones para reducir el tamaño de la secuencia de entrada \cite{detrfacebookdetectiontransformers}. 
