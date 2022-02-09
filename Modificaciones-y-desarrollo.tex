@@ -29,8 +29,7 @@ Para acelerar lo máximo posible la convergencia del modelo durante el entrenami
 
 Además, ya que en este trabajo se estudian diferentes modificaciones de dicho modelo, se emplea el método \texttt{load\_state\_dict()} de la clase \texttt{torch.nn.Module} con el parámetro \texttt{strict=False} para cargar los parámetros, evitando así que la carga falle si no coinciden una a una las capas en el modelo y las definidas en el archivo que se trata de cargar. En cuanto a las capas/conjuntos de capas que se han modificado y/o añadido, al no disponer del conjunto de datos MIX6 para preentrenarlas, se han inicializado con sus parámetros correspondientes tras ser entrenadas en ImageNet21K.
 
-\todo[inline]{Comprobar esto entrenando el modelo de ResNet con los pesos de imagenet.}
-Esta forma de proceder, sin embargo, origina un problema que se comentará más adelante en detalle, y es que como era de esperar, los modelos con menor porcentaje de su arquitectura modificada parten de una situación inicial ventajosa para la tarea de estimación de profundidad monocular (al estar preentrenados en MIX6).
+Esta forma de proceder, sin embargo, conlleva que los modelos con menor porcentaje de su arquitectura modificada partan de una situación inicial ventajosa para la tarea de estimación de profundidad monocular (al estar ya preentrenados en MIX6 en vez de ImageNet).
 
 \subsection{Entrenamiento}
 Pese a que los autores del artículo de DPT \cite{visiontransformersDPT} han publicado el código del modelo y sus pesos preentrenados en MIX6 y KITTI, a día de hoy no han hecho públicos los \textit{scripts} de entrenamiento empleados. Por esto, ha sido necesario escribir el proceso de entrenamiento así como el \texttt{Dataset} de PyTorch con el que leer los datos de KITTI.
