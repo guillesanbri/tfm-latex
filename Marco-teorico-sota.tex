@@ -344,13 +344,13 @@ En este trabajo se estudia la influencia de un mecanismo de atención eficiente 
 
 Para conseguir esta reducción de la complejidad, el método modifica el orden de multiplicación de las matrices $Q$ (\textit{Queries}), $K$ (\textit{Keys}) y $V$ (\textit{Values}) del mecanismo de atención estándar. Siendo $n$ el número de \textit{tokens} de dimensión $d$ de la cadena de entrada, si en vez de multiplicar $(Q \times K^T) \times V$ se multiplica $Q \times (K^T \times V)$, las dimensiones multiplicadas serían $(n \times d) \times ((d \times n) \times (n \times d))$ en vez de $((n \times d) \times (d \times n)) \times (n \times d)$. Es decir, el número de operaciones en la multiplicación pasaría de ser $2 n^2 d$ (atención estándar) a ser $2 d^2 n$ (\textit{performer}), haciendo que el coste crezca de manera lineal con el número de \textit{tokens} si $n >>>> d$.
 
-No obstante, hay un problema importante, y es que antes de multiplicar la matriz de atención ($Q \times K^T$) por la matriz $V$, se le aplica una función \textit{softmax} que al ser no lineal, impide la reasociación de la multiplicación de matrices. Para solucionar esto, los autores presentan un método basado en \textit{kernelización} y \textit{random Fourier features} que permite aproximar el resultado de aplicar la función \textit{softmax} a matriz de atención con dos matrices $Q'$ y $K'$ (de dimensiones $n \times r$) sin necesidad de calcular $Q \times K^T$ para así poder modificar el orden de las operaciones (\Cref{fig:performer}). 
+No obstante, hay un problema importante, y es que antes de multiplicar la matriz de atención ($Q \times K^T$) por la matriz $V$, se le aplica una función \textit{softmax} (\Cref{fig:multi-head-attention}) que al ser no lineal, impide la reasociación de la multiplicación de matrices. Para solucionar esto, los autores presentan un método basado en \textit{kernelización} y \textit{random Fourier features} que permite aproximar el resultado de aplicar la función \textit{softmax} a matriz de atención con dos matrices $Q'$ y $K'$ (de dimensiones $n \times r$) sin necesidad de calcular $Q \times K^T$ para así poder modificar el orden de las operaciones (\Cref{fig:performer}). 
 
-\todo{Sustituir figura}
+\vspace{-3mm}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=1\linewidth]{imagenes/performer.png} 
+\includegraphics[width=1\linewidth]{imagenes/performer2.png} 
 \captionsetup{width=1\linewidth}
 \caption{Aproximación y reasociación del orden de multiplicación en el mecanismo de atención del \textit{Performer}. Figura inspirada en \cite{performers}.}
 \label{fig:performer}
@@ -460,7 +460,7 @@ El resultado de este último bloque (una imagen con la mitad de la resolución d
 Antes de pasar a la metodología empleada en el trabajo original de DPT para entrenar los modelos, cabe mencionar que la red, tal y como se comenta a continuación, se entrena con una función de pérdida invariante a la escala y al desplazamiento. Esto significa que la profundidad obtenida del modelo es relativa y no un valor métrico medible. No obstante, los autores extraen valores de desviación y escala (ajustando por mínimos cuadrados las predicciones y las anotaciones en el conjunto de entrenamiento) con los que es posible transformar las profundidades relativas obtenidas en entradas nuevas a profundidades métricas (siempre y cuando la naturaleza de las entradas sea la misma que la de los ejemplos utilizados para obtener los valores de desplazamiento y escala).
 
 \textbf{Entrenamiento}
-
+% https://github.com/isl-org/DPT/issues/3#issuecomment-839883934
 Los modelos proporcionados junto a la publicación, y en concreto, el que se emplea como base de este trabajo, fueron preentrenados en MIX6 (\Cref{mix6}) y después ajustados a otros \textit{datasets} para su evaluación. El entrenamiento en MIX6 se lleva a cabo empleando Adam como optimizador con un \textit{learning rate} de $1e-5$ para el \textit{encoder} y de $1e-4$ para el \textit{decoder} y se parte de parámetros preentrenados en Imagenet (\textit{encoder}) y inicializados aleatoriamente (\textit{decoder}). En cuanto a la duración del entrenamiento, el modelo se entrena durante 60 épocas, cada una con 72000 pasos y un \textit{batch size} de 16 imágenes. Además, se voltean horizontalmente las imágenes de manera aleatoria como forma de \textit{data augmentation}. Como función de coste, se utiliza una función de pérdida \cite{midas-intel} invariante a la escala (relativa) y al desplazamiento de la salida junto a otra función de pérdida que compara los gradientes\footnote{A la hora de entrenar en otros \textit{datasets}, desactivan esta función de pérdida si la anotación no es profundidad densa, es decir, si hay píxeles sin anotar como ocurre por ejemplo en KITTI.} \cite{MegaDepthLi18} en los valores de profundidad de la salida y la anotación.
 
 \subsection{Optimización de modelos}\label[seccion]{optimizacion-modelos}
