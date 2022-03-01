@@ -1,8 +1,8 @@
-\section{Material y Métodos}
+\capitulo{3}{Material y Métodos}
 
 En este tercer capítulo se introducen los materiales empleados para la realización del Trabajo Fin de Máster, tanto a nivel informático (\textit{software} y \textit{hardware}) como a nivel de datos. Después, se detalla las metodología seguida durante el proyecto para definir los distintos modelos de que se entrenarán, y por último se describen las herramientas empleadas durante el proceso de evaluación.
 
-\subsection{Software}
+\section{Software}
 
 \textbf{Lenguaje de programación y librerías}
 
@@ -47,7 +47,7 @@ Los ficheros necesarios para crear el entorno empleado en el proyecto están dis
 Por último, para la redacción de este documento se ha empleado \textbf{LaTeX} como sistema de composición de texto, \textbf{diagrams.net} para el diseño de figuras e ilustraciones, y \textbf{BibTeX} para gestionar las referencias bibliográficas. Tanto esta memoria como el desarrollo del código relacionado con el proyecto se han llevado a cabo empleado \textbf{Git} como software de control de versiones y se pueden encontrar en los repositorios TODO y TODO respectivamente.
 
 
-\subsection{Hardware}
+\section{Hardware}
 Para el desarrollo de este proyecto, se ha utilizado principalmente el Equipo 1 de la \Cref{tab:computer-specs}. No obstante, para el entrenamiento de los distintos modelos de aprendizaje profundo, se han empleado también instancias en la nube con la configuración del Equipo 2 en la \Cref{tab:computer-specs}.
 
 \begin{table}[H]
@@ -69,10 +69,10 @@ Memoria    & 32 GB DDR4                                                         
 \label{tab:computer-specs}
 \end{table}
 
-\subsection{Datasets}
+\section{Datasets}
 Durante este trabajo, de forma directa o indirecta, se emplean ciertos conjuntos de datos. Más concretamente, ImageNet \cite{imagenet_cvpr09, ILSVRC15} y MIX6 \cite{visiontransformersDPT} han sido empleados (no durante el desarrollo de este trabajo) para preentrenar los distintos modelos usados, mientras que KITTI \cite{KITTI-dataset, KITTI-benchmarks, KITTI-road-benchmark, KITTI-sceneflow-benchmark} se elige como conjunto de datos con el que comparar y evaluar las distintas modificaciones, implementadas y por lo tanto se utiliza para entrenar los modelos. A continuación se resumen las características de estos tres \textit{datasets}.
 
-\subsubsection{ImageNet}
+\subsection{ImageNet}
 ImageNet \cite{imagenet_cvpr09, ILSVRC15} es un \textit{dataset} que proporciona un gran número de imágenes etiquetadas en función de la presencia o ausencia de una serie de conceptos definidos como \textit{synsets}. Estos conceptos siguen la jerarquía propuesta por WordNet \cite{wordnet}, donde se agrupan palabras y categorías en función de sus relaciones semánticas. Para construir ImageNet, partiendo de una fracción de la ya mencionada estructura de WordNet, se buscaron imágenes de Internet para poblar cada una de las categorías. Estas imágenes, se filtraron y posteriormente fueron manualmente etiquetadas por humanos. 
 
 Dentro del proyecto de Imagenet, existen dos conjuntos: ImageNet21K e ImageNet1K (este último, normalmente llamado ImageNet). La principal diferencia entre estos dos conjuntos es que el primero, ImageNet21K suma más de 14 millones de imágenes clasificadas en más de 21 mil clases diferentes. Por otro lado, ImageNet1K es un subconjunto de ImageNet21K compuesto por cerca de 1.2 millones de imágenes clasificadas en 1000 categorías diferentes. Además de esto, también cuenta con anotaciones de localización de objetos (\textit{bounding boxes}) en más de medio millón de imágenes. Debido a la gran cantidad de imágenes y la variedad de elementos que abarcan, ImageNet es normalmente empleado para entrenar las arquitecturas de aprendizaje automático profundo. De esta forma, los modelos preentrenados en ImageNet pueden ajustarse de una manera mucho más rápida y efectiva a tareas e imágenes nuevas con otros \textit{datasets}, ya que al haber sido entrenados previamente los modelos han aprendido a extraer características generales (normalmente reutilizables) de las imágenes.
@@ -85,7 +85,7 @@ Una muestra de imágenes que conforman ImageNet está disponible en la \Cref{fig
 \label{fig:imagenet}
 \end{figure}
 
-\subsubsection{MIX6}\label[seccion]{mix6}
+\subsection{MIX6}\label{mix6}
 %TODO Poner una nota al pie con los links de hacer los datasets piratas.
 MIX6 \cite{visiontransformersDPT}, una ampliación de MIX5 \cite{midas-intel}, es en realidad una agrupación de otros \textit{datasets} que proporcionan anotaciones de profundidad de sus imágenes. Estas agrupaciones, consiguen dos características importantes: Primero, suman una cantidad de imágenes considerablemente alta; segundo, al tener datos de naturalezas tan distintas, existe una enorme variedad entre las imágenes, lo que permite entrenar modelos de estimación de profundidades generales, es decir, que no estén especializados en ningún entorno concreto. 
 
@@ -142,7 +142,7 @@ TUM \cite{sturm12iros}                             & \cellcolor[HTML]{FFFFFF}Im�
 
 \todo{Esta tabla no me convence mucho pero tampoco se me ocurre como resumirlo mejor}
 
-\subsubsection{KITTI}
+\subsection{KITTI}
 KITTI \cite{KITTI-dataset, KITTI-benchmarks, KITTI-road-benchmark, KITTI-sceneflow-benchmark} es un proyecto desarrollado por el \textit{Karlsruhe Institute of Technology} y el \textit{Toyota Technological Institute} que engloba un \textit{dataset} y un conjunto de \textit{becnhmarks} enfocados a diferentes tareas relacionadas con la conducción autónoma. Los \textit{benchamrks} que incluye este proyecto evalúan: estereovisión, flujo óptico (\textit{optical flow}), flujo de la escena, \textbf{estimación de profundidades monocular}, \textit{depth completion}, odometría visual/SLAM, localización de objetos (2D, 3D y cenital), seguimiento de objetos, segmentación de carreteras, y por último, segmentación de objetos general, tanto semántica como a nivel de instancia. Debido a la naturaleza de este trabajo, este apartado se centrará en la parte referente a la predicción de profundidad monocular.
 
 \begin{table}[H]
@@ -171,7 +171,7 @@ Los datos disponibles en KITTI fueron capturados empleando un vehículo equipado
  
 % \textit{Velodyne HDL-64E rotating 3D laser scanner, 10 Hz, 64 beams, 0.09 degree angular resolution, 2 cm distance accuracy, collecting $\sim$ 1.3 million points/second, field of view: $360\degree$ horizontal, $26.8\degree$ vertical, range: 120 m}. 
 
-\paragraph{Datos}\mbox{}\\
+\subsubsection{Datos}
 Si nos centramos en la información relevante para la estimación de profundidades monocular, KITTI ofrece los siguientes datos:
 
 \textbf{Datos en bruto}
@@ -207,7 +207,7 @@ Por otro lado, KITTI proporciona también los valores numéricos de la profundid
 
 \end{figure}
 
-\paragraph{Conjuntos de entrenamiento, validación y evaluación}\label[seccion]{conjuntos-kitti}\mbox{}\\
+\subsubsection{Conjuntos de entrenamiento, validación y evaluación}\label{conjuntos-kitti}
 Para el desarrollo de este trabajo es necesario disponer de un conjunto de entrenamiento con el que ajustar los parámetros de los modelos, un conjunto de validación con el que comprobar que no se está sobre ajustando el modelo al primer conjunto y para elegir la combinación de hiperparámetros óptima, y por último, un conjunto de evaluación (\textit{test}) en el que calcular una serie de métricas que nos aportarán información del rendimiento real de los modelos finales.
 
 El \textit{dataset} de KITTI ya está dividido en entrenamiento y validación, e incluye una descarga adicional con el conjunto de test para el cual no están disponibles públicamente las anotaciones. No obstante, en las publicaciones sobre estimación de profundidad monocular \cite{visiontransformersDPT, monodepth,midas-intel, bts} es común encontrar los conjuntos de entrenamiento, validación y evaluación definidos por Eigen et al. \cite{eigen-multi-scale} (conocidos como el \textit{Eigen split}) que no respetan las particiones originales del \textit{dataset} de KITTI. 
@@ -239,26 +239,26 @@ Num. imágenes útiles    & 44570         & 1746       & 652        \\ \bottomru
 Como comprobación adicional, se han cruzado las listas de archivos descargadas para asegurar que ninguno de los elementos de los conjuntos de entrenamiento y validación se encuentras en el conjunto de evaluación.
 
 
-\subsection{Definición de modelos a entrenar}\label{modelos-a-entrenar}
+\section{Definición de modelos a entrenar}\label{modelos-a-entrenar}
 Uno de los objetivos de este Trabajo Fin de Máster es explorar distintas modificaciones en la arquitectura DPT \cite{visiontransformersDPT}. Para poder comparar de forma exhaustiva los efectos y la influencia en el rendimiento de cada una de estas modificaciones, se exploran todas las combinaciones posibles de los valores que se van a estudiar. Por lo tanto, no se detiene el entrenamiento de ningún modelo en caso de que su rendimiento sea peor que los modelos ya entrenados, ni se optimiza la búsqueda en función de la influencia de cada modificación en una métrica concreta.
 
 Para definir tantos modelos como combinaciones sean posibles, se toman los conjuntos de valores elegidos para cada una de las modificaciones planteadas y se calcula su producto cartesiano (\textit{grid search}). De esta forma, se obtienen las arquitecturas de los modelos que se entrenarán durante este trabajo y de los que se obtendrán los resultados finales.
 
 
-\subsection{Evaluación}
+\section{Evaluación}
 Para la evaluación de los modelos presentados en este trabajo y sus modificaciones, se ha seguido la metodología propuesta en la publicación de Lee et al. \cite{bts} para evaluar los resultados en KITTI que consiste en recortar un pequeño marco alrededor de la imagen de salida y crear una máscara para los píxeles que no tienen una profundidad definida en la anotación. En la publicación de DPT \cite{visiontransformersDPT}, también se emplea el mismo procedimiento.
 
 Al usar esta misma metodología se satisfacen dos objetivos: poder reproducir los resultados presentados en dicho artículo con el modelo original, y evaluar las modificaciones introducidas para comparar sus resultados con los del modelo sin modificar. 
 
 Como se mencionará más adelante, una de las modificaciones introducidas en este trabajo reduce el tamaño de la imagen en la entrada de las arquitecturas. El resultado de estos modelos, no obstante, se escala a su tamaño original antes de llevar a cabo la evaluación para asegurar que la magnitud de las métricas se ajuste a la del modelo original (con entradas de mayor resolución).
 
-\subsubsection{Métricas}
+\subsection{Métricas}
 Una vez escaladas y enmascaradas las predicciones y las anotaciones, se calculan una serie de valores cuantitativos que permiten comparar y evaluar el rendimiento de los modelos. Las funciones que nos proporcionan estos valores son conocidas como métricas. Dentro del gran número de funciones que permiten evaluar los resultados de los modelos, se han elegido aquellas comúnmente empleadas en los modelos de aprendizaje profundo dedicados a la estimación de profundidad en imágenes monoculares \cite{visiontransformersDPT,bhat2020adabins,eigen-multi-scale,midas-intel,bts,DORN,evaluation-cnn-depth-estimation, depth-estimation-metrics}.
 
 En las siguientes ecuaciones, $d_p$ representa el valor del mapa de profundidad original (anotación) para cada pixel $p$, mientras que $\hat{d}_p$ representa el valor de la profundidad estimada por el modelo para cada pixel $p$. Por otro lado, $T$ denota el número de píxeles con información de profundidad disponibles en la anotación (al ser anotaciones dispersas, las imágenes no tienen información sobre la profundidad en todos los píxeles).
 
 
-\paragraph{\textit{Accuracy under a threshold}}\mbox{}\\
+\subsubsection{\textit{Accuracy under a threshold}}
 La primera de estas métricas, el \textit{accuracy under a threshold}, viene dada por la \Cref{eqn:accuracy_under_thr} y cuantifica el porcentaje de píxeles a los que el modelo ha asignado una profundidad cuya relación de escala respecto de su valor real es menor que un determinado umbral. Los valores que se emplean para este umbral son $1.25$, $1.25^2$ y $1.25^3$.
 
 \begin{equation}
@@ -266,7 +266,7 @@ La primera de estas métricas, el \textit{accuracy under a threshold}, viene dad
 \% \ de \ p \in T : max(\frac{\hat{d}_p}{d_p},\frac{d_p}{\hat{d_p}}) = \delta < umbral 
 \end{equation}
 
-\paragraph{\textit{Mean Absolute Value of the Relative Error (Abs Rel)}}\mbox{}\\
+\subsubsection{\textit{Mean Absolute Value of the Relative Error (Abs Rel)}}
 Otra métrica usada habitualmente es el promedio del error relativo en todos los píxeles que disponen de valor de profundidad anotada. Para conseguir este error relativo, se calcula el error absoluto y se divide entre el valor real de la profundidad (\Cref{eqn:abs_rel}).
 
 % np.mean(np.abs(gt - pred) / gt)
@@ -275,7 +275,7 @@ Otra métrica usada habitualmente es el promedio del error relativo en todos los
 \frac{1}{T}\sum_{p\ \in\ T} \frac{|d_p - \hat{d}_p|}{d_p}
 \end{equation}
 
-\paragraph{\textit{Mean Squared Relative Error (Sq Rel)}}\mbox{}\\
+\subsubsection{\textit{Mean Squared Relative Error (Sq Rel)}}
 Similar a la métrica anterior, en este caso el error absoluto se eleva al cuadrado antes de ser dividido entre el valor a estimar y de promediarlo con el resto de píxeles (\Cref{eqn:sq_rel}). De esta forma, por la naturaleza cuadrática de la fórmula, se le da una mayor importancia a los errores mayores que a los menores.
 
 % np.mean(((gt - pred)**2) / gt)
@@ -284,7 +284,7 @@ Similar a la métrica anterior, en este caso el error absoluto se eleva al cuadr
 \frac{1}{T}\sum_{p\ \in\ T} \frac{(d_p - \hat{d}_p)^2}{d_p}
 \end{equation}
 
-\paragraph{\textit{Linear Root Mean Squared Error (RMSE)}}\mbox{}\\
+\subsubsection{\textit{Linear Root Mean Squared Error (RMSE)}}
 El valor del error cuadrático medio proporciona una medida del promedio de la magnitud de la diferencia entre la profundidad predicha para cada uno de los píxeles y su profundidad real (\Cref{eqn:rmse}). Una característica interesante de esta métrica es que sus unidades coinciden con las de la variable predicha, lo que facilita su interpretación. Como los errores se elevan al cuadrado antes de promediarse, estos tienen una importancia relativa directamente relacionada con su magnitud, es decir, cuanto mayor sea el error, más peso tendrá en el promedio. Es por esto por lo que es especialmente útil si se busca penalizar más los errores más grandes en las predicciones.
 
 \begin{equation}
@@ -292,7 +292,7 @@ El valor del error cuadrático medio proporciona una medida del promedio de la m
 \sqrt{\frac{1}{T}\sum_{p\ \in\ T} (d_p - \hat{d}_p)^2}
 \end{equation}
 
-\paragraph{\textit{Logarithmic Root Mean Squared Error (RMSElog)}}\mbox{}\\
+\subsubsection{\textit{Logarithmic Root Mean Squared Error (RMSElog)}}
 Similar a la métrica anterior, en este caso el error cuadrático medio se calcula sobre los logaritmos naturales de las medidas a comparar (\Cref{eqn:rmselog}). Al realizar la resta de los logaritmos, la operación es equivalente a calcular el logaritmo de la división del valor de profundidad estimado y el valor de profundidad anotado, restando de esta forma importancia a la escala del error y obteniendo una aproximación al error relativo de las medidas (frente al \textit{RMSE}, que sería una medida del error absoluto). Además, debido al escalado que realizan los logaritmos, los \textit{outliers} pierden importancia, por lo que es una métrica más robusta frente a este tipo de errores puntuales.
 
 Otra característica a destacar de esta métrica es que está sesgada para penalizar aquellos casos en los que el valor predicho es menor que el valor real (subestimación). De esta forma, el error en dicha situación será mayor que si el valor predicho es mayor que el valor real (sobreestimación) aún cuando la diferencia entre ambos valores sea la misma.
@@ -303,7 +303,7 @@ Otra característica a destacar de esta métrica es que está sesgada para penal
 \sqrt{\frac{1}{T}\sum_{p\ \in\ T} (\ln{d_p} - \ln{\hat{d}_p})^2}
 \end{equation}
 
-\paragraph{\textit{Scale Invariant Logarithmic Error (SIlog)}}\mbox{}\\
+\subsubsection{\textit{Scale Invariant Logarithmic Error (SIlog)}}
 Esta métrica, es la raíz cuadrada de la función de pérdida propuesta por Eigen et al. \cite{eigen-multi-scale} con $\lambda = 1$ (\Cref{eqn:silog}). Al fijar el valor de $\lambda$ en la unidad, se obtiene una medida totalmente independiente de la escala de la salida. De esta forma, se obtiene una medida de la calidad de los resultados de los modelos ignorando completamente la escala en la que se han producido las predicciones, que como ya se ha comentado es uno de los problemas fundamentales de la estimación de profundidades en imagen monocular.
 
 \todo[inline]{Aquí no sé que hacer, he hecho la demostración matemática de que es invariante a la escala pero es un churro de ecuaciones, no sé si merece la pena poner un anexo solo para eso. La función de pérdida es esta misma así que más abajo cuando hablo de ella vuelvo a tener el mismo dilema}
@@ -318,7 +318,7 @@ Esta métrica, es la raíz cuadrada de la función de pérdida propuesta por Eig
 } * 100
 \end{equation}
 
-\paragraph{\textit{Mean Logarithmic Error (Log10)}}\mbox{}\\
+\subsubsection{\textit{Mean Logarithmic Error (Log10)}}
 Por último, se calculará también el promedio del error (en escala logarítmica) de las profundidades predichas respecto de las profundidades reales siguiendo la \Cref{eqn:log10}.
 
 % np.mean(np.abs(np.log10(pred) - np.log10(gt)))
@@ -327,12 +327,12 @@ Por último, se calculará también el promedio del error (en escala logarítmic
 \frac{1}{T} \sum_{p\ \in\ T} |\log_{10}{d_p} - \log_{10}{\hat{d}_p}|
 \end{equation}
 
-\paragraph{Velocidad de procesamiento}\mbox{}\\
+\subsubsection{Velocidad de procesamiento}
 Además de la calidad de los resultados, es de especial interés en este trabajo obtener medidas relacionadas con la velocidad de procesamiento que pueden alcanzar los modelos. Dentro de las medidas empleadas hay dos tipos: condicionadas por el \textit{hardware} utilizado (Tiempo de inferencia) e independientes del \textit{hardware} (Número de operaciones en coma flotante).
 
 % y Tasa de transferencia efectiva
 
-\subparagraph{Tiempo de inferencia}\mbox{}\\
+\paragraph{Tiempo de inferencia}\mbox{}\\
 Esta medida corresponderá al tiempo que tarda el modelo en procesar \textbf{una sola} imagen. Si suponemos que la aplicación de estos modelos es el procesamiento de vídeo de forma online, donde los fotogramas no pueden procesarse en lotes, esta medida es la inversa de los fotogramas por segundo (\textit{FPS}). 
 Como se ha mencionado antes, esta métrica estará sujeta al \textit{hardware} en el que se ejecute, y por lo tanto variará de un equipo a otro.
 

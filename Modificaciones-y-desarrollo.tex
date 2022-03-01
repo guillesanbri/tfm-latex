@@ -1,8 +1,8 @@
-\section{Desarrollo y Modificaciones de la Arquitectura}
+\capitulo{4}{Desarrollo y Modificaciones de la Arquitectura}
 
 En este capítulo, se presentan los desarrollos principales que se han llevado a cabo durante el trabajo, prestando especial atención a las modificaciones realizadas sobre la arquitectura DPT.
 
-\subsection{Cloud}\label[seccion]{cloud}
+\section{Cloud}\label{cloud}
 
 Con el objetivo de reducir el tiempo necesario para entrenar los distintos modelos que se plantean en este trabajo, se ha recurrido al servicio de infraestructura (IaaS - \textit{Infraestructure as a Service}) que ofrece la empresa Google: Google Cloud. Los servicios en la nube (\textit{cloud}), permiten disponer de recursos informáticos de manera flexible, pagando únicamente por aquellos que estén activos. Los proveedores de IaaS, se encargan del mantenimiento y gestión de la infraestructura (redes, almacenamiento, servidores, virtualización), mientras que el usuario se encarga de la gestión del sistema operativo y todo lo que hay por encima. 
 
@@ -24,14 +24,14 @@ El flujo de trabajo que se ha seguido ha sido el siguiente (\Cref{fig:cloud-diag
 \label{fig:cloud-diagram}
 \end{figure}
 
-\subsection{Warmstart}
+\section{Warmstart}
 Para acelerar lo máximo posible la convergencia del modelo durante el entrenamiento, se aprovechan en la medida de lo posible parámetros con sesgos inductivos ya aprendidos, es decir, parámetros de modelos ya entrenados. Más concretamente, los parámetros de los modelos a entrenar se inicializan con los valores de los parámetros del modelo DPT-Hybrid entrenado en MIX6, publicados en el artículo original de \textit{Dense Prediction Transformers} \cite{visiontransformersDPT}. 
 
 Además, ya que en este trabajo se estudian diferentes modificaciones de dicho modelo, se emplea el método \texttt{load\_state\_dict()} de la clase \texttt{torch.nn.Module} con el parámetro \texttt{strict=False} para cargar los parámetros, evitando así que la carga falle si no coinciden una a una las capas en el modelo y las definidas en el archivo que se trata de cargar. En cuanto a las capas/conjuntos de capas que se han modificado y/o añadido, al no disponer del conjunto de datos MIX6 para preentrenarlas, se han inicializado con sus parámetros correspondientes tras ser entrenadas en ImageNet21K.
 
 Esta forma de proceder, sin embargo, conlleva que los modelos con menor porcentaje de su arquitectura modificada partan de una situación inicial ventajosa para la tarea de estimación de profundidad monocular (al estar ya preentrenados en MIX6 en vez de ImageNet).
 
-\subsection{Entrenamiento}
+\section{Entrenamiento}
 Pese a que los autores del artículo de DPT \cite{visiontransformersDPT} han publicado el código del modelo y sus pesos preentrenados en MIX6 y KITTI, a día de hoy no han hecho públicos los \textit{scripts} de entrenamiento empleados. Por esto, ha sido necesario escribir el proceso de entrenamiento así como el \texttt{Dataset} de PyTorch con el que leer los datos de KITTI.
 
 Para el \texttt{Dataset}, se crea una clase \texttt{KITTIDataset}\footnote{URL al repo?} que hereda de la clase abstracta base para conjuntos de datos que ofrece PyTorch, \texttt{torch.utils.data.Dataset}, y sobreescribe los métodos \texttt{\_\_len\_\_()} y \texttt{\_\_getitem\_\_()} de forma que estos se adapten a la estructura de directorios y nombres de las imágenes y de sus anotaciones. Al sobreescribir estos métodos, es posible crear un \texttt{torch.utils.data.Dataloader} de forma directa, pasando las imágenes y las etiquetas a los modelos aprovechando las herramientas de PyTorch. En el método \texttt{\_\_getitem\_\_()}, además, se aplican las transformaciones necesarias a los datos, así como el \textit{Data Augmentation}.
@@ -47,7 +47,7 @@ En cuanto al \textit{script} de entrenamiento\footnote{URL de train.py y train\_
 
 \item \textbf{\texttt{torch.backends.cudnn.enabled y \texttt{torch.backends.cudnn.benchmark}}}: Estas dos opciones, se activan para asegurar, respectivamente, que se use CuDNN en la ejecución del modelo y que se ejecuten al comienzo del \textit{script} distintas implementaciones de algoritmos de convolución para emplear el más rápido en el sistema actual.
 
-\item \textbf{\textit{Mixed precision}}: Ya mencionado en la \Cref{optimizacion-modelos}, pese a que finalmente se ha descartado su uso en el entrenamiento debido a la inestabilidad numérica que introducía y los fallos que ocasionaba, el \textit{script} de entrenamiento incluye la opción de activar el uso de precisión mixta con el escalado pertinente.
+\item \textbf{\textit{Mixed precision}}: Ya mencionado en el \Cref{optimizacion-modelos}, pese a que finalmente se ha descartado su uso en el entrenamiento debido a la inestabilidad numérica que introducía y los fallos que ocasionaba, el \textit{script} de entrenamiento incluye la opción de activar el uso de precisión mixta con el escalado pertinente.
 \end{itemize}
 
 Para ajustar los parámetros de los modelos, se ha empleando como optimizador \texttt{AdamW} con una tasa de aprendizaje $lr = 1e-5$ y parámetros: $\beta_1 = 0.9$, $\beta_2 = 0.999$, $\epsilon = 1e-8$ y $\textit{weight decay} = 0.01$. El número de épocas se ha fijado en $20$ tras analizar el comportamiento de la pérdida en distintas ejecuciones previas. En cuanto al tamaño de lote usado, se ha utilizado solamente una imagen para cada actualización de parámetros. Esta elección viene motivada por dos razones, la primera, la falta de recursos computacionales para entrenar algunas de las variaciones de los modelos con lotes de más imágenes, y la segunda y más importante, que tras implementar en el \textit{script} de entrenamiento la posibilidad de acumular gradientes\footnote{La acumulación de gradientes (\textit{gradient accumulation}) es una técnica que promedia las pérdidas en distintos lotes para, aún sin poder aprovechar la mejora de rendimiento de un tamaño de lote mayor, conseguir que la actualización de los parámetros sea matemáticamente equivalente (con alguna limitación como la imposibilidad de usar \textit{batch normalization}) a usar un tamaño de lote mayor.}, se comprobó que se obtenían mejores resultados con lotes de una sola imagen, probablemente por el efecto regularizador característico de un tamaño de lote tan reducido.
@@ -55,7 +55,7 @@ Para ajustar los parámetros de los modelos, se ha empleando como optimizador \t
 Además, se ha empleado la función \texttt{torch.nn.utils.clip\_grad\_value\_}, que se encarga de limitar los valores de los gradientes en función de su valor con un \texttt{clip\_value} de $0.5$, limitando considerablemente las posibilidades de que explotasen los gradientes del modelo y se desestabilice su entrenamiento. No obstante, como precaución y para evitar el desperdicio de recursos, el entrenamiento se detiene en caso de que el valor de la función de pérdida se vuelva $\pm \infty$.
 
 
-\subsubsection{Función de pérdida}
+\subsection{Función de pérdida}
 La función de pérdida usada durante el proyecto, y por lo tanto implementada en el script de entrenamiento, es la función empleada en la publicación de DPT \cite{visiontransformersDPT} para ajustar los modelos preentrenados en MIX6 a \textit{datasets} más pequeños. Tal y como indica esta publicación, su función de pérdida se compone de la función de pérdida propuesta por Eigen et al. \cite{eigen-multi-scale} y de otra función que calcula los gradientes de la profundidad obtenida para penalizar la falta de suavidad en píxeles contiguos, propuesta en el trabajo de Li et al. \cite{MegaDepthLi18}. No obstante, como el \textit{dataset} empleado en este trabajo es KITTI y sus anotaciones son dispersas, no es posible calcular dichos gradientes en las etiquetas y por lo tanto se elimina esa parte de la función. 
 
 De esta forma, la función de pérdida resultante es la definida por la \Cref{eqn:perdida-midas}, donde $\hat{d_p}$ es la profundidad obtenida de la red para cada píxel $p$, $d_p$ es la etiqueta con los valores de profundidad, $n$ es el número de píxeles que tienen un dato de profundidad en la etiqueta correspondiente y $\lambda$ es un hiperparámetro cuyo valor puede estar en el rango $[0, 1]$ y controla la influencia de la escala, ya que con $\lambda=0$ el segundo término se anula (quedando la distancia de cuadrados en espacio logarítmico), y con $\lambda=1$ la función de pérdida es invariante a la escala. La demostración de la invariancia a la escala es equivalente a la de la métrica \textit{SIlog} (Sección TODO), ya que dicha métrica es la raíz cuadrada de esta función de pérdida. Para el entrenamiento de los modelos, $\lambda$ se ha fijado en $0.5$.
@@ -72,7 +72,7 @@ De esta forma, la función de pérdida resultante es la definida por la \Cref{eq
 L(\hat{d}, d) = \frac{1}{n}\sum_{p} (\ln{\hat{d_p}} - \ln{d_p})^2 - \frac{\lambda}{n^2} \left( \sum_{p} (\ln{\hat{d_p}} - \ln{d_p}) \right)^2
 \end{equation}
 
-\subsection{Reducción de tamaño de la entrada}
+\section{Reducción de tamaño de la entrada}
 Para acelerar DPT lo primero que se modificó fue el tamaño de la entrada, buscando estudiar la flexibilidad de la arquitectura para aprender a inferir profundidad a partir de imágenes con menor resolución. Los resultados de la publicación original calculan la profundidad en el conjunto de evaluación de KITTI con las imágenes en su tamaño original, 1216x352. Para reducir el consumo de memoria del modelo durante su entrenamiento, así como acelerar entrenamiento e inferencia, se han añadido dos operaciones de cambio de tamaño: una al principio de la red que reduce el tamaño de las imágenes a 640x192 píxeles, y otra al final de la red que reescala la salida al tamaño original. 
 
 % La primera operación emplea como método de interpolación el algorítmo \texttt{INTER{\_}AREA} de OpenCV, que TODO y está recomendado para reducir el tamaño de imágenes ya que proporciona resultados sin efecto Moire; la operación que amplia la salida al tamaño de la imagen original, por otro lado, emplea interpolación bicúbica.
@@ -81,18 +81,18 @@ Para acelerar DPT lo primero que se modificó fue el tamaño de la entrada, busc
 
 % https://medium.com/@wenrudong/what-is-opencvs-inter-area-actually-doing-282a626a09b3
 
-\subsection{Capas de atención eficiente}
+\section{Capas de atención eficiente}
 
-Tal y como se ha visto en la \Cref{atencion-eficiente} de Marco Teórico y Estado del Arte, existen numerosas técnicas para reducir la complejidad computacional y requisitos de memoria de los mecanismos de atención característicos de los \textit{transformers}. Sin embargo, estas técnicas ofrecen mayores incrementos en el rendimiento cuanto mayor es la longitud de la cadena de la entrada. Por lo tanto (especialmente tras reducir el tamaño de las imágenes) no se va a apreciar un incremento especialmente substancial en la velocidad de inferencia por modificar estos mecanismos. Aún así, se decide modificar el mecanismo de atención con el objetivo de estudiar la capacidad de estas nuevas técnicas para igualar los resultados de los mecanismos originales. En concreto, se compara el mecanismo de atención del \textit{Perfomer} con la atención estándar.
+Tal y como se ha visto en el \Cref{atencion-eficiente} de Marco Teórico y Estado del Arte, existen numerosas técnicas para reducir la complejidad computacional y requisitos de memoria de los mecanismos de atención característicos de los \textit{transformers}. Sin embargo, estas técnicas ofrecen mayores incrementos en el rendimiento cuanto mayor es la longitud de la cadena de la entrada. Por lo tanto (especialmente tras reducir el tamaño de las imágenes) no se va a apreciar un incremento especialmente substancial en la velocidad de inferencia por modificar estos mecanismos. Aún así, se decide modificar el mecanismo de atención con el objetivo de estudiar la capacidad de estas nuevas técnicas para igualar los resultados de los mecanismos originales. En concreto, se compara el mecanismo de atención del \textit{Perfomer} con la atención estándar.
 
 Para poder llevar a cabo los experimentos relacionados con este aspecto de la arquitectura y poder entrenar los modelos necesarios, se modifica el código de DPT de forma que se puedan seleccionar distintos mecanismos de atención, entre ellos la implementación del mecanismo de atención del \textit{Performer} desarrollada por Phil Wang \cite{pwperformer}. Entre los distintos mecanismos de atención eficiente, se ha elegido el del \textit{Performer} debido a que tiene una complejidad $O(n)$ y también debido a que, según apuntan los autores en su publicación, es posible reutilizar los parámetros de las matrices de pesos $W^V$, $W^K$ y $W^Q$ de los mecanismos de atención estándar para obtener las matrices $Q$, $K$ y $V$ (hace falta un pequeño ajuste, pero no es necesario entrenar desde cero).
 
-\subsection{Número de cabezas}
+\section{Número de cabezas}
 En la publicación \textit{Are Sixteen Heads Really Better than One?} \cite{are16headsbetterthan1}, se plantea y prueba la idea de que el número de cabezas en los bloques de atención está sobredimensionado, siendo posible eliminar un gran porcentaje de las cabezas sin afectar al rendimiento de forma significativa. Esta influencia en el rendimiento, se reduce aún más cuando se reentrena el modelo después de reducir el número de cabezas.  Además, los autores señalan que reducir el número de cabezas degrada el rendimiento de forma más significativa en los bloques de \textit{Cross-Attention} (\Cref{bloques-atencion}) con elementos del \textit{encoder} y \textit{decoder} que en los bloques de \textit{Self-Attention}. 
 
 En el caso de DPT, al emplear como \textit{encoder} un ViT, no existen bloques de \textit{Cross-Attention}, si no que son todos de \textit{Self-Attention} (recordemos que el ViT solo se compone de la parte del \textit{encoder} del \textit{transformer} original). Por lo tanto, se plantea también como una de las modificaciones del proyecto estudiar la influencia del número de cabezas en la velocidad de inferencia y los resultados, adaptando el código del modelo para que sea posible cambiar la cantidad de cabezas en los bloques de atención (tanto de atención estándar como de atención eficiente). Los valores con los que se experimenta para este hiperparámetro son $1$, $12$ (el número de cabezas que tiene DPT por defecto) y $24$.
 
-\subsection{Hooks del transformer y bloques de atención posteriores}
+\section{Hooks del transformer y bloques de atención posteriores}
 
 En la arquitectura de DPT (\Cref{DPT}), la transferencia de información desde el \textit{encoder} al \textit{decoder} tiene lugar a través de cuatro ganchos o \textit{hooks} que toman las salidas de ciertas capas para que pasen a ser las entradas que se fusionan en el \textit{decoder}. En la publicación original, si bien es cierto que se valoran diferentes tamaños de \textit{Vision Transformers}, no se presenta ningún experimento modificando los bloques de atención de los cuales se cogen las salidas. Más concretamente, el modelo DPT-Hybrid coloca dos de estos \textit{hooks} en el \textit{backbone} convolucional y los otros dos en los bloques de atención número 8 y número 11 (empezando en cero). Por lo tanto, la imagen de entrada tiene que atravesar todos los bloques de atención del ViT-Hybrid para conseguir la salida del último bloque de atención.
 
@@ -109,7 +109,7 @@ En la \Cref{fig:attention_block_num}, se puede apreciar la modificación del ViT
 \label{fig:attention_block_num}
 \end{figure}
 
-\subsection{Backbone convolucional}
+\section{Backbone convolucional}
 La última modificación de la arquitectura de DPT estudiada en este proyecto es la del \textit{backbone} convolucional del ViT-Hybrid, encargado de extraer los mapas de características empleados para obtener los \textit{tokens} que pasan a los bloques de atención. 
 
 En el modulo propuesto en la publicación original, se elige como \textit{backbone} una ResNet50. De esta red, se extraen las activaciones en los bloques 0 y 1 para pasarlas al \textit{decoder}. Por otro lado, la salida de la última capa de la ResNet50, es decir, la entrada de los bloques de atención, tiene forma [n, c, h, w], donde: n es el número de imágenes en el lote (\textit{batch size}), c es el número de canales (en este caso mapas de características), y h y w la altura y anchura de los mapas de características. En el caso de este \textit{backbone}, la salida está compuesta por $c=1024$ mapas de características de dimensiones iguales a las de la imagen de entrada divididas 4 veces entre 2.
@@ -122,7 +122,7 @@ Buscando una alternativa que ofrezca resultados similares con un menor coste com
 
 Dado que no se disponen de los parámetros ajustados en MIX6 para EfficientNet-B0, se ha modificado también el \textit{script} del modelo para cargar en su inicialización los parámetros ajustados en ImageNet21K (proporcionados por la librería PyTorch Image Models \cite{timm}, de donde también se ha utilizado la implementación de EfficientNet-B0) correspondientes a este nuevo módulo. 
 
-\subsection{Pruebas de cuantificación}
+\section{Pruebas de cuantificación}
 Además de las modificaciones comentadas, se han probado exhaustivamente distintos \textit{frameworks} de optimización y cuantificación. Más concretamente, se han probado los frameworks de optimización TensorRT (TRT) de NVIDIA y TF Lite, de TensorFlow. Para estas pruebas, se han utilizado tanto los modelos originales de PyTorch (en TensorRT) como los modelos convertidos a ONNX (ecosistema que permite la interoperabilidad entre \textit{frameworks} de aprendizaje profundo). Además de con TRT y TF Lite, se ha tratado de cuantificar el modelo tanto estática como dinámicamente empleando el cuantificador de PyTorch.
 
 En el caso de los dos primeros \textit{frameworks} de optimización, no se ha conseguido ejecutar de forma exitosa la optimización de los modelos. La razón de los fallos obtenidos es que algunas de las capas de la arquitectura de DPT-Hybrid no están soportadas por la conversión de modelos, es decir, sería necesario ampliar las capacidades de las herramientas para implementar la optimización de dichas capas. Por otro lado, con el cuantificador de PyTorch tampoco se han conseguido resultados satisfactorios, en este caso, debido principalmente a la extracción de salidas intermedias del \textit{encoder} para pasarlas al \textit{decoder}, que ocasiona inconsistencias entre las operaciones que se llevan a cabo como enteros de 8 bits y como números en coma flotante de 32 bits.

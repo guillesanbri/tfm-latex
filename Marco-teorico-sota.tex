@@ -1,6 +1,6 @@
-\section{Marco Teórico y Estado del Arte}
+\capitulo{2}{Marco Teórico y Estado del Arte}
 
-\subsection{Inteligencia Artificial, Aprendizaje automático, y Aprendizaje Profundo}
+\section{Inteligencia Artificial, Aprendizaje automático, y Aprendizaje Profundo}
 La Inteligencia Artificial (IA), engloba el estudio de agentes que perciben un entorno y actúan en consecuencia. Este campo, comprende multitud de disciplinas y técnicas aplicables en incontables escenarios. Dentro de los subcampos que conforman la IA están por ejemplo los sistemas expertos, los modelos probabilísticos, la lógica difusa, o, de especial importancia en este trabajo, el aprendizaje automático (\textit{Machine Learning} - ML). 
 
 El aprendizaje automático estudia diferentes modelos que son capaces de extraer información de forma automática a partir de un conjunto de datos. En función de qué información tengan estos datos y qué se busque hacer con ella, es posible distinguir entre aprendizaje supervisado (donde los datos están etiquetados con lo que se quiere aprender), aprendizaje no supervisado (donde los datos no tienen anotaciones y se busca extraer información o encontrar relaciones entre ellos), aprendizaje semisupervisado (si se usan datos etiquetados y no etiquetados) o aprendizaje por refuerzo (si se emplea una función de recompensa y se deja al modelo elegir las acciones que lleva a cabo).
@@ -9,7 +9,7 @@ Este proyecto, no obstante, se centra más aún en el aprendizaje profundo (\tex
 
 Cabe mencionar, que pese a que muchos de los conceptos explicados a continuación son perfectamente validos en otras modalidades, al centrar este trabajo en el aprendizaje profundo supervisado, el marco teórico se ajusta y limita a este. 
 
-\subsection{Redes neuronales}
+\section{Redes neuronales}
 Las redes neuronales (en inglés, \textit{Neural Networks} - NN), son sistemas computacionales inspirados en una versión simplificada de las neuronas biológicas. Estas neuronas artificiales, están definidas por una serie de elementos: entradas, \textbf{pesos}, \textbf{bias}, \textbf{función de activación} y salida. El valor que toma esta salida, siguiendo la notación de la \Cref{fig:neurona}, viene dado por la ecuación $y = f(Wx + b)$.
 
 \begin{figure}[H]
@@ -37,7 +37,7 @@ El proceso de entrenamiento, sin embargo, hay que controlarlo y validarlo de alg
 
 A continuación, se profundiza en algunos de los conceptos mencionados prestando especial atención a los elementos que aparecen en este trabajo.
 
-\subsubsection{Funciones de activación}
+\subsection{Funciones de activación}
 Tal y como se ha visto en la \Cref{fig:neurona}, la función de activación transforma la suma del \textit{bias} y el producto de los pesos y las entradas para obtener el valor de salida. En la \Cref{fig:funciones-activacion}, es posible observar graficadas varias de estas funciones junto con sus ecuaciones.
 
 \begin{figure}[H]
@@ -52,10 +52,10 @@ La primera de estas funciones de activación es la función de activación linea
 
 Cada una de estas funciones de activación tiene características propias que las hacen diferentes entre si. La tangente hiperbólica, aún siendo similar a la sigmoide, es simétrica y tiene unos gradientes más fuertes en las zonas cercanas al cero, lo que origina que sus salidas sean valores pequeños centrados en cero y que el entrenamiento sea más rápido \cite{lecun2012efficient}. La función ReLU, por otro lado, pese a ser parcialmente lineal, puede aproximar funciones no lineales gracias a su definición a trozos, además, el gradiente para los valores positivos es constante $(1)$, reduciendo en gran medida el desvanecimiento de los gradientes cuando se definen redes neuronales con un gran número de capas. Por último, la función GELU, es comúnmente empleada en las arquitecturas basadas en \textit{transformers} y mantiene el gradiente constante en valores positivos a la vez que añade una ligera ponderación a los valores negativos cercanos al cero.
 
-\subsubsection{Funciones de pérdida}
+\subsection{Funciones de pérdida}
 Las funciones de pérdida, tal y como se ha mencionado previamente, son aproximaciones optimizables de la distancia o error entre el valor real a predecir y la predicción realizada. Dentro de estas funciones, cuyo valor se busca minimizar, existen diferentes situaciones que pueden dificultar el aprendizaje de los modelos, por ejemplo, los mínimos locales, donde los valores de la función de pérdida son menores que los valores de su entorno, originando que los gradientes se desvanezcan y detengan el proceso de optimización, o los puntos de silla (\textit{saddle points}), donde, pese a no haber un mínimo local, los gradientes también se desvanecen, deteniendo la minimización.
 
-\subsubsection{Optimizadores}
+\subsection{Optimizadores}
 Los optimizadores son algoritmos que minimizan el valor de la función de pérdida ($f(\theta)$) ajustando los parámetros ($\theta$) de los modelos, entre otras cosas, en base a la influencia de estos parámetros en el error obtenido en dicha función. Esta influencia se obtiene calculando las derivadas parciales del error respecto de cada parámetro (gradiente: $\nabla_{\theta} f_t(\theta_{t-1})$), y, en función del algoritmo que se elija, puede verse afectada por distintos factores. Algunos de los optimizadores más empleados son SGD, AdaGrad \cite{adagrad}, RMSProp \cite{rmsprop} TODO, Adam \cite{adam} o AdamW \cite{adamw}.
 
 El descenso de gradiente tradicional promedia los gradientes del error en todos los ejemplos disponibles para actualizar los parámetros. La modificación que introduce el \textbf{SGD (\textit{Stochastic Gradient Descent})}, es actualizar los parámetros tras ver cada uno de los ejemplos. De esta forma, se acelera el entrenamiento, ya que aunque cada ajuste no es óptimo, los parámetros se actualizan mucho más frecuentemente. Además, el ruido intrínseco de cada ejemplo tiene un efecto regularizador que puede ayudar a salir de mínimo locales.
@@ -147,7 +147,7 @@ En cuanto a la diferencia entre Adam y AdamW, esta reside en cómo se implementa
 % https://towardsdatascience.com/weight-decay-l2-regularization-90a9e17713cd
 % https://towardsdatascience.com/why-adamw-matters-736223f31b5d
 
-\subsection{MLP}
+\section{MLP}
 El Perceptrón Multicapa, o por sus sigles en ingles, \textbf{MLP} (\textit{Multi Layer Perceptron}), es una de las arquitecturas de red neuronal más básicas y está formado por una capa de entrada, una capa de salida, y un bloque de capas intermedias u ocultas. Estas capas intermedias, son agrupaciones de neuronas donde cada una de las neuronas (normalmente) se conecta con todas las neuronas de la capa anterior y con todas las neuronas de la capa posterior (\Cref{fig:mlp}). De esta forma, se crea una sucesión donde las entradas de una neurona son las salidas de las neuronas de la capa anterior y la salida de dicha neurona es una de las entradas de todas las neuronas de la capa siguiente. 
 
 \begin{figure}[H]
@@ -158,7 +158,7 @@ El Perceptrón Multicapa, o por sus sigles en ingles, \textbf{MLP} (\textit{Mult
 \label{fig:mlp}
 \end{figure}
 
-\subsection{RNN}
+\section{RNN}
 Las redes neuronales recurrentes (\textit{Recurrent Neural Networks} - RNN) son un grupo de redes neuronales cuya arquitectura se fundamenta en la utilización repetida de la salida de la propia red en un instante como entrada adicional de la red en el instante siguiente. Para conseguir esto, se mantiene la información en forma de estado oculto (\textit{hidden state}). Gracias a esta transmisión recurrente, es posible transferir información entre entradas sucesivas de la red.
 
 Este tipo de redes está especialmente diseñado para trabajar con entradas secuenciales de valores (series temporales, texto, señales de audio y video, etc.) ya que su arquitectura aprovecha la información de los datos previos y no tiene limitaciones en el tamaño de la secuencia de entrada.
@@ -173,7 +173,7 @@ Sin embargo, la ejecución y entrenamiento de este tipo de redes requiere ejecut
 \label{fig:rnn}
 \end{figure}
 
-\subsection{CNN}
+\section{CNN}
 A la hora de trabajar con imágenes (matrices de dos o tres dimensiones), el número de conexiones, y por lo tanto, parámetros, que tendrían que existir para conectar cada valor de entrada con cada neurona crece enormemente. Las redes convolucionales, no solo lidian con este problema, si no además lo hacen proporcionando muy buenos resultados. Este tipo de redes, se basan en el concepto de núcleo (\textit{kernel}) proveniente del procesamiento digital de imágenes y la operación de convolución, y su origen se atribuye al trabajo de LeCun et al. \cite{LeCun1999}.
 
 Los filtros o \textit{kernels} (\Cref{fig:convolucion}) son pequeñas matrices (cuyos valores son equivalentes a los pesos vistos anteriormente, y por lo tanto son ajustados durante el entrenamiento) que se convolucionan sobre la imagen de entrada, extrayendo de esta forma mapas de características (también conocidos como mapas de activaciones) que son a su vez la entrada de las siguientes capas convolucionales tras aplicar una función de activación y puede que otras operaciones. En cuanto a la convolución (o correlación cruzada\footnote{La operación matemática de convolución entre dos funciones incluye voltear una de las funciones. Sin embargo, en el campo del Deep Learning, voltear la entrada o el filtro requeriría una operación adicional que solo conllevaría que los pesos obtenidos tras el descenso de gradiente estuvieran también volteados. Por lo tanto, la operación de convolución en redes neuronales realmente es una operación de correlación cruzada donde no se voltea ninguna de las funciones.}), es una operación cuya salida se obtiene desplazando una de las dos matrices y calculando su producto escalar con la otra matriz (\Cref{fig:convolucion}). Estas capas, están definidas principalmente por el tamaño del \textit{kernel}, el número de \textit{kernels} que se aplican y la zancada o \textit{stride}, que es el desplazamiento del \textit{kernel} para calcular cada valor de salida y por lo tanto afecta directamente en su tamaño. 
@@ -237,7 +237,7 @@ En las redes convolucionales, es común encontrar otras operaciones como son:
 
 \end{itemize}
 
-\subsubsection{Conexiones residuales y ResNets}
+\subsection{Conexiones residuales y ResNets}
 
 En el artículo publicado por He et al. \cite{resnet} se presentan las conexiones residuales y la familia de redes ResNet, compuesta por distintos modelos en función de su número de capas. En el momento en el que se publicó dicho estudio, gracias a las conexiones residuales, se consiguió multiplicar por aproximadamente $7$ el número de capas en los modelos del estado del arte (de las 22 capas de GoogleLeNet \cite{googlelenet} a las 152 capas de ResNet152). Para conseguir esto, las ResNet se apoyan en las conexiones residuales (\Cref{fig:residual}), que permiten aumentar tanto la capacidad de aprendizaje de las redes como la calidad de sus resultados.
 
@@ -257,7 +257,7 @@ Además, para reducir el uso de recursos computacionales al incrementar el núme
 % Aunque se supone que es resnetv2, https://github.com/rwightman/pytorch-image-models/blob/b669f4a5881d17fe3875656ec40138c1ef50c4c9/timm/models/resnetv2.py#L194 en ViT no se usa el bloque con preactivación.
 
 
-\subsubsection{EfficientNet}
+\subsection{EfficientNet}
 Otro conjunto de arquitecturas, es el presentado en el artículo \textit{EfficientNet: Rethinking Model Scaling for Convolutional Neuronal Networks} \cite{efficientnet}, que propone un método para escalar de forma proporcional la profundidad (número de capas), anchura (número de filtros) y resolución de entrada de las redes convolucionales de forma que se puedan adaptar los modelos a los recursos disponibles. En esta publicación, se presenta la red \textbf{EfficientNet-B0} (inicialmente diseñada para ilustrar el escalado proporcional propuesto) y su familia de redes, que se obtienen escalando dicho modelo. Sin embargo, más allá de ilustrar el escalado en anchura, profundidad y resolución, la arquitectura de la familia de EfficientNets obtiene resultados muy competitivos con un número de parámetros muy reducido en comparación con el de sus competidores.
 
 Para diseñar esta red se extiende el trabajo de Tan et al. \cite{mnasnet}, y se emplea \textit{Neural Architecture Search - NAS} (una técnica que automatiza la búsqueda y configuración de arquitecturas de redes neuronales) buscando optimizar el \textit{accuracy} \todo{En español exactitud me suena feo y precisión me suena a precision} y el número de operaciones en coma flotante (FLOPS). Como resultado, se obtiene una arquitectura basada en bloques de capas MBConv (\textit{Mobile Inverted Bottleneck Residual Convolution}) \cite{mobilenetv2} y \textit{Squeeze-and-Excitation} \cite{senet}.
@@ -266,12 +266,12 @@ La primera de estas dos capas, (MBConv) se propone en la publicación de \textbf
 
 La segunda, es uno de los bloques principales de la \textbf{SENet} \cite{senet} y basa su funcionamiento en dos operaciones que realmente pueden añadirse a cualquier otra capa: el mecanismo de \textit{squeeze}, que crea un descriptor de cada canal de la entrada agregando sus características espacialmente; y el mecanismo de \textit{excitation}, que toma como entrada los descriptores anteriores y los utiliza para modular los pesos de sus canales correspondientes.
 
-\subsection{Transformers}
+\section{Transformers}
 La arquitectura inicial del \textit{transformer} (\Cref{fig:arquitectura-transformer}), propuesta en \textit{Attention is All You Need} \cite{NIPS2017_3f5ee243}, se basa en una estructura \textit{encoder-decoder}. Es decir, un conjunto de capas (\textit{encoder}) que codifica la entrada en una representación latente, que después es tomada como entrada del \textit{decoder}, otro conjunto de capas que decodifica esta representación latente en una salida útil. En la propuesta inicial, destinada a procesamiento de lenguaje natural, el \textit{encoder} se encarga de trasladar una secuencia de entrada $(x_1, ..., x_n)$ - una frase - en una secuencia de representación $(z_1, ..., z_n)$. Esta secuencia $z$, es la entrada del \textit{decoder}, que la convierte en una secuencia de salida $(y_1, ..., y_m)$ - otra frase -. 
 
 Una de las principales diferencias frente a los modelos \textit{encoder-decoder} basados en redes recurrentes, es que mientras que en las redes recurrentes la entrada tiene que procesarse de forma secuencial para poder obtener los estados ocultos de las entradas anteriores, en los \textit{transformers} la secuencia de entrada no está alineada temporalmente con la ejecución del modelo, ya que se procesa toda la entrada simultáneamente. De esta forma, se acelera muy significativamente el entrenamiento y la inferencia del modelo.
 
-\subsubsection{Arquitectura}
+\subsection{Arquitectura}
 
 \vspace{2mm}
 
@@ -288,7 +288,7 @@ En el \textbf{encoder} (parte izquierda de la \Cref{fig:arquitectura-transformer
 Por otro lado, en el \textbf{decoder} (parte derecha de la \Cref{fig:arquitectura-transformer}), se vuelve a encontrar un \textit{embedding} previamente entrenado que transforma las salidas del modelo desplazadas una posición. Al resultado de este \textit{embedding}, se le añade una codificación posicional similar a la del \textit{encoder}. A continuación, hay otro \textit{stack} de 6 capas, que esta vez está compuesto por las dos subcapas que están presentes en el \textit{encoder} (en este caso la capa de \textit{Multi-Head Self-Attention} es en realidad \textit{Multi-Head Masked Self-Attention} ya que se aplica una máscara para evitar que influyan en la red los \textit{tokens} siguientes al \textit{token} que se va a predecir), y una subcapa adicional de \textit{Multi-Head Cross-Attention}, situada entre las otras dos subcapas, donde las salidas de la subcapa de \textit{masked self-attention} del \textit{decoder} pueden acceder a las salidas del conjunto de capas del \textit{encoder}. (\textbf{La entrada de esta última capa de atención proviene de la última capa del \textit{encoder}, no de sus capas intermedias}). Por último, a la salida del \textit{stack} de capas del \textit{decoder}, se encuentra una transformación lineal (entrenada) y una función softmax para predecir la salida de la red.
 
 % \paragraph{Mecanismos de atención}\mbox{}\\
-\subsubsection{Mecanismos de atención}\label{bloques-atencion}
+\subsection{Mecanismos de atención}\label{bloques-atencion}
 
 \vspace{2mm}
 Los mecanismos de atención, presentados por primera vez en \cite{neuralmachinetranslationalignandtranslate}, buscan simular la atención cognitiva y han sido previamente empleados en redes recurrentes \cite{pmlr-v37-xuc15} y convolucionales \cite{7298685, 7410695} para aprender qué partes de la entrada son más relevantes en la tarea a completar. Sin embargo, en \cite{NIPS2017_3f5ee243}, con los \textit{transformers}, se propone por primera vez una arquitectura basada solamente en estos mecanismos. 
@@ -317,21 +317,21 @@ No obstante, estos mecanismos de atención son considerablemente costosos, ya qu
 
 
 
-\subsubsection{Atención eficiente}\label[seccion]{atencion-eficiente}
+\subsection{Atención eficiente}\label{atencion-eficiente}
 % se puede seguir la línea de \cite{2020arXiv200906732T} pero quitando los modelos que no nos interesen y profundizando en los papers de los modelos que sí. Ver si hay papers especificos de pruning en transformers que cuenten algo interesante ; https://arxiv.org/abs/1910.14488
 
 Para reducir los requisitos de memoria y el coste computacional de los \textit{transformers}, que tal y como se ha mencionado anteriormente, obtienen sus resultados gracias a los mecanismos de atención, pero que sin embargo son muy costosos computacionalmente, surgen distintas técnicas que buscan aproximar el resultado de la multiplicación de matrices que se lleva a cabo en los bloques de atención. Siguiendo el esquema propuesto en \cite{2020arXiv200906732T}, estas modificaciones de las capas de atención pueden agruparse en:
 
-\paragraph{Patrones fijos - Fixed Patterns (FP)}:
+\subsubsection{Patrones fijos - Fixed Patterns (FP)}
 En los patrones fijos, la longitud de la secuencia de entrada a los mecanismos de atención se reduce, por ejemplo: accediendo a ella en bloques de un tamaño determinado, en esto se basan \textbfit{Blockwise Attention} \cite{qiu-etal-2020-blockwise} y \textbfit{Local Attention} \cite{localattention}; accediendo a la secuencia en intervalos previamente definidos, como en \textbfit{Sparse Transformer} \cite{sparse-transformers} o \textbfit{Longformer} \cite{beltagy2020longformer} donde se emplean ventanas dilatadas o con un determinado \textit{stride} (zancada); o también empleando operaciones de \textit{pooling} para reducir la longitud de la entrada, en \textbfit{Compressed Attention} \cite{j.2018generating}.
 
-\paragraph{Combinación de patrones - Combination of Patterns (CP)}:
+\subsubsection{Combinación de patrones - Combination of Patterns (CP)}
 Este grupo de métodos, se basa principalmente en la combinación de diferentes patrones de acceso a los elementos que componen la secuencia de entrada y aparece en \textbfit{Sparse Transformer} \cite{sparse-transformers} donde se combinan \textit{Local Attention} y \textit{strided attention} asignando la mitad de las cabezas del bloque de \textit{multi-head attention} a cada uno de los métodos. También aparece en \textbfit{Axial Transformer} \cite{ho2019axial}, donde la atención se aplica de forma independiente en cada uno de los ejes de la entrada (en este caso, el tensor de entrada debería ser multidimensional).
 
-\paragraph{Aprendizaje de patrones - Learnable Patterns (LP)}:
+\subsubsection{Aprendizaje de patrones - Learnable Patterns (LP)}
 Pese a ser similar a los dos casos anteriores ya que siguen basándose en diferentes formas de acceder a la secuencia de entrada para hacerla más dispersa, estos métodos son capaces de aprender en la etapa de entrenamiento del modelo qué patrones de acceso son más adecuados. Algunas de las propuestas que emplean este tipo de patrones son \textbfit{Reformer} \cite{Kitaev2020Reformer:}, que agrupa los elementos de la secuencia de entrada (\textit{tokens}) empleando una medida de similitud en grupos de elementos (para posteriormente aplicar el mecanismo de atención de forma independiente en cada grupo) o \textbfit{Routing Transformer} \cite{routingtransformer} que emplea k-medias para agrupar los \textit{tokens}, ambos modelos, reducen la complejidad a $O(n \log n)$. Dentro de estos modelos también destaca \textbfit{ResT} \cite{zhql2021ResT}, que está enfocado a imágenes y emplea convoluciones separables para reducir las dimensiones de las entradas al mecanismo de atención.
 
-\paragraph{Disminución de rango}:
+\subsubsection{Disminución de rango}
 Este conjunto de arquitecturas, incluyen una proyección para conseguir una aproximación de la matriz resultante del cálculo de la atención, esta aproximación, pese a tener el mismo número de elementos (filas), obtiene una representación de los vectores menor (columnas), por lo que la dimensión de la matriz pasa de ser $n \times n$ a ser $n \times k$, con la consecuente disminución de coste computacional. El principal ejemplo de este tipo de arquitectura es \textbfit{Linformer}, \cite{wang2020linformer} que presenta una complejidad $O(n)$
 
 %\paragraph{Kernels}:
@@ -339,7 +339,7 @@ Este conjunto de arquitecturas, incluyen una proyección para conseguir una apro
 
 % TODO: Ver si performer se puede mencionar también en el grupo de kernels y ya hilarlo en el parrafo donde se hable de el.
 
-\subsubsection{Performer}
+\subsection{Performer}
 En este trabajo se estudia la influencia de un mecanismo de atención eficiente concreto para sustituir la atención estándar de DPT. Este mecanismo es el propuesto por Choromanski et al. en \textit{Rethinking Attention with Performers}\cite{performers}, que reduce la complejidad de la atención de $O(n^2)$ a $O(n)$.
 
 Para conseguir esta reducción de la complejidad, el método modifica el orden de multiplicación de las matrices $Q$ (\textit{Queries}), $K$ (\textit{Keys}) y $V$ (\textit{Values}) del mecanismo de atención estándar. Siendo $n$ el número de \textit{tokens} de dimensión $d$ de la cadena de entrada, si en vez de multiplicar $(Q \times K^T) \times V$ se multiplica $Q \times (K^T \times V)$, las dimensiones multiplicadas serían $(n \times d) \times ((d \times n) \times (n \times d))$ en vez de $((n \times d) \times (d \times n)) \times (n \times d)$. Es decir, el número de operaciones en la multiplicación pasaría de ser $2 n^2 d$ (atención estándar) a ser $2 d^2 n$ (\textit{performer}), haciendo que el coste crezca de manera lineal con el número de \textit{tokens} si $n >>>> d$.
@@ -360,7 +360,7 @@ No obstante, hay un problema importante, y es que antes de multiplicar la matriz
 % \todo[inline]{Random Fourier Features}
 % \todo[inline]{Video Performer: \url{https://www.youtube.com/watch?v=xJrKIPwVwGM&t=2s}}
 
-\subsection{Transformers para visión artificial - ViT}
+\section{Transformers para visión artificial - ViT}
 A la hora de aplicar la arquitectura de los \textit{transformers} a procesamiento de imágenes, surge un problema importante. La complejidad del mecanismo original de atención es $O(n^{2})$, siendo n el número de elementos en la secuencia de entrada, por lo que para una imagen de dimensiones $lado \times lado$, el número de píxeles que conformarían la secuencia de entrada al mecanismo de atención es $n = l^2$, disparando la complejidad de la atención a $O(l^{4})$. Para lidiar con este problema, se han propuesto distintas soluciones como limitar el mecanismo de atención al entorno de cada píxel (presentado en \textit{Image Transformers} \cite{image_transformer}) o aplicar convoluciones para reducir el tamaño de la secuencia de entrada \cite{detrfacebookdetectiontransformers}. 
 
 Sin embargo, la solución propuesta en \textit{An Image is Worth 16x16 Words} con el \textit{Vision Transformer} \cite{image16x16words} es la que mejores resultados ha obtenido y por lo tanto aquella que más popularidad ha ganado como base de arquitecturas para otros problemas de visión artificial \cite{visiontransformersDPT, bhat2020adabins, chen2021transunet, liu2021Swin}. Esta solución, consiste en dividir la imagen original en fragmentos de tamaño fijo y convertir con una proyección cada fragmento en un vector de valores (\textit{embedding}). Estos vectores, son equivalentes al resultado del \textit{embedding} de palabras en la arquitectura original y se introducen al modelo como tal, es decir, cada fragmento extraído de la imagen correspondería a una palabra de una frase (\Cref{fig:vit}). Esta arquitectura, al ser inicialmente propuesta para realizar clasificación, solamente emplea el \textit{encoder} del \textit{transformer}.
@@ -383,14 +383,14 @@ En esta publicación, además, se presenta una variante del \textit{Vision Trans
 \label{fig:hybrid-vit}
 \end{figure}
 
-\subsection{Estimación de profundidades}
+\section{Estimación de profundidades}
 Otra de las bases fundamentales de este trabajo es la estimación de profundidades. Esta tarea, tanto cuando es llevada a cabo por humanos como por máquinas, consiste en detectar la distancia relativa entre todo aquello que se ve. Tal y como se ha mencionado en el capítulo de Introducción, el cerebro humano se apoya principalmente en la disparidad existente entra las imágenes que capturan cada uno de los ojos (estereovisión), ya que las cosas que están más lejanas ven su posición menos alterada entre la vista de un ojo y de otro que las cosas cercanas. Sin embargo, también capaz de estimar la profundidad en una sola imagen a partir de nuestro conocimiento previo del mundo y del entorno (pistas monoculares). 
 
 Las técnicas de visión artificial tradicional (basadas en dos cámaras - visión estereoscópica) no pueden lidiar con este problema, por lo que la estimación monocular (con una sola cámara) es prácticamente imposible empleando técnicas tradicionales. Para este tipo de estimación (monocular), entran en juego los modelos de aprendizaje automático, que han demostrado una gran capacidad para explotar el conocimiento sobre el entorno en todo tipo de tareas, no siendo la estimación de profundidades diferente. 
 
 A continuación, aunque haciendo especial hincapié en aquellos basados en aprendizaje automático, se enumeran los distintos enfoques existentes, incluyendo aquellos propios de la visión artificial tradicional, las soluciones \textit{hardware}, y las técnicas de aprendizaje profundo.
 
-\subsubsection{Técnicas de estimación de profundidades} \label[seccion]{estimacion-profundidades-sota}
+\subsection{Técnicas de estimación de profundidades} \label{estimacion-profundidades-sota}
 
 La estimación de profundidades se ha intentado resolver de múltiples maneras \cite{Zhao_2020}. Dentro de estas metodologías, existen tres enfoques principales en función del tipo de \textit{software} o \textit{hardware} que se emplea.
 \begin{itemize}
@@ -403,13 +403,13 @@ La estimación de profundidades se ha intentado resolver de múltiples maneras \
 
 % https://openaccess.thecvf.com/content_CVPR_2020/papers/Johnston_Self-Supervised_Monocular_Trained_Depth_Estimation_Using_Self-Attention_and_Discrete_Disparity_CVPR_2020_paper.pdf
 
-\subsubsection{Aprendizaje automático no supervisado}
+\subsection{Aprendizaje automático no supervisado}
 
 Estas propuestas, ofrecen soluciones que emplean datos sin etiquetar debido a la dificultad que entraña la obtención de este tipo de anotaciones. Normalmente, estas soluciones emplean secuencias (vídeos) de imágenes monoculares, extrayendo automáticamente a partir de estas una señal supervisora con distintos métodos. En \cite{zhou2017unsupervised} se propone una arquitectura que emplea una red neuronal para calcular la posición (y movimiento) de la cámara entre \textit{frames} consecutivos (\textit{ego-motion}), que a su vez se emplea para calcular la profundidad de la imagen. Sin embargo, da por hecho que ningún objeto ha cambiado de posición y que el entorno es estático. 
 
 Esto, no es aplicable a entornos reales, por lo que surgen diferentes arquitecturas que generan máscaras, tanto basadas en redes neuronales \cite{zhou2017unsupervised, vijayanarasimhan2017sfmnet} como en técnicas geométricas \cite{geo_mask_egomotion, monodepth}, para lidiar con los objetos dinámicos. Otros enfoques, con la misma idea subyacente, sustituyen la red de estimación de posición con métodos de odometría visual\footnote{La odometría agrupa aquellas técnicas que estiman el cambio de posición a partir de las lecturas de sensores. En el caso de la odometría visual, estos cambios de posición se estiman empleando principalmente imágenes capturadas por una cámara.} tradicional \cite{visualodometryunsupervised}, que puede aportar posiciones más exactas y mejorar el funcionamiento final. Por último, algunos enfoques calculan elementos adicionales como por ejemplo el flujo óptico de la escena (cálculo de los patrones de movimiento para cada punto de la imagen) que aporta información relevante sobre la posición relativa de los objetos \cite{vijayanarasimhan2017sfmnet, geonet}. 
 
-\subsubsection{Aprendizaje automático semisupervisado}
+\subsection{Aprendizaje automático semisupervisado}
 
 Debido también a la escasez de datos etiquetados, también son populares los enfoques semi supervisados. Estas soluciones, emplean información parcial como señal supervisora, que complementan con información no etiquetada. Algunos ejemplos característicos de este tipo de aprendizaje son: 
 \begin{itemize}
@@ -418,7 +418,7 @@ Debido también a la escasez de datos etiquetados, también son populares los en
     \item Utilización de datos etiquetados de forma dispersa (frecuentemente obtenidos con dispositivos LIDAR), que o bien emplean imágenes no etiquetadas para densificar dichas representaciones \cite{lidarcompletion, sparse-to-dense, hu2020PENet} o añaden la información del LIDAR en la función de perdidas para después inferir a partir de imagen monocular \cite{lidarlossfunction}.
 \end{itemize}
 
-\subsubsection{Aprendizaje automático supervisado} \label[seccion]{aprendizaje-supervisado}
+\subsection{Aprendizaje automático supervisado}\label{aprendizaje-supervisado}
 % Ver CRFs en condiciones
 Pese a la dificultad para obtener datos etiquetados correctamente, los enfoques supervisados siguen siendo los que mejores resultados ofrecen y por lo tanto han sido y siguen siendo extensamente estudiados. El primero de estos modelos fue propuesto en \cite{eigen-multi-scale}, y empleaba dos conjuntos de capas, uno para generar una estimación tosca de la profundidad y otro para refinar esa primera estimación. Enfoques posteriores propusieron modificaciones en la función de perdidas para fomentar la consistencia en las predicciones \cite{surfacenormals} a través del cálculo de los gradientes de la diferencia entre el resultado y el objetivo. Además de aquellos basados en arquitecturas \textit{encoder-decoder}, también hay propuestas con arquitecturas de aprendizaje adversario \cite{gan} donde el discriminador trata de distinguir entre la profundidad generada y la real \cite{gan-depth}.
 
@@ -428,7 +428,7 @@ Todas estas soluciones, basan su funcionamiento en redes convolucionales, sin em
 El primero de estos dos modelos, al ser la arquitectura que se modifica a lo largo del proyecto, se explica en mayor profundidad en la siguiente sección. El segundo, \textit{AdaBins}, está compuesto de un \textit{encoder} convolucional y una etapa inspirada en los \textit{Vision Transformers} \cite{image16x16words} que recibe la salida de el \textit{encoder} y clasifica cada píxel en un histograma de profundidades cuyas barras (\textit{bins}) son parametrizadas (centro y rango) dinámicamente para cada imagen. El resultado final se consigue con la suma ponderada de la predicción de pertenencia a cada barra y el valor medio de dicha barra, consiguiendo así una estimación de profundidad suavizada.
 
 
-\subsubsection{DPT}\label[seccion]{DPT}
+\subsection{DPT}\label{DPT}
 Tal y como se ha mencionado previamente, la gran mayoría de arquitecturas de estimación de profundidades se basan en redes convolucionales, normalmente de tipo \textit{encoder-decoder}. Las líneas de investigación se centran en el \textit{decoder} y sus estrategias de agregación de información. DPT (\textit{Dense Prediction Transformer}) \cite{visiontransformersDPT} también se estructura como un \textit{encoder-decoder}, pero centra su estudio en la modificación del \textit{encoder} debido a la gran influencia que tiene este en la información que llega a la segunda parte de la red, sustituyendolo por una arquitectura basada en mecanismos de atención (\textit{transformer}). De esta forma, gracias a las características propias de estos modelos ya comentadas, la arquitectura se beneficia de un campo receptivo que permite atender a la información de toda la imagen en las etapas de atención. Es decir, se pasa de un campo receptivo local mucho más limitado (en las redes convolucionales) a un campo receptivo global.
 
 \begin{figure}[H]
@@ -463,7 +463,7 @@ Antes de pasar a la metodología empleada en el trabajo original de DPT para ent
 % https://github.com/isl-org/DPT/issues/3#issuecomment-839883934
 Los modelos proporcionados junto a la publicación, y en concreto, el que se emplea como base de este trabajo, fueron preentrenados en MIX6 (\Cref{mix6}) y después ajustados a otros \textit{datasets} para su evaluación. El entrenamiento en MIX6 se lleva a cabo empleando Adam como optimizador con un \textit{learning rate} de $1e-5$ para el \textit{encoder} y de $1e-4$ para el \textit{decoder} y se parte de parámetros preentrenados en Imagenet (\textit{encoder}) y inicializados aleatoriamente (\textit{decoder}). En cuanto a la duración del entrenamiento, el modelo se entrena durante 60 épocas, cada una con 72000 pasos y un \textit{batch size} de 16 imágenes. Además, se voltean horizontalmente las imágenes de manera aleatoria como forma de \textit{data augmentation}. Como función de coste, se utiliza una función de pérdida \cite{midas-intel} invariante a la escala (relativa) y al desplazamiento de la salida junto a otra función de pérdida que compara los gradientes\footnote{A la hora de entrenar en otros \textit{datasets}, desactivan esta función de pérdida si la anotación no es profundidad densa, es decir, si hay píxeles sin anotar como ocurre por ejemplo en KITTI.} \cite{MegaDepthLi18} en los valores de profundidad de la salida y la anotación.
 
-\subsection{Optimización de modelos}\label[seccion]{optimizacion-modelos}
+\section{Optimización de modelos}\label{optimizacion-modelos}
 % \todo[inline]{https://heartbeat.fritz.ai/the-5-algorithms-for-efficient-deep-learning-inference-on-small-devices-bcc2d18aa806}
 
 % \todo[inline]{Hablar de las formas no especificas con las que se pueden acelerar las redes neuronales, sería mencionar las de la presentación de la quinta reunión hablando un poco de cada una de ellas. También se podría meter un pequeño apartado de hardware hablando de TPUs y FPGAs, habría que ver como se cuadra y como encaja con el resto del apartado. Esto puede que para el TFM haya que recortarlo un poco también de cara a acotar un poco el estudio si no se va a hacer nada de esto (centrarnos en velocidad sin entrar en restricciones de memoria, por ejemplo)}
