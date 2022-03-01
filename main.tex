@@ -1,14 +1,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% Trabajo de fin de máster v1.0
+% Trabajo Fin de Máster
 % Guillermo Sánchez Brizuela
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Qué tipo de documento estamos por comenzar:
-\documentclass[a4paper, 11pt]{article}
+\documentclass[a4paper,11pt,oneside]{memoir}
 % Esto es para que el LaTeX sepa que el texto está en español:
-\usepackage[spanish,es-tabla]{babel}
+\usepackage[spanish,es-tabla,es-ucroman]{babel}
 \selectlanguage{spanish}
 % Esto es para poder escribir acentos directamente:
 \usepackage[utf8]{inputenc}
@@ -25,11 +25,12 @@
 \usepackage{float}
 \usepackage{tabularx}
 %\usepackage{subcaption}
+
 % Leyendas
 \usepackage{caption}
 \captionsetup{justification=centering}
 % Bibliografia en la tabla de contenidos
-\usepackage[nottoc,notlot,notlof]{tocbibind}
+% \usepackage[nottoc,notlot,notlof]{tocbibind}
 % Tablas
 \usepackage{booktabs}
 \usepackage[table,xcdraw,dvipsnames]{xcolor}
@@ -47,7 +48,8 @@
 
 
 %% Asigna un tamaño a la hoja y los márgenes
-\usepackage[a4paper,top=3cm,bottom=2cm,left=2.5cm,right=2.5cm,marginparwidth=2cm]{geometry}
+%% Configuración antes de la plantilla
+\usepackage[a4paper,top=3cm,bottom=2cm,left=2.5cm,right=2.5cm,marginparwidth=2cm]{geometry} 
 
 %% Paquetes de la AMS
 \usepackage{amsmath, amsthm, amsfonts}
@@ -57,7 +59,7 @@
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 \usepackage[nameinlink,noabbrev,spanish]{cleveref}
 \Crefname{table}{Tabla}{Tablas}
-\Crefname{seccion}{Sección}{Sección}
+% \Crefname{seccion}{Sección}{Sección}
 %% Simbolo de grado
 \usepackage{gensymb}
 %% Imágenes en vertical
@@ -68,53 +70,217 @@
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
 
-\usepackage{nomencl}
-\makenomenclature
-\nomenclature{Estática}{(Imagen) Capturada o generada de forma individual y no como parte de un vídeo.}
-\nomenclature{Vídeo}{Sucesión de imágenes continua que aporta ilusión de movimiento.}
-\nomenclature{Online}{(Procesamiento) Que ocurre a medida que llega nueva información.}
-\nomenclature{Offline}{(Procesamiento) Que trabaja sobre información previamente recogida.}
-\def\nomname{Terminología}
+%\usepackage{nomencl}
+%\makenomenclature
+%\nomenclature{Estática}{(Imagen) Capturada o generada de forma individual y no como parte de un vídeo.}
+%\nomenclature{Vídeo}{Sucesión de imágenes continua que aporta ilusión de movimiento.}
+%\nomenclature{Online}{(Procesamiento) Que ocurre a medida que llega nueva información.}
+%\nomenclature{Offline}{(Procesamiento) Que trabaja sobre información previamente recogida.}
+%\def\nomname{Terminología}
 
 %% Primero escribimos el título
-\title{Borrador TFM/Memoria de prácticas: Estimación de Profundidad Monocular Online con Transformers Eficientes}
-\author{Guillermo Sánchez Brizuela\\
-  \small Universidad de Valladolid\\
-  \small Valladolid, España
-  \date{}
-}
+%\title{Borrador TFM/Memoria de prácticas:  
+
+
+% \usepackage{chngcntr}
+% \counterwithin{table}{chapter} % con section si que funciona, con chapter no, en el miiutiles se puede resetear a piñon y ya está
+
+
+
+\usepackage{lmodern} % Scalable font
+\usepackage{microtype}
+\usepackage{placeins}
+
+%\RequirePackage{booktabs}
+%\RequirePackage[table]{xcolor}
+%\RequirePackage{xtab}
+%\RequirePackage{multirow}
+
+% Ecuaciones y simbolos (tanto AMS como LaTeX
+% \usepackage{amsmath,amssymb,latexsym}
+
+% Rutas de fichero / paquete
+% \newcommand{\ruta}[1]{{\sffamily #1}}
+
+% Párrafos
+\nonzeroparskip
+
+% Huérfanas y viudas
+\widowpenalty100000
+\clubpenalty100000
+
+% numeros de secciones
+\setsecnumdepth{subsubsection}
+
+% Paper size and margins (para A4)
+%\settrimmedsize{297mm}{210mm}{*}
+%\setlength{\trimtop}{0pt}
+%\setlength{\trimedge}{\stockwidth}
+%\addtolength{\trimedge}{-\paperwidth}
+%\settypeblocksize{634pt}{448.13pt}{*}
+%\setulmargins{4cm}{*}{*}
+%\setlrmarginsandblock{2.5cm}{2.5cm}{*}
+%\setmarginnotes{36pt}{36pt}{\onelineskip}
+%\setheadfoot{\onelineskip}{2\onelineskip}
+%\setheaderspaces{*}{2\onelineskip}{*}
+
+
+\input{miiutiles}
+
 
 %% Después del "preámbulo", podemos empezar el documento
 
+% Evitar solapes en el header
+\nouppercaseheads
+
+% Datos de portada
+\title{Estimación de Profundidad Monocular Online con Transformers}
+\newcommand{\nombre}[0]{GUILLERMO SÁNCHEZ BRIZUELA} %%% cambio de comando
+\newcommand{\depto}[0]{TODO DEPARTAMENTO DEL TUTOR}
+\newcommand{\areac}[0]{TODO AREA\_CONOCIMIENTO DEL TUTOR}
+\author{\nombre}
+\tutor{NOMBRE TUTOR TUTORIS}
+\date{\today}
+
 \begin{document}
 
-\begin{titlepage}
-\centering
-	\vspace{6cm}
-	{\huge\bfseries Estimación de Profundidad Monocular Online con Transformers Eficientes\par}
-    \vspace{15cm}
-	{\Large\itshape Guillermo Sánchez Brizuela\par}
-	\vspace{0.5cm}
-	{\Large Universidad de Valladolid, curso 2020-2021\par}
-	\vfill
-\end{titlepage}
+\maketitle
+
+
+
+\newpage\null\thispagestyle{empty}\newpage
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\thispagestyle{empty}
+
+
+\noindent
+\begin{center}%
+	{\noindent\Huge Universidad de Valladolid}\vspace{.5cm}%
+	
+\begin{center}%
+	\includegraphics[height=3cm]{imagenes/escudoUVA} \hspace{1cm}
+\end{center}%
+
+	{\noindent\Large \textbf{Máster universitario en Ingeniería Informática}}\vspace{.5cm}%
+\end{center}%
+
+
+
+\noindent D. \makeatletter\@tutor\makeatother, profesor del departamento de \depto, área de \areac.
+
+\noindent \textbf{Expone}:
+
+\noindent Que el alumno D. \nombre, %con DNI dni,
+ha realizado el Trabajo final de Máster en Ingeniería Informática titulado "\makeatletter\textsc{\@title{}}\makeatother". 
+
+\noindent Y que dicho trabajo ha sido realizado por el alumno bajo la dirección del que suscribe, en virtud de lo cual se autoriza su presentación y defensa.
+
+\begin{center} %\large
+En Valladolid, {\large \today}
+\end{center}
+
+\vfill\vfill\vfill
+
+%% Author and supervisor
+%\begin{minipage}{0.45\textwidth}
+%\begin{flushleft} %\large
+%Vº. Bº. del Tutor:\\[2cm]
+%D. nombre tutor
+%\end{flushleft}
+%\end{minipage}
+%\hfill
+%\begin{minipage}{0.45\textwidth}
+%\begin{flushleft} %\large
+%Vº. Bº. del co-tutor:\\[2cm]
+%D. nombre co-tutor
+%\end{flushleft}
+%\end{minipage}
+%\hfill
+%
+%\vfill
+
+% para casos con solo un tutor comentar lo anterior
+% y descomentar lo siguiente
+Vº. Bº. del Tutor:\\[2cm]
+D. nombre tutor
+
+
+\newpage\null\thispagestyle{empty}\newpage
+
+
+
+
+\frontmatter
+
+% Abstract en castellano
+\renewcommand*\abstractname{Resumen}
+\begin{abstract}
+En este primer apartado se hace una \textbf{breve} presentación del tema que se aborda en el proyecto.
+\end{abstract}
+
+\renewcommand*\abstractname{Descriptores}
+\begin{abstract}
+Palabras separadas por comas que identifiquen el contenido del proyecto Ej: servidor web, buscador de vuelos, android \ldots
+\end{abstract}
+
+\clearpage
+
+% Abstract en inglés
+\renewcommand*\abstractname{Abstract}
+\begin{abstract}
+A \textbf{brief} presentation of the topic addressed in the project.
+\end{abstract}
+
+\renewcommand*\abstractname{Keywords}
+\begin{abstract}
+keywords separated by commas.
+\end{abstract}
+
+
+
+
+
+
+
+
 
 %% Imprimimos la nomenclatura
 % \todo[inline]{Repasar las definiciones.}
 % \printnomenclature[3cm]
 
-%% Tabla de contenidos
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\clearpage
+
+% Indices
+%% Tabla de contenido
 {
-    \setcounter{tocdepth}{4}
-    \setcounter{secnumdepth}{4}
+    \setcounter{tocdepth}{3}
+    \setcounter{secnumdepth}{3}
     \hypersetup{linkcolor=black}
     \tableofcontents
 }
+\clearpage
+\listoffigures
+\clearpage
+\listoftables
+\clearpage
+\mainmatter
 
-\newpage
-
-
-%% Iniciamos "secciones" que servirán como subtítulos
 \include{Introduccion}
 \include{Marco-teorico-sota}
 \include{Material-y-metodos}
@@ -123,11 +289,23 @@
 \include{Discusion}
 \include{Conclusiones-lineas-futuras}
 
+
+%\renewcommand\chaptername{Anexo}
+%\renewcommand\thechapter{\Roman{chapter}}
+% \setcounter{chapter}{0}
+
+% Añadir entrada en el índice: Anexos
+\appendix
+\addcontentsline{toc}{part}{Apéndices}
+\part*{Apéndices}
+
+%\include{./tex/A_Plan_proyecto}
+%\include{./tex/B_Requisitos}
+
+
 \bibliographystyle{ieeetr}
 \clearpage
 \bibliography{referencias}
-
-\clearpage
 
 \end{document}
 
@@ -136,29 +314,14 @@
 
 
 
-% \appendix
-% \section{Anexo 1: Funcionamiento de la atención en los \textit{transformers}}\label{anexo1}
-% \todo[inline]{Adaptar la parte de atención de este post: \url{https://jalammar.github.io/illustrated-transformer/}}
-
-% \clearpage
-% \section{Anexo 1: Resultados gráficos de las pruebas}\label{anexo1}
-% \begin{figure}[H]
-% \centering
-% \includegraphics[width=0.9\linewidth]{imagenes/resultados2.png} 
-% \captionsetup{width=.8\linewidth}
-% \caption{Resultados de \textit{DPT} y \textit{AdaBins} en dos imágenes. Primera fila - imágenes de entrada, segunda fila - resultados \textit{DPT}, tercera fila - resultados \textit{AdaBins}.}
-% \label{fig:resultados-anexo2}
-% \end{figure}
 
 
 
 
 
 
-% \clearpage
-%\section{WIP: Texto de dataset mix5 y mix6}\label{unk}
-%DPT parece que no está preparado para pasarse a onnx (o sí https://github.com/isl-org/DPT/issues/42), una de las opciones sería reescribir el modelo (probablemente simplificado) y reentrenar. Se describe a continuación los dataset empleados, reentrenar no parece muy viable. Otra opción que se podría explorar es destilar el modelo de alguna forma. También se puede leer los data efficient transformers de facebook a ver si reducen la necesidad de emplear tantisimas imágenes. Otra opción (si la implementación de Adabins está hecha orientada a onnx, sería usar solamente adabins y hacer todo el tfm con esa arquitectura).
-%
+
+
 %El dataset de profundidad que se usa para entrenar DPT (MIX6) es una ampliación de MIX5, presentado en \url{https://arxiv.org/abs/1907.01341}, el cual incluía los datasets:
 %\begin{itemize}
 %\item ReDWeb (\url{https://sites.google.com/site/redwebcvpr18/})
@@ -188,19 +351,3 @@
 %\item TUM (\url{https://vision.in.tum.de/data/datasets/rgbd-dataset}). 
 %Tanto en el paper de DPT como en el paper de MiDas (versión anterior y convolucional de DPT (\url{https://github.com/isl-org/MiDaS})).
 %\end{itemize}
-
-
-
-
-
-
-
-
-%\section{Evaluación y pruebas}\label{resultados}
-%% \todo[inline]{Hablar de las pruebas que se han hecho, valorar CPU GPU y TPU?. Comparar con los resultados que proporcionan los papers si es que los proporcionan.}
-%% \todo[inline]{Hacer un experimento de pruning como el de Learning both weights and connections for efficient neural networks. La visualización de la distribución de los pesos antes y después del pruning también es muy interesante. (TFM)}
-%% \todo[inline]{Hacer experimento de ablación para ver que partes corresponden a un mayor incremento/decremento de la velocidad/accuracy. (TFM)}
-%% \todo[inline]{Redactar todo esto mejor}
-%
-%Para tener una estimación de cuánto tardan en realizar inferencia los modelos de estimación de profundidad monocular no eficientes que emplean \textit{transformers} y aprendizaje supervisado (expuestos en la sección \hyperref[aprendizaje-supervisado]{Aprendizaje supervisado}), se llevan a cabo una serie de pruebas en GPU y CPU. Siguiendo la metodología expuesta en \cite{visiontransformersDPT}, se mide el tiempo de inferencia media en 400 imágenes de 384x384 píxeles. Estas pruebas, se llevan a cabo tanto como para \textit{Dense Prediction Transformers} como para \textit{AdaBins} (Tabla \ref{tab:resultados-inferencia}). Además de estas pruebas de velocidad, también se han realizado pruebas sobre imágenes propias, algunas de las cuales están disponibles en el \hyperref[anexo1]{Anexo 1}. 
-%% \todo{Incluir imágenes}.
