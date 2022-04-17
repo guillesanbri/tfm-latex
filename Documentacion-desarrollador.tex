@@ -1,15 +1,67 @@
-\apendice{Documentación del Desarrollador}
+\apendice{Documentación}
 
-Este apéndice presentará el plan de proyecto elaborado para la realización del trabajo. En el caso de trabajos que supongan el desarrollo de software, será sustituído por el Plan de Desarrollo de Software.
+En este apéndice se incluye la documentación necesaria para que el programador pueda tanto comprender la estructura de la solución software aportada como modificarla y ejecutarla.
 
 \section{Introducción}
-El siguiente apéndice se compone de tres apartados principales: En el primero, se discutirá la estructura de directorios en la que se organiza el proyecto, especificando los contenidos de cada uno; el segundo apartado, por otro lado, documenta los pasos que es necesario llevar a cabo para instalar los componentes \textit{software} necesarios para ejecutar los modelos y programas desarrollados en este trabajo, además de incluir las instrucciones de descargo de los datos necesarios para entrenar los modelos; por último, en el tercer apartado, se especifican los comandos necesarios para ejecutar cada uno de los \textit{scripts} disponibles, así como una descripción de los resultados de su ejecución.
+El siguiente apéndice se compone de tres apartados principales: En el primero, se presenta la estructura de directorios en la que se organiza el proyecto, especificando los contenidos de cada uno; el segundo apartado, por otro lado, documenta cómo descargar los datos empleados para entrenar y evaluar los modelos, así como las instrucciones para instalar los componentes \textit{software} necesarios para ejecutar los modelos y programas desarrollados en este trabajo; por último, en el tercer apartado, se especifican los comandos necesarios para ejecutar cada uno de los \textit{scripts} disponibles, así como una descripción de los resultados de su ejecución. TODO
 
 \section{Estructura de directorios}
-Lorem ipsum
 
-\section{Instalación de \textit{software} y descarga de datos}
-A continuación se enumeran los pasos necesarios para instalar el \textit{software} de los entornos de desarrollo del proyecto y para descargar los datos empleados durante el proyecto. Cabe destacar que \textbf{parte de estas instrucciones son específicas para equipos con sistema operativo Ubuntu 20.04 LTS}, por lo que se proporcionan enlaces con información relevante para otras distribuciones. Además, se presupone que el equipo en el que se va a llevar a cabo el proceso de instalación tiene una tarjeta gráfica NVIDIA con los controladores gráficos (\textit{drivers}) correspondientes correctamente instalados.
+En la siguiente página, se encuentra disponible la estructura de directorios y ficheros de este Trabajo Fin de Máster. Esta estructura se divide en dos directorios principales: \textit{data}, que contiene el \textit{dataset} de KITTI; y DPT, que es un \textit{fork} del repositorio de la publicación original \cite{visiontransformersDPT} disponible en \url{} TODO.
+
+En este segundo directorio, se encuentran a su vez un conjunto de carpetas y de ficheros: dpt/ agrupa los \textit{scripts} que definen los modelos, modificados para incluir las distintas alteraciones presentadas en este trabajo; input/ y output{\_}monodepth/ contienen, respectivamente, las imágenes empleadas como entrada en los \textit{scripts} que ejecutan los modelos durante la evaluación e inferencia y sus salidas; util/ incluye \textit{scripts} con funciones de utilidad general; wandb{\_}sweeps/ agrupa los distintos ficheros YAML que definen las búsquedas de hiperparámetros que se han llevado a cabo empleando \textit{weights and biases}; el último de los subdirectorios, weights/, incluye los ficheros con los parámetros de los distintos modelos entrenados.
+
+En cuanto a los ficheros dentro de DPT/, se encuentran: \texttt{KITTIDataset.py}, con la definición del \texttt{torch.utils.data.Dataset} adaptado a KITTI; \texttt{attention{\_}complexity.py} y \texttt{inference{\_}speed.py} ejecutan, respectivamente, distintas capas y distintos modelos para obtener métricas sobre su velocidad, tamaño, y número de operaciones; \texttt{eval{\_}with{\_}pngs.py} y \texttt{run{\_}eval{\_}with{\_}pngs{\_}.sh} calculan métricas del rendimiento de los modelos; \texttt{run{\_}monodepth.py} lleva a cabo la inferencia de profundidad; y por último, \texttt{train.py} y \texttt{train{\_}utils.py} se encargan del entrenamiento de los distintos modelos.
+
+\pagebreak
+
+\dirtree{%
+.1 TFM/.
+.2 data/.
+.3 KITTI/.
+.4 data{\_}depth{\_}annotated/.
+.5 train/.
+.6 YYYY{\_}MM{\_}DD{\_}drive{\_}XXXX{\_}sync/.
+.5 val/.
+.6 YYYY{\_}MM{\_}DD{\_}drive{\_}XXXX{\_}sync/.
+.4 raw/.
+.5 YYYY{\_}MM{\_}DD/.
+.4 train{\_}files{\_}eigen{\_}full{\_}fix.txt.
+.4 val{\_}files{\_}eigen{\_}full{\_}fix.txt.
+.2 DPT/.
+.3 dpt/.
+.4 ConvEmbeddingWrapper.py.
+.4 base{\_}model.py.
+.4 blocks.py.
+.4 models.py.
+.4 transforms.py.
+.4 vit.py.
+.3 input/.
+.3 output{\_}monodepth/.
+.3 util/.
+.4 io,py.
+.4 misc.py.
+.3 wandb{\_}sweeps/.
+.4 *.yml.
+.3 weights/.
+.4 *.pt.
+.3 KITTIDataset.py.
+.3 README.md.
+.3 attention{\_}complexity.py.
+.3 eval{\_}with{\_}pngs.py.
+.3 inference{\_}speed.py.
+.3 requirements.txt.
+.3 run{\_}eval{\_}with{\_}pngs.sh.
+.3 run{\_}monodepth.py.
+.3 train.py.
+.3 train{\_}utils.py.
+}
+
+\section{Descarga de datos e instalación de \textit{software}}
+A continuación se enumeran los pasos necesarios para para descargar los datos empleados durante el proyecto e instalar el \textit{software} de los entornos de desarrollo del proyecto. Cabe destacar que \textbf{parte de estas instrucciones son específicas para equipos con sistema operativo Ubuntu 20.04 LTS}, por lo que se proporcionan enlaces con información relevante para otras distribuciones. Además, se presupone que el equipo en el que se va a llevar a cabo el proceso de instalación tiene una tarjeta gráfica NVIDIA con los controladores gráficos (\textit{drivers}) correspondientes correctamente instalados.
+
+\subsection{Descarga de datos}
+El \textit{dataset} empleado para entrenar y evaluar los distintos modelos es el conjunto de datos de KITTI para estimación de profundidad en imágenes monoculares. Este \textit{dataset} se puede descargar a través de su página web, tanto los datos en bruto (\textit{synced+rectified data}) \url{http://www.cvlibs.net/datasets/kitti/raw_data.php}, como las anotaciones (\textit{annotated depth maps}) \url{http://www.cvlibs.net/datasets/kitti/eval_depth.php?benchmark=depth_prediction}. Los ficheros que definen las conjuntos de entrenamiento y de evaluación se encuentran disponibles en el siguiente repositorio \url{https://github.com/nianticlabs/monodepth2/tree/master/splits/eigen_full}. Por último, las imágenes del conjunto de \textit{test} (\textit{kitti{\_}eval{\_}dataset.zip}), se han descargado agrupadas desde \url{https://github.com/isl-org/DPT/blob/main/EVALUATION.md}.
 
 \subsection{Docker Engine}
 Para poder disfrutar de las ventajas de los contenedores Docker, es necesario instalar el Docker Engine. Tal y como se ha mencionado previamente, estas instrucciones son para sistemas con Ubuntu. En el siguiente enlace (\url{https://docs.docker.com/engine/install/}), hay disponibles instrucciones para otras distribuciones.
@@ -27,7 +79,7 @@ Para poder disfrutar de las ventajas de los contenedores Docker, es necesario in
 
 \item Añadimos la clave GPG de Docker:
 
-\texttt{\$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg \textbackslash \\ --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg}
+\texttt{\$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg \textbackslash \\ {-}{-}dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg}
 
 \item Configuramos el repositorio de Docker:
 
@@ -111,18 +163,72 @@ Una vez instalado el Docker Engine, es necesario instalar el NVIDIA Container To
 
 \item Para comprobar que la instalación es correcta, podemos ejecutar un contenedor de una imagen con CUDA instalado:
 
-\texttt{\$ docker run --rm --gpus all nvidia/cuda:11.0-base nvidia-smi}
+\texttt{\$ docker run {-}{-}rm {-}{-}gpus all nvidia/cuda:11.0-base nvidia-smi}
 
 \end{enumerate}
 
-Lorem ipsum: nvidia-smi y comentario sobre el driver
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\linewidth]{imagenes/nvidia-smi.png} 
+\captionsetup{width=1\linewidth}
+\caption{Resultado del comando \texttt{nvidia-smi} dentro del contenedor.}
+\label{fig:performer}
+\end{figure}
+
+A pesar de que el comando se ha ejecutado dentro de una imagen con CUDA 11.0, el resultado muestra CUDA 11.6 ya que accede directamente al \textit{driver} del \textit{host} y muestra la versión más alta de CUDA soportada por el \textit{driver} instalado. Se puede encontrar más información sobre esto en: \url{https://github.com/NVIDIA/nvidia-docker/issues/1237#issuecomment-703524943}.
 
 \subsection{Construcción de la imagen de Docker}
 
-Lorem ipsum: Contar como generar la imagen de Docker
+Para construir la imagen de Docker, se emplea el Dockerfile incluido en el repositorio, que parte de una imagen con CUDA 11.1 y PyTorch 1.9.0 e instala el software necesario para ejecutar los \textit{scripts} correctamente. El comando a utilizar (si nos encontramos en la misma carpeta que el Dockerfile) es el siguiente, donde los argumentos USER{\_}ID y GROUP{\_}ID se utilizan para crear un usuario en la imagen que corresponda con el del \textit{host} y evitar problemas de permisos, y \$tag será el nombre que se le dará a la imagen:
+
+\texttt{\$ docker build \textbackslash \\
+{-}{-}build{-}arg USER{\_}ID=\$(id {-}u) {-}{-}build{-}arg GROUP{\_}ID=\$(id {-}g) {-}{-}tag \$tag .}
+
+Al ejecutar el comando anterior se genera un \textit{build context} del directorio en el que nos encontramos, así que en caso de hacerlo en una carpeta con datos o archivos que no se van a emplear durante la construcción de la imagen podemos redactar un archivo \texttt{.dockerignore} para no considerarlos.
 
 \subsection{Instalación de wandb (Opcional)}
 
-Lorem ipsum: Decir que es opcional, que se puede trabajar con el wandb que se ha instalado dentro del contenedor, pero que por comodidad, se instala en local para manejar los sweeps y poder pasar las credenciales facilmente a los contenedores docker.
+Para poder gestionar las búsquedas de hiperparámetros desde el \textit{host} sin necesidad de entrar a un contenedor, es recomendable (pero no estrictamente necesario) instalar wandb, bien a través del instalador de paquetes de Python (pip) o creando un entorno de Anaconda, entre otras. Tener este paquete instalado, además, facilita el paso de credenciales a los contenedores de Docker a través del comando \texttt{wandb docker{-}run}
 
 \section{Ejecución}
+
+Para poder ejecutar los \textit{scripts} de este proyecto, es necesario crear un contenedor de la imagen previamente construida. Para esto, empleamos el siguiente comando (desde el directorio TFM):
+
+\texttt{\$ wandb docker{-}run {-}{-}gpus all {-}{-}rm {-}it {-}{-}name \$\{tag\}{\_}container 
+{-}{-}ipc=host \textbackslash \\ 
+{-}p 8888:8888 {-}v \$(pwd):/workspace {-}v /tmp/.X11{-}unix:/tmp/.X11{-}unix {-}e DISPLAY \$tag}
+
+En este comando, \$tag debe corresponderse con el nombre de la imagen creada anteriormente. El resto de opciones de este comando son: \texttt{{-}{-}gpus all}, para usar en el contenedor todas las GPUs disponibles; \texttt{{-}{-}rm}, para eliminar el contenedor y su sistema de ficheros al cerrarlo; \texttt{{-}it}, para hacerlo interactivo y abrir una sesión al iniciarlo; \texttt{{-}{-}ipc=host} para facilitar la comunicación entre procesos de PyTorch; \texttt{{-}p 8888:8888}, para mapear los puertos correspondientes y poder abrir cuadernos jupyter que se ejecutan dentro del contenedor a través del navegador del \textit{host}; por último, la opción \texttt{{-}v \$(pwd):/workspace} monta el directorio actual (TFM) dentro del contenedor, facilitando así el acceso al \textit{dataset} y al código fuente que se encuentran en el \textit{host}.
+
+Además de las ya mencionadas, hay dos opciones más, \texttt{{-}v /tmp/.X11{-}unix:/tmp/.X11{-}unix {-}e DISPLAY}, empleadas para habilitar la visualización y uso de GUIs (por ejemplo, la función \texttt{imshow} de OpenCV) dentro del contenedor.
+
+Tal y como se ha comentado previamente, si wandb no está instalado en el \textit{host}, se puede sustituir \texttt{wandb docker{-}run} por \texttt{docker run}, siendo entonces necesario configurar las credenciales de wandb una vez iniciado el contenedor. 
+
+Una vez iniciado el contenedor, la ejecución de los \textit{scripts} se puede agrupar en:
+\begin{itemize}
+
+\item \textbf{Gestionada por wandb}: Como es el caso de los \textit{scripts} \texttt{attention{\_}complexity.py}, \texttt{inference{\_}speed.py} y \texttt{train.py}. Estos procesos iteran sobre distintas configuraciones de modelos y por lo tanto es necesario lanzarlos a través del gestor de ejecuciones de wandb, que se encarga de distribuir la ejecución de las configuraciones en tantos equipos como dispongamos.
+
+\begin{enumerate}
+
+\item Creamos el \textit{sweep} en el \textit{host} con el archivo YAML correspondiente.
+
+\texttt{\$ wandb sweep <fichero{-}YAML>}
+
+\item Lanzamos agentes asociados a dicho \textit{sweep} en los contenedores disponibles (tanto en local como en \textit{cloud} (desde sus respectivos directorios DPT/).
+
+\texttt{\$ wandb agent <usuario>/<nombre{-}proyecto>/<sweep{-}id>}
+
+\end{enumerate}
+
+\item \textbf{No gestionada por wandb}: Por otro lado, la inferencia y evaluación de un modelo concreto en el conjunto de \textit{test} requiere que se especifique la configuración deseada y el fichero de pesos en el \textit{script} \texttt{run{\_}monodepth.py}. Es posible ejecutar este \textit{script} de dos formas (también desde el directorio DPT/):
+
+\begin{itemize}
+
+\item Directamente, ejecutando \texttt{run{\_}monodepth.py}. Por defecto, infiere la profundidad de las imágenes en la carpeta input/ y almacena el resultado en la carpeta output{\_}monodepth/. $\rightarrow$ \texttt{\$ python run{\_}monodepth.py}
+
+\item A través de \texttt{run{\_}eval{\_}with{\_}pngs.sh}, que elimina los resultados anteriores, infiere con los parámetros adecuados el resultado en el conjunto de \textit{test}, y calcula una serie de métricas con las anotaciones correspondientes utilizando el \textit{script} proporcionado en \cite{bts} (\texttt{eval{\_}with{\_}pngs.py}). $\rightarrow$ \texttt{ \$ ./run{\_}eval{\_}with{\_}pngs.sh}
+
+\end{itemize}
+
+\end{itemize}
