@@ -1,17 +1,19 @@
 \apendice{Documentación}
 
-En este apéndice se incluye la documentación necesaria para que el programador pueda tanto comprender la estructura de la solución software aportada como modificarla y ejecutarla.
-
 \section{Introducción}
-El siguiente apéndice se compone de tres apartados principales: En el primero, se presenta la estructura de directorios en la que se organiza el proyecto, especificando los contenidos de cada uno; el segundo apartado, por otro lado, documenta cómo descargar los datos empleados para entrenar y evaluar los modelos, así como las instrucciones para instalar los componentes \textit{software} necesarios para ejecutar los modelos y programas desarrollados en este trabajo; por último, en el tercer apartado, se especifican los comandos necesarios para ejecutar cada uno de los \textit{scripts} disponibles, así como una descripción de los resultados de su ejecución. TODO
+El siguiente apéndice se compone de tres apartados principales: El primero presenta la estructura de directorios en la que se organiza el proyecto; el segundo apartado documenta cómo descargar los datos empleados para entrenar y evaluar los modelos, así como las instrucciones para instalar los componentes \textit{software} requeridos por los programas desarrollados en este trabajo; por último, en el tercer apartado, se especifican los comandos necesarios para ejecutar los \textit{scripts} disponibles.
 
 \section{Estructura de directorios}
 
-En la siguiente página, se encuentra disponible la estructura de directorios y ficheros de este Trabajo Fin de Máster. Esta estructura se divide en dos directorios principales: \textit{data}, que contiene el \textit{dataset} de KITTI; y DPT, que es un \textit{fork} del repositorio de la publicación original \cite{visiontransformersDPT} disponible en \url{} TODO.
+A continuación se encuentra la estructura de directorios y ficheros de este Trabajo Fin de Máster. Esta estructura se divide en dos directorios principales: \textit{data/}, que contiene el \textit{dataset} de KITTI; y DPT/, que es un \textit{fork} del repositorio de la publicación original \cite{visiontransformersDPT} disponible en \url{TODO}.
 
-En este segundo directorio, se encuentran a su vez un conjunto de carpetas y de ficheros: dpt/ agrupa los \textit{scripts} que definen los modelos, modificados para incluir las distintas alteraciones presentadas en este trabajo; input/ y output{\_}monodepth/ contienen, respectivamente, las imágenes empleadas como entrada en los \textit{scripts} que ejecutan los modelos durante la evaluación e inferencia y sus salidas; util/ incluye \textit{scripts} con funciones de utilidad general; wandb{\_}sweeps/ agrupa los distintos ficheros YAML que definen las búsquedas de hiperparámetros que se han llevado a cabo empleando \textit{weights and biases}; el último de los subdirectorios, weights/, incluye los ficheros con los parámetros de los distintos modelos entrenados.
+En este segundo directorio, se encuentran a su vez los subdirectorios: 
 
-En cuanto a los ficheros dentro de DPT/, se encuentran: \texttt{KITTIDataset.py}, con la definición del \texttt{torch.utils.data.Dataset} adaptado a KITTI; \texttt{attention{\_}complexity.py} y \texttt{inference{\_}speed.py} ejecutan, respectivamente, distintas capas y distintos modelos para obtener métricas sobre su velocidad, tamaño, y número de operaciones; \texttt{eval{\_}with{\_}pngs.py} y \texttt{run{\_}eval{\_}with{\_}pngs{\_}.sh} calculan métricas del rendimiento de los modelos; \texttt{run{\_}monodepth.py} lleva a cabo la inferencia de profundidad; y por último, \texttt{train.py} y \texttt{train{\_}utils.py} se encargan del entrenamiento de los distintos modelos.
+\textit{dpt/}, que agrupa los \textit{scripts} que definen la arquitectura, modificados para incluir los distintos cambios presentados en este trabajo; \textit{input/} y \textit{output{\_}monodepth/} contienen respectivamente, las entradas de los \textit{scripts} de inferencia y sus salidas; \textit{util/} incluye archivos con funciones de utilidad general; \textit{wandb{\_}sweeps/} agrupa los distintos ficheros YAML que definen las búsquedas de hiperparámetros que se han llevado a cabo empleando wandb; por último, en \textit{weights/} se encuentran los ficheros con los parámetros entrenados de los distintos modelos.
+
+En cuanto a los ficheros situados de \textit{DPT/}: 
+
+\texttt{KITTIDataset.py}, define el \texttt{torch.utils.data.Dataset} adaptado para cargar las imágenes y anotaciones de KITTI; \texttt{attention{\_}complexity.py} y \texttt{inference{\_}speed.py} ejecutan, respectivamente, distintas capas y distintos modelos para obtener métricas sobre su velocidad, tamaño, y número de operaciones; \texttt{eval{\_}with{\_}pngs.py} y \texttt{run{\_}eval{\_}with{\_}pngs{\_}.sh} calculan métricas del rendimiento de los modelos; \texttt{run{\_}monodepth.py} lleva a cabo la inferencia de profundidad; y por último, \texttt{train.py} y \texttt{train{\_}utils.py} gestionan el entrenamiento de modelos.
 
 \pagebreak
 
@@ -58,13 +60,17 @@ En cuanto a los ficheros dentro de DPT/, se encuentran: \texttt{KITTIDataset.py}
 }
 
 \section{Descarga de datos e instalación de \textit{software}}
-A continuación se enumeran los pasos necesarios para para descargar los datos empleados durante el proyecto e instalar el \textit{software} de los entornos de desarrollo del proyecto. Cabe destacar que \textbf{parte de estas instrucciones son específicas para equipos con sistema operativo Ubuntu 20.04 LTS}, por lo que se proporcionan enlaces con información relevante para otras distribuciones. Además, se presupone que el equipo en el que se va a llevar a cabo el proceso de instalación tiene una tarjeta gráfica NVIDIA con los controladores gráficos (\textit{drivers}) correspondientes correctamente instalados.
+A continuación se encuentran los pasos necesarios para descargar los datos empleados durante el proyecto e instalar el \textit{software} de los entornos de desarrollo. \textbf{Parte de estas instrucciones son específicas para equipos con sistema operativo Ubuntu 20.04 LTS}, por lo que se proporcionan enlaces con información relevante para otras distribuciones. Además, se presupone que el equipo en el que se va a llevar a cabo el proceso de instalación tiene una tarjeta gráfica NVIDIA con los controladores gráficos (\textit{drivers}) correspondientes correctamente instalados.
 
 \subsection{Descarga de datos}
-El \textit{dataset} empleado para entrenar y evaluar los distintos modelos es el conjunto de datos de KITTI para estimación de profundidad en imágenes monoculares. Este \textit{dataset} se puede descargar a través de su página web, tanto los datos en bruto (\textit{synced+rectified data}) \url{http://www.cvlibs.net/datasets/kitti/raw_data.php}, como las anotaciones (\textit{annotated depth maps}) \url{http://www.cvlibs.net/datasets/kitti/eval_depth.php?benchmark=depth_prediction}. Los ficheros que definen las conjuntos de entrenamiento y de evaluación se encuentran disponibles en el siguiente repositorio \url{https://github.com/nianticlabs/monodepth2/tree/master/splits/eigen_full}. Por último, las imágenes del conjunto de \textit{test} (\textit{kitti{\_}eval{\_}dataset.zip}), se han descargado agrupadas desde \url{https://github.com/isl-org/DPT/blob/main/EVALUATION.md}.
+El \textit{dataset} empleado para entrenar y evaluar los distintos modelos es el conjunto de datos de KITTI para estimación de profundidad en imágenes monoculares. Este \textit{dataset} se puede descargar a través de su página web, tanto los datos en bruto (\textit{synced+rectified data}) \url{http://www.cvlibs.net/datasets/kitti/raw_data.php}, como las anotaciones (\textit{annotated depth maps}) \url{http://www.cvlibs.net/datasets/kitti/eval_depth.php?benchmark=depth_prediction}. 
+
+Los ficheros que definen las conjuntos de entrenamiento y de evaluación se encuentran disponibles en el siguiente repositorio \url{https://github.com/nianticlabs/monodepth2/tree/master/splits/eigen_full}. 
+
+Por último, las imágenes del conjunto de \textit{test} (\textit{kitti{\_}eval{\_}dataset.zip}), se han descargado agrupadas desde \url{https://github.com/isl-org/DPT/blob/main/EVALUATION.md}.
 
 \subsection{Docker Engine}
-Para poder disfrutar de las ventajas de los contenedores Docker, es necesario instalar el Docker Engine. Tal y como se ha mencionado previamente, estas instrucciones son para sistemas con Ubuntu. En el siguiente enlace (\url{https://docs.docker.com/engine/install/}), hay disponibles instrucciones para otras distribuciones.
+Para utilizar los contenedores de Docker, es necesario instalar el Docker Engine. Estas instrucciones son para sistemas con Ubuntu. En el siguiente enlace (\url{https://docs.docker.com/engine/install/}), hay disponibles instrucciones para otras distribuciones.
 
 \begin{enumerate}
 \item Eliminamos versiones anteriores de Docker (en caso de existir):
@@ -101,7 +107,7 @@ https://download.docker.com/linux/ubuntu \$(lsb{\_}release -cs) stable"{ }| \tex
 
 \end{enumerate}
 
-En este punto, Docker ya está instalado, pero es necesario ejecutarlo como superusuario. Para remediar esto (opcional), es posible crear un grupo \texttt{"docker"} y añadir nuestro usuario. Al hacer esto, \textbf{pueden aparecer riesgos de seguridad} en función del sistema en el que se esté llevando a cabo la instalación. Se puede encontrar más información en:
+Docker ya está instalado, pero es necesario ejecutarlo como superusuario. Para remediar esto (opcional), es posible crear un grupo \texttt{"docker"} y añadir nuestro usuario. Al hacer esto \textbf{pueden aparecer riesgos de seguridad}. Se puede encontrar más información en:
 
 \begin{itemize}
 
