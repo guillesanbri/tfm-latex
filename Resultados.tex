@@ -1,27 +1,32 @@
 \capitulo{5}{Resultados}
 
-\begin{wrapfigure}{r}{0.45\textwidth}
-\vspace{-15pt}
-\includegraphics[width=0.95\linewidth]{imagenes/Resultados/mixed_precision.png} 
-\caption{FPS promedios de los modelos en función de la precisión usada para realizar la inferencia. Las barras grises representan la desviación estándar de las medidas.}
-\label{fig:resultados-mixed-precision}
-\end{wrapfigure}
+
 
 En este capítulo se exponen los resultados obtenidos en el conjunto de validación tras entrenar las arquitecturas con las modificaciones planteadas. Tal y como se plantearon en el \Cref{modelos-a-entrenar}, los experimentos han consistido en entrenar $36$ modelos definidos por el producto cartesiano de las opciones: (ResNet50, EfficientNet-B0) como \textit{backbone}, (Atención estándar, Atención \textit{Performer}) como mecanismo de atención, ($1$, $12$, $24$) como número de cabezas de atención, y ([$0$, $1$], [$2$, $5$], [$8$, $11$]) como bloques de atención de los que se toma la salida para que sea la entrada del \textit{decoder}. En este capítulo, además de las métricas que miden la exactitud de las salidas, se presentan también métricas de velocidad de inferencia. Para medir este último grupo de variables, tras comprobar que los resultados numéricos en la salida de los modelos eran idénticos, se emplea precisión mixta para aumentar la velocidad lo máximo posible (\Cref{fig:resultados-mixed-precision}).
 
+\begin{figure}
+\begin{minipage}{.45\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{imagenes/Resultados/mixed_precision.png} 
+  \captionof{figure}{FPS promedios de los modelos en función de la precisión durante la inferencia. Las barras grises representan la desviación estándar de las medidas.}
+  \label{fig:resultados-mixed-precision}
+\end{minipage}%
+\hfill
+\begin{minipage}{.45\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{imagenes/Resultados/velocidad_inferencia_entrada.png} 
+  \captionof{figure}{FPS medios de los modelos en función del tamaño de su entrada. Las barras grises representan la desviación estándar de las medidas.}
+  \label{fig:resultados-inf-tam-entrada}
+\end{minipage}
+\end{figure}
 
 \section{Resultados cuantitativos}
 
 \subsection{Reducción del tamaño de la entrada}
 
-Dado que el entrenamientos de los modelos - por limitaciones materiales y temporales - se ha llevado a cabo reduciendo el tamaño de la entrada, no es posible comparar los resultados obtenidos para cada una de las modificaciones de la arquitectura con su modelo entrenado con las imágenes en su tamaño original.
 
-\begin{wrapfigure}{l}{0.45\textwidth}
-\vspace{-15pt}
-\includegraphics[width=0.95\linewidth]{imagenes/Resultados/velocidad_inferencia_entrada.png} 
-\caption{FPS medios de los modelos en función del tamaño de su entrada. Las barras grises representan la desviación estándar de las medidas.}
-\label{fig:resultados-inf-tam-entrada}
-\end{wrapfigure}
+
+Dado que el entrenamientos de los modelos - por limitaciones materiales y temporales - se ha llevado a cabo reduciendo el tamaño de la entrada, no es posible comparar los resultados obtenidos para cada una de las modificaciones de la arquitectura con su modelo entrenado con las imágenes en su tamaño original.
 
 Sin embargo, la medida de la velocidad de inferencia sí que es posible obtenerla independientemente de que los pesos correspondan al modelo entrenado o no. En la \Cref{fig:resultados-inf-tam-entrada} se puede apreciar la diferencia en función del tamaño de entrada de los FPS promedio de todas las modificaciones realizadas sobre el modelo DPT. El valor de la izquierda, corresponde al tamaño con el que se evalúa KITTI en la publicación original \cite{visiontransformersDPT}, mientras que el de la derecha es la reducción de tamaño establecida en este trabajo. Dado que este cambio es significativo y es, en términos de magnitud, el que mayor aceleración media conlleva ($\times2.47$), en las siguientes Figuras que representen los FPS en función de los otros cambios introducidos en el trabajo se presentarán los datos tanto con el tamaño de entrada original como con el tamaño de entrada reducido para poder así valorar también la mejora de rendimiento que conllevaría la modificación si no se hubiese reducido el tamaño de la entrada.
 
@@ -64,11 +69,11 @@ A pesar de que el incremento de velocidad es positivo, existe un problema asocia
 \label{fig:SIlog-validation}
 \end{figure}
 
-Con el objetivo de buscar la causa de esta diferencia tan grande del error, se estudian las curvas de aprendizaje de entrenamiento y validación. En estas curvas (\Cref{fig:efficientnet-overfitting}), se puede observar como en comparación con el modelo equivalente con ResNet50, el modelo que tiene como \textit{backbone} la EfficientNet-B0 está sobreajustado (\textit{overfitting}) sus parámetros al conjunto de entrenamiento, ya que la diferencia entre el error en el conjunto de entrenamiento y el error en el conjunto de validación es mucho mayor en el caso del modelo con EfficientNet.
+Con el objetivo de buscar la causa de esta diferencia tan grande del error, se estudian las curvas de aprendizaje de entrenamiento y validación. En estas curvas (\Cref{fig:efficientnet-overfitting}), se puede observar como en comparación con el modelo equivalente con ResNet50, el modelo que tiene como \textit{backbone} la EfficientNet-B0 está sobreajustando (\textit{overfitting}) sus parámetros al conjunto de entrenamiento, ya que la diferencia entre el error en el conjunto de entrenamiento y el error en el conjunto de validación es mucho mayor en el caso del modelo con EfficientNet.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\linewidth]{imagenes/Resultados/EfficientNet_overfitting.png} 
+\includegraphics[width=0.95\linewidth]{imagenes/Resultados/EfficientNet_overfitting.png} 
 \captionsetup{width=.95\linewidth}
 \caption{Comparación de las curvas de aprendizaje del SIlog durante el entrenamiento y validación de dos modelos con diferentes \textit{backbones} e inicializaciones de pesos. Valores suavizados con una media exponencial ponderada para facilitar su visualización.}
 \label{fig:efficientnet-overfitting}
@@ -78,7 +83,7 @@ Dado que los parámetros de EfficientNet-B0 se han inicializado con parámetros 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\linewidth]{imagenes/Resultados/ResNet50ImageNet.png} 
+\includegraphics[width=0.95\linewidth]{imagenes/Resultados/ResNet50ImageNet.png} 
 \captionsetup{width=.95\linewidth}
 \caption{Comparación del SIlog en el conjunto de validación durante el entrenamiento en tres modelos con diferentes inicializaciones de pesos.}
 \label{fig:mix6-imagenet}
@@ -270,11 +275,11 @@ La tendencia de los tamaños de los modelos en función de sus características 
 
 
 
-
+\pagebreak
 
 \section{Resultados cualitativos}
 
-En esta sección, se presentan los resultados en el conjunto de evaluación (\textit{test}) de distintos modelos en función de sus modificaciones, con el objetivo de comparar visualmente y apreciar las diferencias entre las salidas que generan las distintas arquitecturas. Las imágenes generadas los valores solo ocupan una pequeña parte de la escala de grises, sin embargo, las imágenes siguientes han sido escaladas para ocupar todo el rango de grises, facilitando así la apreciación de detalles. 
+En esta sección, se presentan los resultados en el conjunto de evaluación (\textit{test}) de distintos modelos en función de sus modificaciones, con el objetivo de comparar visualmente y apreciar las diferencias entre las salidas que generan las distintas arquitecturas. Los valores de las imágenes generadas por el modelo solamente ocupan una pequeña parte de la escala de grises, por lo tanto, para facilitar la apreciación de detalles, las imágenes mostradas a continuación han sido previamente normalizadas para ocupar todo el rango de grises. 
 
 %% http://www.peteryu.ca/tutorials/publishing/latex_captions_old
 %% https://tex.stackexchange.com/questions/162824/vertical-spacing-between-subfloat
