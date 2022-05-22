@@ -37,7 +37,7 @@ Si bien es cierto, existen otras opciones para conseguir entornos de desarrollo 
 
 No obstante, Docker ofrece una ventaja más que es decisiva, la portabilidad que ofrece entre sistemas. En caso de querer ejecutar los scripts en cloud (\ref{cloud}) o en dispositivos embebidos (p.e. los dispositivos Jetson de NVIDIA, que incluyen el NVIDIA Container Toolkit) sería suficiente con usar la misma imagen para tener un entorno idéntico. 
 
-Los ficheros necesarios para crear el entorno empleado en el proyecto están disponibles tanto en el repositorio del proyecto como en el Anexo TODO.
+Los ficheros necesarios para crear el entorno empleado en el proyecto están disponibles tanto en el repositorio del proyecto como en el \Cref{documentacion}.
 
 % https://developer.nvidia.com/embedded/jetson-cloud-native
 % https://github.com/NVIDIA/nvidia-docker/issues/1268
@@ -140,30 +140,10 @@ TUM \cite{sturm12iros}                             & \cellcolor[HTML]{FFFFFF}Im�
 \label{tab:mix6-datasets}
 \end{table}
 
-\todo{Esta tabla no me convence mucho pero tampoco se me ocurre como resumirlo mejor}
-
 \subsection{KITTI}
 KITTI \cite{KITTI-dataset, KITTI-benchmarks, KITTI-road-benchmark, KITTI-sceneflow-benchmark} es un proyecto desarrollado por el \textit{Karlsruhe Institute of Technology} y el \textit{Toyota Technological Institute} que engloba un \textit{dataset} y un conjunto de \textit{becnhmarks} enfocados a diferentes tareas relacionadas con la conducción autónoma. Los \textit{benchamrks} que incluye este proyecto evalúan: estereovisión, flujo óptico (\textit{optical flow}), flujo de la escena, \textbf{estimación de profundidades monocular}, \textit{depth completion}, odometría visual/SLAM, localización de objetos (2D, 3D y cenital), seguimiento de objetos, segmentación de carreteras, y por último, segmentación de objetos general, tanto semántica como a nivel de instancia. Debido a la naturaleza de este trabajo, este apartado se centrará en la parte referente a la predicción de profundidad monocular.
 
-\begin{table}[H]
-\centering
-\begin{tabular}{@{}lcr@{}}
-\toprule
-Tipo de sensor       & Modelo                & Características                                                                                               \\ \midrule
-\rowcolor[HTML]{EFEFEF} 
-Cámara escala de grises (x2) & PointGray Flea2 grayscale & \begin{tabular}[c]{@{}r@{}}Sensor: FL2-14S3M 1.4 MP\\ 1/2” Sony ICX267 CCD\\ Global Shutter\end{tabular} \\
-Cámara color (x2)    & PointGray Flea2 color & \begin{tabular}[c]{@{}r@{}}Sensor: FL2-14S3M 1.4 MP\\ 1/2” Sony ICX267 CCD\\ Global Shutter\end{tabular}      \\
-\rowcolor[HTML]{EFEFEF} 
-Escáner láser (x1)   & Velodyne HDL-64E      & \begin{tabular}[c]{@{}r@{}}64 haces a $10 Hz$\\ Resolución en distancia: $2 cm$\\ Rango: $120 m$\end{tabular} \\
-Medida inercial (x1) & OXTS RT3003           & \begin{tabular}[c]{@{}r@{}}Posicionamiento GPS\\ Velocímetro\\ Acelerómetro - Giroscopio\end{tabular}         \\ \bottomrule
-\end{tabular}
-\caption{Sensores equipados en el vehículo empleado para recoger los datos de KITTI.}
-\label{tab:sensores-kitti}
-\end{table}
-
-\todo{Esta tabla puede que sea un poco demasiado}
-
-Los datos disponibles en KITTI fueron capturados empleando un vehículo equipado con diferentes sensores (\Cref{tab:sensores-kitti}) para realizar diferentes recorridos en distintas zonas urbanas e interurbanas. De esta forma, se capturaron escenarios variados en múltiples condiciones de luz, hora, presencia de vehículos y peatones, etc. Dentro de los sensores equipados, son de especial interés para este trabajo las dos parejas de cámaras para estereovisón (un montaje con dos cámaras en escala de grises y otro montaje con dos cámaras en color) y el escáner láser rotatorio de $360\degree$. Además de estos sensores, el automóvil también equipaba un sensor de medida inercial con sistema de navegación GPS para registrar información relacionada con la odometría que no se ha empleado durante el desarrollo del trabajo.
+Los datos disponibles en KITTI fueron capturados empleando un vehículo equipado con diferentes sensores y realizando diferentes recorridos en distintas zonas urbanas e interurbanas. De esta forma, se capturaron escenarios variados en múltiples condiciones de luz, hora, presencia de vehículos y peatones, etc. Dentro de los sensores equipados, son de especial interés para este trabajo las dos parejas de cámaras para estereovisón (un montaje con dos cámaras en escala de grises \textit{PointGray Flea2 grayscale} y otro montaje con dos cámaras en color \textit{PointGray Flea2 color}) y el escáner láser rotatorio de $360\degree$ \textit{Velodyne HDL-64E}. Además de estos sensores, el automóvil también equipaba un sensor de medida inercial con sistema de navegación GPS para registrar información relacionada con la odometría que no se ha empleado durante el desarrollo del trabajo.
 
 % (\textit{2x PointGray Flea2 grayscale cameras, FL2-14S3M-C, 1.4 Megapixels, 1/2” Sony ICX267 CCD, global shutter}) 
  
@@ -213,8 +193,6 @@ Para el desarrollo de este trabajo es necesario disponer de un conjunto de entre
 El \textit{dataset} de KITTI ya está dividido en entrenamiento y validación, e incluye una descarga adicional con el conjunto de test para el cual no están disponibles públicamente las anotaciones. No obstante, en las publicaciones sobre estimación de profundidad monocular \cite{visiontransformersDPT, monodepth,midas-intel, bts} es común encontrar los conjuntos de entrenamiento, validación y evaluación definidos por Eigen et al. \cite{eigen-multi-scale} (conocidos como el \textit{Eigen split}) que no respetan las particiones originales del \textit{dataset} de KITTI. 
 
 Las listas con los archivos que pertenecen a cada uno de las particiones se han descargado desde el repositorio\footnote{\url{https://github.com/nianticlabs/monodepth2/tree/master/splits} - (\textit{Eigen full})} del trabajo de Godard et al. \cite{monodepth}. En estas listas, hay nombres de archivos que no tienen ninguna anotación asociada, por lo que se eliminan de sus respectivas particiones. La distribución del número de imágenes, así como el número de imágenes eliminadas de cada conjunto se muestran en la \Cref{tab:kitti-splits}.
-
-\todo{Adjuntar el código usado para estas cosillas?}
 
 \begin{table}[H]
 \centering
@@ -304,9 +282,7 @@ Otra característica a destacar de esta métrica es que está sesgada para penal
 \end{equation}
 
 \subsubsection{\textit{Scale Invariant Logarithmic Error (SIlog)}}
-Esta métrica, es la raíz cuadrada de la función de pérdida propuesta por Eigen et al. \cite{eigen-multi-scale} con $\lambda = 1$ (\Cref{eqn:silog}). Al fijar el valor de $\lambda$ en la unidad, se obtiene una medida totalmente independiente de la escala de la salida. De esta forma, se obtiene una medida de la calidad de los resultados de los modelos ignorando completamente la escala en la que se han producido las predicciones, que como ya se ha comentado es uno de los problemas fundamentales de la estimación de profundidades en imagen monocular.
-
-\todo[inline]{Aquí no sé que hacer, he hecho la demostración matemática de que es invariante a la escala pero es un churro de ecuaciones, no sé si merece la pena poner un anexo solo para eso. La función de pérdida es esta misma así que más abajo cuando hablo de ella vuelvo a tener el mismo dilema}
+Esta métrica, es la raíz cuadrada de la función de pérdida propuesta por Eigen et al. \cite{eigen-multi-scale} con $\lambda = 1$ (\Cref{eqn:silog}). Al fijar el valor de $\lambda$ en la unidad, se obtiene una medida totalmente independiente de la escala de la salida (demostración matemática disponible en el \Cref{demostracion}). De esta forma, se obtiene una medida de la calidad de los resultados de los modelos ignorando completamente la escala en la que se han producido las predicciones, que como ya se ha comentado es uno de los problemas fundamentales de la estimación de profundidades en imagen monocular.
 
 % np.sqrt(np.mean((np.log(pred) - np.log(gt)) ** 2) - np.mean(np.log(pred) - np.log(gt)) ** 2) * 100
 \begin{equation}
@@ -340,7 +316,7 @@ Como se ha mencionado antes, esta métrica estará sujeta al \textit{hardware} e
 % Por otro lado, en caso de que el procesamiento de imágenes se haga de forma offline y se disponga de todas las imágenes antes de comenzar el procesamiento, estas se podrían agrupar en lotes (\textit{batches}) para paralelizar su inferencia. Al paralelizar el procesamiento de las entradas, aumenta el número de imágenes que se puede procesar por unidad de tiempo, que es lo que medirá esta métrica. Es decir, la tasa de transferencia efectiva es el número máximo de imágenes que puede procesar un modelo por unidad de tiempo.
 % De nuevo, como se ha mencionado en el párrafo introductorio, este valor está ligado al equipo en el que se lleve a cabo la inferencia.
 
-\subparagraph{Número de operaciones en coma flotante \textit{(FLOPs)}}\mbox{}\\
+\paragraph{Número de operaciones en coma flotante \textit{(FLOPs)}}\mbox{}\\
 Por último, esta vez independiente del \textit{hardware} en el que se ejecuta el modelo, se empleará el número de operaciones en coma flotante (en inglés, FLOPs) que se requieren para procesar una sola entrada de la red como medida de la complejidad y coste computacional de los modelos.
 
 % \todo[inline]{Si quantizamos los modelos a int8 dejamos de tener operaciones en coma flotante y esta métrica no servirá de nada. Explorar la opción de usar MACs (\url{https://en.wikipedia.org/wiki/Multiply\%E2\%80\%93accumulate_operation}). En el paper de FastDepth es lo que hacen.}
