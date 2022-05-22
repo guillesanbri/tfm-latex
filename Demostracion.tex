@@ -1,3 +1,16 @@
 \apendice{Demostración de la independencia de la escala}\label{demostracion}
 
-Meter aquí los pesos? Solo los csvs?
+\todo{Redactar algo aquí}
+
+\begin{align*}
+    L(\hat{d}, d) = \frac{1}{n}\sum_{p} (\ln{\hat{d_p}} - \ln{d_p})^2 - \frac{1}{n^2} \left( \sum_{p} (\ln{\hat{d_p}} - \ln{d_p}) \right)^2 \\
+    = \frac{1}{n}\sum_{p} (\ln{\alpha \hat{d_p}} - \ln{d_p})^2 - \frac{1}{n^2} \left( \sum_{p} (\ln{\alpha \hat{d_p}} - \ln{d_p}) \right)^2 \\
+    = \frac{1}{n}\sum_{p} (\ln{\alpha} + \ln{\frac{\hat{d_p}}{d_p}})^2 - \frac{1}{n^2} \left( \sum_{p} (\ln{\alpha} + \ln{\frac{\hat{d_p}}{d_p}}) \right)^2 \\
+    = \frac{1}{n}\sum_{p} (\beta + \ln{\frac{\hat{d_p}}{d_p}})^2 - \frac{1}{n^2} \left( \sum_{p} (\beta + \ln{\frac{\hat{d_p}}{d_p}}) \right)^2 \\
+    = \frac{1}{n}\sum_{p} (\beta^2 + \ln{\frac{\hat{d_p}}{d_p}}^2 + 2 \beta ln{\frac{\hat{d_p}}{d_p}}) - \frac{1}{n^2} \left( \beta n + \sum_{p} (\ln{\frac{\hat{d_p}}{d_p}}) \right)^2 \\
+    = \frac{1}{n} (\beta^2 n + \sum_{p}(\ln{\frac{\hat{d_p}}{d_p}})^2 + \sum_{p}(2 \beta ln{\frac{\hat{d_p}}{d_p}})) - \frac{1}{n^2} \left( \beta^2 n^2 + (\sum_{p} (\ln{\frac{\hat{d_p}}{d_p}}))^2 + 2 \beta n \sum_{p} (\ln{\frac{\hat{d_p}}{d_p}}) \right) \\
+    = \beta^2 + \frac{\sum_{p}(\ln{\frac{\hat{d_p}}{d_p}})^2}{n} + \frac{\sum_{p}(2 \beta ln{\frac{\hat{d_p}}{d_p}})}{n} - \left( \beta^2 + \frac{(\sum_{p} (\ln{\frac{\hat{d_p}}{d_p}}))^2}{n^2} + \frac{2 \beta n \sum_{p} (\ln{\frac{\hat{d_p}}{d_p}})}{n^2} \right) \\
+    = \beta^2 - \beta^2 + \frac{\sum_{p}(2 \beta ln{\frac{\hat{d_p}}{d_p}})}{n} - \frac{2 \beta \sum_{p} (\ln{\frac{\hat{d_p}}{d_p}})}{n} + \frac{\sum_{p}(\ln{\frac{\hat{d_p}}{d_p}})^2}{n} - \frac{(\sum_{p} (\ln{\frac{\hat{d_p}}{d_p}}))^2}{n^2} \\
+    = \frac{\sum_{p}(\ln{\frac{\hat{d_p}}{d_p}})^2}{n} - \frac{(\sum_{p} (\ln{\frac{\hat{d_p}}{d_p}}))^2}{n^2} \\
+    = \frac{1}{n}\sum_{p} (\ln{\hat{d_p}} - \ln{d_p})^2 - \frac{1}{n^2} \left( \sum_{p} (\ln{\hat{d_p}} - \ln{d_p}) \right)^2 \\
+\end{align*}
