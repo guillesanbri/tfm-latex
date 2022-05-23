@@ -12,11 +12,11 @@ Para el desarrollo de este proyecto, se ha elegido como lenguaje de programació
 \item Uso de GPU: \textbf{PyTorch 1.9.0} \cite{pytorch}, para la creación, modificación, entrenamiento y evaluación de modelos de aprendizaje profundo acelerados por \textit{hardware} (es decir, ejecutados en GPUs); \textbf{timm (PyTorch Image Models) 0.4.9} \cite{timm}, desarrollado y mantenido por Ross Whigtman, que pone a disposición del usuario un gran número modelos del estado del arte preentrenados e implementados en PyTorch; el \textbf{repositorio de DPT} \cite{visiontransformersDPT}, modelo que se modifica a lo largo del proyecto; y por último, el repositorio \textbf{performer-pytorch 1.1.3} \cite{pwperformer} de Phil Wang, que ofrece una implementación, también en PyTorch, de la arquitectura Performer y sus mecanismos de atención.
 \end{itemize}
 
-Algunas de estas librerías tienen alternativas que podrían haberse empleado perfectamente en este proyecto. La elección más importante es probablemente el uso de PyTorch frente a Tensorflow/Keras, ya que ambas librerías permiten construir y entrenar modelos de \textit{Deep Learning} a partir de funciones y abstracciones que representan distintos tipos de capas, funciones de activación o procesos de transformación de datos, entre otras. Además, ambos paquetes de software ofrecen la posibilidad de ejecutar estos modelos, así como sus entrenamientos y evaluaciones en tarjetas gráficas dedicadas (GPU), reduciendo de forma drástica el tiempo necesario para completar entrenamiento e inferencia. Esta decisión, se ha tomado principalmente por la cada vez más frecuente elección de PyTorch en proyectos de investigación debido a su mayor flexibilidad. Consecuencia directa de esto, es que gran parte de los repositorios de código relacionados con publicaciones científicas recientes (por ejemplo, DPT) usan PyTorch para crear sus modelos.
+Algunas de estas librerías tienen alternativas que podrían haberse empleado perfectamente en este proyecto. La elección más importante es probablemente el uso de PyTorch frente a Tensorflow/Keras, ya que ambas librerías permiten construir y entrenar modelos de \textit{Deep Learning} a partir de funciones y abstracciones que representan distintos tipos de capas, funciones de activación o procesos de transformación de datos, entre otras. Además, ambos paquetes de \textit{software} ofrecen la posibilidad de ejecutar estos modelos, así como sus entrenamientos y evaluaciones en tarjetas gráficas dedicadas (GPU), reduciendo de forma drástica el tiempo necesario para completar entrenamiento e inferencia. Esta decisión, se ha tomado principalmente por la cada vez más frecuente elección de PyTorch en proyectos de investigación debido a su mayor flexibilidad. Consecuencia directa de esto, es que gran parte de los repositorios de código relacionados con publicaciones científicas recientes (por ejemplo, DPT) usan PyTorch para crear sus modelos.
 
 \textbf{Aceleración por \textit{hardware}}
 
-En el párrafo anterior, se ha mencionado que PyTorch acelera por hardware el entrenamiento y la inferencia de los modelos de aprendizaje profundo. Para esto, se apoya principalmente en \textbf{CUDA} y \textbf{cuDNN}. El primero, es una plataforma de computación paralela desarrollada por NVIDIA para sus tarjetas gráficas dedicadas que permite desarrollar código para ejecutarlo en dichos dispositivos, aprovechando así el gran número de procesadores que tienen estos componentes. El segundo, también desarrollado por NVIDIA, es una librería de primitivas aceleradas por GPU preparadas para construir redes neuronales. Pese a que en este proyecto no se ha trabajado directamente con ninguna de estas herramientas, es necesario disponer de ellas ya que PyTorch las utiliza. Las versiones empleadas son, respectivamente, CUDA 11.1 y cuDNN 8.
+En el párrafo anterior, se ha mencionado que PyTorch acelera por \textit{hardware} el entrenamiento y la inferencia de los modelos de aprendizaje profundo. Para esto, se apoya principalmente en \textbf{CUDA} y \textbf{cuDNN}. El primero, es una plataforma de computación paralela desarrollada por NVIDIA para sus tarjetas gráficas dedicadas que permite desarrollar código para ejecutarlo en dichos dispositivos, aprovechando así el gran número de procesadores que tienen estos componentes. El segundo, también desarrollado por NVIDIA, es una librería de primitivas aceleradas por GPU preparadas para construir redes neuronales. Pese a que en este proyecto no se ha trabajado directamente con ninguna de estas herramientas, es necesario disponer de ellas ya que PyTorch las utiliza. Las versiones empleadas son, respectivamente, CUDA 11.1 y cuDNN 8.
 
 \textbf{Gestión y seguimiento de experimentos}
 
@@ -28,6 +28,8 @@ Dada la naturaleza del proyecto, era de esperar que el número de experimentos y
 \caption{Interfaz web de \textit{Weights and Biases}.}
 \label{fig:wandb-ui}
 \end{figure}
+
+\pagebreak
 
 \textbf{Entorno de desarrollo}
 
@@ -44,7 +46,7 @@ Los ficheros necesarios para crear el entorno empleado en el proyecto están dis
 
 \textbf{Otros}
 
-Por último, para la redacción de este documento se ha empleado \textbf{LaTeX} como sistema de composición de texto, \textbf{diagrams.net} para el diseño de figuras e ilustraciones, y \textbf{BibTeX} para gestionar las referencias bibliográficas. Tanto esta memoria como el desarrollo del código relacionado con el proyecto se han llevado a cabo empleado \textbf{Git} como software de control de versiones y se pueden encontrar en los repositorios TODO y TODO respectivamente.
+Por último, para la redacción de este documento se ha empleado \textbf{LaTeX} como sistema de composición de texto, \textbf{diagrams.net} para el diseño de figuras e ilustraciones, y \textbf{BibTeX} para gestionar las referencias bibliográficas. Tanto esta memoria como el desarrollo del código relacionado con el proyecto se han llevado a cabo empleado \textbf{Git} como software de control de versiones y se pueden encontrar en los repositorios \url{https://github.com/guillesanbri/tfm-latex} y \url{https://github.com/guillesanbri/tfm-latex}TODO respectivamente.
 
 
 \section{Hardware}
@@ -55,13 +57,13 @@ Para el desarrollo de este proyecto, se ha utilizado principalmente el Equipo 1 
 \begin{tabular}{ccc}
 \hline
 \rowcolor[HTML]{FFFFFF} 
-           & \begin{tabular}[c]{@{}c@{}}Equipo 1\\ (Sobremesa)\end{tabular}                   & \begin{tabular}[c]{@{}c@{}}Equipo 2\\ (Google Cloud)\end{tabular}      \\ \hline
+           & \begin{tabular}[c]{@{}c@{}}Equipo 1 (Sobremesa)\end{tabular}                   & \begin{tabular}[c]{@{}c@{}}Equipo 2 (Google Cloud)\end{tabular}      \\ \hline
 \rowcolor[HTML]{EFEFEF} 
 Procesador & \begin{tabular}[c]{@{}c@{}}AMD Ryzen 7 3800x \\ 8 núcleos @ 3.9 GHz\end{tabular} & \begin{tabular}[c]{@{}c@{}}Intel Xeon\\ 4 vCPU @ 2.30 GHz\end{tabular} \\
 \rowcolor[HTML]{FFFFFF} 
 GPU &
-  \begin{tabular}[c]{@{}c@{}}NVIDIA RTX 3070 \\ 8 GB GDDR6\\ 5888 CUDA cores\\ 184 Tensor cores\\ Arquitectura Ampere\end{tabular} &
-  \begin{tabular}[c]{@{}c@{}}NVIDIA Tesla T4\\ 16 GB GDDR6\\ 2560 CUDA cores\\ 320 Tensor cores\\ Arquitectura Turing\end{tabular} \\
+  \begin{tabular}[c]{@{}c@{}}NVIDIA RTX 3070 8GB\\ 5888 CUDA cores, 184 Tensor cores\\ Arquitectura Ampere\end{tabular} &
+  \begin{tabular}[c]{@{}c@{}}NVIDIA Tesla T4 16 GB\\ 2560 CUDA cores, 320 Tensor cores\\ Arquitectura Turing\end{tabular} \\
 \rowcolor[HTML]{EFEFEF} 
 Memoria    & 32 GB DDR4                                                                       & 15 GB                                                                  \\ \hline
 \end{tabular}
