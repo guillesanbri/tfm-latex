@@ -185,7 +185,7 @@ A pesar de que el comando se ha ejecutado dentro de una imagen con CUDA 11.0, el
 
 \subsection{Construcción de la imagen de Docker}
 
-Para construir la imagen de Docker, se emplea el Dockerfile incluido en el repositorio, que parte de una imagen con CUDA 11.1 y PyTorch 1.9.0 e instala el software necesario para ejecutar los \textit{scripts} correctamente. El comando a utilizar (si nos encontramos en la misma carpeta que el Dockerfile) es el siguiente, donde los argumentos USER{\_}ID y GROUP{\_}ID se utilizan para crear un usuario en la imagen que corresponda con el del \textit{host} y evitar problemas de permisos, y \$tag será el nombre que se le dará a la imagen:
+Para construir la imagen de Docker, se emplea el Dockerfile incluido en el repositorio, que parte de una imagen con CUDA 11.1 y PyTorch 1.9.0 e instala el \textit{software} necesario para ejecutar los \textit{scripts} correctamente. El comando a utilizar (si nos encontramos en la misma carpeta que el Dockerfile) es el siguiente, donde los argumentos USER{\_}ID y GROUP{\_}ID se utilizan para crear un usuario en la imagen que corresponda con el del \textit{host} y evitar problemas de permisos, y \$tag será el nombre que se le dará a la imagen:
 
 \texttt{\$ docker build \textbackslash \\
 {-}{-}build{-}arg USER{\_}ID=\$(id {-}u) {-}{-}build{-}arg GROUP{\_}ID=\$(id {-}g) {-}{-}tag \$tag .}
@@ -238,3 +238,100 @@ Una vez iniciado el contenedor, la ejecución de los \textit{scripts} se puede a
 \end{itemize}
 
 \end{itemize}
+
+\section{Despliegue en la nube}
+
+Tal y como se ha mencionado en el \Cref{cloud}, antes de crear una imagen de la instancia que se replicará dentro de Google Cloud, es necesario cargar los conjuntos de datos y configurarla correctamente. En la página siguiente, se encuentra el \textit{script} necesario para configurar la máquina inicial (setup-gcp-gpu.sh).
+
+Antes de ejecutarlo, es necesario tener disponibles en un \textit{bucket} de Google Cloud los datos que se quieren copiar en la máquina.
+
+Una vez el \textit{script} está en la máquina virtual, basta con ejecutarlo para que se copien los conjuntos de datos y el código del repositorio (siempre y cuando, evidentemente, se hayan cargado en el \textit{bucket}). Después de copiar los datos, se procederá a instalar los controladores de NVIDIA, Docker, el NVIDIA Container Toolkit, Python y wandb. 
+
+Tras instalar correctamente todos los paquetes, se construye la imagen de Docker con \texttt{docker-build.sh}, que usa el Dockerfile del repositorio para definir la imagen de Docker.
+
+\underline{\textbf{docker-build.sh}}
+\begin{verbatim}
+[[ $# -eq 0 ]] && { echo "Usage: $0 tag"; exit 1; }
+docker build  --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) --tag $1 .
+\end{verbatim}
+
+\underline{\textbf{Dockerfile}}
+\begin{verbatim}
+FROM pytorch/pytorch:1.9.0-cuda11.1-cudnn8-runtime
+ARG USER_ID
+ARG GROUP_ID
+WORKDIR /workspace
+RUN apt-get update ##[edited]
+RUN apt-get install ffmpeg libsm6 libxext6  -y
+RUN python3 -m pip install --upgrade pip
+COPY DPT/requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+RUN addgroup --gid $GROUP_ID user
+RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
+USER user
+ENTRYPOINT ["/bin/bash"]
+\end{verbatim}
+
+Por último, cabe mencionar que para usar wandb dentro de las máquinas virtuales es necesario configurar la API KEY correctamente a través de la variable de entorno $WANDB{\_}API{\_}KEY$.
+
+Una vez configurada la instancia, podemos crear una imagen de esta desde el panel de Google Cloud y configurar su ejecución para que cada vez que se ponga en marcha una instancia se ejecuten los siguientes dos comandos, el primero para poner en marcha un contenedor a partir de la imagen (de Docker) creada, y el segundo para ejecutar el agente de \textit{wandb} que se quiera lanzar.
+
+\begin{verbatim}
+wandb docker-run -d --gpus all --rm -it --name pytorch_container --ipc=host \
+-p 8888:8888 -v $(pwd):/workspace  pytorch
+
+docker exec pytorch_container sh -c "cd dpt && python -m wandb agent <agente>"
+\end{verbatim}
+
+\pagebreak
+
+\underline{\textbf{setup-gcp-gpu.sh}}
+\begin{verbatim}
+#!/bin/bash
+# Run without sudo
+# Clone dataset and code
+gsutil -m cp -r gs://tfm-dpt/DPT .
+gsutil -m cp -r gs://tfm-dpt/data .
+gsutil cp -r gs://tfm-dpt/.dockerignore .
+gsutil cp -r gs://tfm-dpt/Dockerfile .
+gsutil cp -r gs://tfm-dpt/docker-build.sh .
+# Install NVIDIA Drivers
+sudo apt-get update
+sudo apt-get upgrade -y
+sudo apt-get install wget gcc make -y
+sudo apt-get install linux-headers-`uname -r` -y
+sudo wget \
+https://us.download.nvidia.com/tesla/470.82.01/NVIDIA-Linux-x86_64-470.82.01.run
+sudo sh NVIDIA-Linux-x86_64-470.82.01.run --silent
+# Install Docker CE
+sudo apt-get remove docker docker-engine docker.io containerd runc
+sudo apt-get update
+sudo apt-get install ca-certificates curl gnupg lsb-release
+curl -fsSL https://download.docker.com/linux/debian/gpg \
+| sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) \
+signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] \
+https://download.docker.com/linux/debian $(lsb_release -cs) stable" \
+| sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io -y
+# Post-installation
+sudo groupadd docker
+sudo usermod -aG docker $USER # -> $USER==root if the script is run with sudo
+newgrp docker
+# NVIDIA Container Toolkit
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
+&& curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add - \
+&& curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list \
+| sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+sudo apt-get update
+sudo apt-get install -y nvidia-docker2
+sudo systemctl restart docker
+# Pip and wandb
+sudo apt update
+sudo apt install python3-pip -y
+pip3 install wandb
+# Build docker image
+chmod u+x docker-build.sh
+./docker-build.sh pytorch
+\end{verbatim}
