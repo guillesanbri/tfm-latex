@@ -1,3 +1,14 @@
 \apendice{Ficheros de resultados}
 
-Meter aquí los pesos? Solo los csvs?
+Además del repositorio de código, se ha creado un repositorio con una serie de archivos producidos durante el desarrollo del proyecto. Este repositorio está disponible públicamente en: TODO.
+
+Dentro del repositorio se encuentran una serie de ficheros:
+
+\begin{itemize}
+\item model{\_}configurations.csv: Fichero de valores separados por comas que relaciona cada uno de los 37 modelos disponibles con su configuración respecto a las modificaciones introducidas en este trabajo. Contiene 37 entradas en total.
+\item training.csv: Ficheros de valores separados por comas que incluye la configuración y duración del entrenamiento de cada modelo, así como sus resultados en los conjuntos de entrenamiento y de validación. Contiene 36 entradas en total.
+\item inference{\_}metrics.csv: Fichero de valores separados por comas que incluye las medidas de velocidad de inferencia, el número de GFLOPs y el tamaño para cada una de las configuraciones posibles reduciendo y sin reducir el tamaño de la entrada y activando y desactivando la precisión mixta. Contiene 144 entradas en total.
+\item dpt{\_}hybrid-kitti-e7069aae{\_}020.pt: Fichero con los parámetros entrenados por los autores de la publicación original en imágenes sin reducir y con la configuración de DPT-Hybrid sin modificaciones.
+\item dpt{\_}hybrid{\_}custom-kitti-<model{\_}code>{\_}020.pt: En total, 36 ficheros siguen este patrón, correspondiendose cada uno de ellos con las parámetros entrenados de las distintas configuraciones de modelos estudiadas durante el desarrollo de este Trabajo Fin de Máster.
+\item test{\_}output{\_}samples: Directorio con los resultados de los 37 modelos finales en una muestra aleatoria de 18 imágenes del conjunto de test.
+\end{itemize}
