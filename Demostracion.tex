@@ -1,6 +1,6 @@
 \apendice{Demostración de la independencia de la escala}\label{demostracion}
 
-\todo{Redactar algo aquí}
+Tanto la métrica SILog como la función de pérdida utilizada en este trabajo provienen de la ecuación presentada en el trabajo de Eigen et al. \cite{eigen-multi-scale}. Esta ecuación, es invariante a la escala si $\lambda=1$. En la siguiente demostración, se puede comprobar cómo incluir un factor de escala $\alpha$ que multiplica la profundidad obtenida por la red $\hat{d}$ (segunda línea) no altera la ecuación.
 
 \begin{align*}
     L(\hat{d}, d) = \frac{1}{n}\sum_{p} (\ln{\hat{d_p}} - \ln{d_p})^2 - \frac{1}{n^2} \left( \sum_{p} (\ln{\hat{d_p}} - \ln{d_p}) \right)^2 \\
