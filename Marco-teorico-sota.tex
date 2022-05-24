@@ -340,7 +340,7 @@ Este conjunto de arquitecturas, incluyen una proyección para conseguir una apro
 % TODO: Ver si performer se puede mencionar también en el grupo de kernels y ya hilarlo en el parrafo donde se hable de el.
 
 \subsection{Performer}\label{performer}
-Dentro de este trabajo, es de especial interés el mecanismo de atención eficiente propuesto por Choromanski et al. en \textit{Rethinking Attention with Performers}\cite{performers}, que reduce la complejidad de la atención de $O(n^2)$ a $O(n)$.
+Dentro de este trabajo, es de especial interés el mecanismo de atención eficiente propuesto por Choromanski et al. en \textit{Rethinking Attention with Performers} \cite{performers}, que reduce la complejidad de la atención de $O(n^2)$ a $O(n)$.
 
 Para conseguir esta reducción de la complejidad, el método modifica el orden de multiplicación de las matrices $Q$ (\textit{Queries}), $K$ (\textit{Keys}) y $V$ (\textit{Values}) del mecanismo de atención estándar. Siendo $n$ el número de \textit{tokens} de dimensión $d$ de la cadena de entrada, si en vez de multiplicar $(Q \times K^T) \times V$ se multiplica $Q \times (K^T \times V)$, las dimensiones multiplicadas serían $(n \times d) \times ((d \times n) \times (n \times d))$ en vez de $((n \times d) \times (d \times n)) \times (n \times d)$. Es decir, el número de operaciones en la multiplicación pasaría de ser $2 n^2 d$ (atención estándar) a ser $2 d^2 n$ (\textit{performer}), haciendo que el coste crezca de manera lineal con el número de \textit{tokens} si $n >>>> d$.
 

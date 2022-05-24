@@ -2,8 +2,8 @@
 
 ## Links de interes
 
-- [Repositorio del proyecto / Project repository](TODO)
-- [Repositorio de modelos / Model repository](TODO)
+- [Repositorio del proyecto / Project repository](https://github.com/guillesanbri/DPT/tree/v1.0.0-tfm)
+- [Repositorio de modelos / Model repository](https://zenodo.org/record/6574941)
 
 ## Abstract
 

@@ -5,7 +5,7 @@ El siguiente apéndice se compone de tres apartados principales: El primero pres
 
 \section{Estructura de directorios}
 
-A continuación se encuentra la estructura de directorios y ficheros de este Trabajo Fin de Máster. Esta estructura se divide en dos directorios principales: \textit{data/}, que contiene el \textit{dataset} de KITTI; y DPT/, que es un \textit{fork} del repositorio de la publicación original \cite{visiontransformersDPT} disponible en \url{TODO}.
+A continuación se encuentra la estructura de directorios y ficheros de este Trabajo Fin de Máster. Esta estructura se divide en dos directorios principales: \textit{data/}, que contiene el \textit{dataset} de KITTI; y DPT/, que es un \textit{fork} del repositorio de la publicación original \cite{visiontransformersDPT} disponible en \url{https://github.com/guillesanbri/DPT/tree/v1.0.0-tfm}.
 
 En este segundo directorio, se encuentran a su vez los subdirectorios: 
 
@@ -178,7 +178,7 @@ Una vez instalado el Docker Engine, es necesario instalar el NVIDIA Container To
 \includegraphics[width=1\linewidth]{imagenes/nvidia-smi.png} 
 \captionsetup{width=1\linewidth}
 \caption{Resultado del comando \texttt{nvidia-smi} dentro del contenedor.}
-\label{fig:performer}
+\label{fig:nvidiasmi}
 \end{figure}
 
 A pesar de que el comando se ha ejecutado dentro de una imagen con CUDA 11.0, el resultado muestra CUDA 11.6 ya que accede directamente al \textit{driver} del \textit{host} y muestra la versión más alta de CUDA soportada por el \textit{driver} instalado. Se puede encontrar más información sobre esto en: \url{https://github.com/NVIDIA/nvidia-docker/issues/1237#issuecomment-703524943}.
